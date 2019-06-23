@@ -172,10 +172,14 @@ def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
                     if isinstance(item, dict):
                         # Handle nested models
                         if model_pb_class.DESCRIPTOR.fields_by_name[prop_name].message_type:
-                            nested_model_name = model_pb_class.DESCRIPTOR.fields_by_name[prop_name].message_type.full_name
+                            field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+                            nested_model_name = field.message_type.full_name
                             nested_model_class = getattr(model_pb_module, nested_model_name)
+
+                            # Instantiate an instance of nested field Protobuf class
                             item_pb = nested_model_class()
                             set_model_pb_value(item_pb, prop_name, item, is_nested=True)
+
                             getattr(model_pb, prop_name).append(item_pb)
                     else:
                         getattr(model_pb, prop_name).append(item)
