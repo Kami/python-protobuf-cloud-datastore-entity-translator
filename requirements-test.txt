@@ -3,3 +3,4 @@ flake8
 nose
 rednose
 coverage
+codecov
