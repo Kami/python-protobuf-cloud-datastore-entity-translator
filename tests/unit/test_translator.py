@@ -72,8 +72,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Create example Entity protobuf object via google-cloud-datastore library with the
         # matching values
         example_dict = {
-        'int32_key': 100,
-        'string_key': u'foo bar baz',
+            'int32_key': 100,
+            'string_key': u'foo bar baz',
             'bool_key': True,
             'bytes_key': b'foobytesstring',
             'map_string_string': {

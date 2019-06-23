@@ -22,6 +22,7 @@ from google.cloud import datastore
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
+
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
@@ -49,9 +50,7 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         pass
 
     fields = list(iter(model_pb.DESCRIPTOR.fields))
-
-    if 'key' in fields:
-        del fields['key']
+    fields = [field for field in fields if field not in ['key']]
 
     entity_pb = entity_pb2.Entity()
 
