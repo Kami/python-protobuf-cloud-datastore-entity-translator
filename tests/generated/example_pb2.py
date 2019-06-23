@@ -23,7 +23,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rexample.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\";\n\x12\x45xampleNestedModel\x12\x12\n\nstring_key\x18\x01 \x01(\t\x12\x11\n\tint32_key\x18\x02 \x01(\x05\"\xe1\x04\n\x0e\x45xampleDBModel\x12\x11\n\tint32_key\x18\x01 \x01(\x05\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x10\n\x08\x62ool_key\x18\x03 \x01(\x08\x12\x11\n\tbytes_key\x18\x04 \x01(\x0c\x12?\n\x11map_string_string\x18\x05 \x03(\x0b\x32$.ExampleDBModel.MapStringStringEntry\x12=\n\x10map_string_int32\x18\x06 \x03(\x0b\x32#.ExampleDBModel.MapStringInt32Entry\x12\x18\n\x10string_array_key\x18\x07 \x03(\t\x12\x17\n\x0fint32_array_key\x18\x08 \x03(\x05\x12.\n\x11\x63omplex_array_key\x18\t \x03(\x0b\x32\x13.ExampleNestedModel\x12#\n\x08\x65num_key\x18\n \x01(\x0e\x32\x11.ExampleEnumModel\x12\x31\n\rtimestamp_key\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\nstruct_key\x18\x0c \x01(\x0b\x32\x17.google.protobuf.Struct\x12,\n\x08null_key\x18\r \x01(\x0e\x32\x1a.google.protobuf.NullValue\x1a\x36\n\x14MapStringStringEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x35\n\x13MapStringInt32Entry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01*3\n\x10\x45xampleEnumModel\x12\t\n\x05\x45NUM0\x10\x00\x12\t\n\x05\x45NUM1\x10\x01\x12\t\n\x05\x45NUM2\x10\x02\x62\x06proto3')
+  serialized_pb=_b('\n\rexample.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\";\n\x12\x45xampleNestedModel\x12\x12\n\nstring_key\x18\x01 \x01(\t\x12\x11\n\tint32_key\x18\x02 \x01(\x05\"\x9b\x05\n\x0e\x45xampleDBModel\x12\x11\n\tint32_key\x18\x01 \x01(\x05\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x10\n\x08\x62ool_key\x18\x03 \x01(\x08\x12\x11\n\tbytes_key\x18\x04 \x01(\x0c\x12\x12\n\ndouble_key\x18\x0e \x01(\x01\x12\x11\n\tfloat_key\x18\x0f \x01(\x02\x12\x11\n\tint64_key\x18\x10 \x01(\x03\x12?\n\x11map_string_string\x18\x05 \x03(\x0b\x32$.ExampleDBModel.MapStringStringEntry\x12=\n\x10map_string_int32\x18\x06 \x03(\x0b\x32#.ExampleDBModel.MapStringInt32Entry\x12\x18\n\x10string_array_key\x18\x07 \x03(\t\x12\x17\n\x0fint32_array_key\x18\x08 \x03(\x05\x12.\n\x11\x63omplex_array_key\x18\t \x03(\x0b\x32\x13.ExampleNestedModel\x12#\n\x08\x65num_key\x18\n \x01(\x0e\x32\x11.ExampleEnumModel\x12\x31\n\rtimestamp_key\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\nstruct_key\x18\x0c \x01(\x0b\x32\x17.google.protobuf.Struct\x12,\n\x08null_key\x18\r \x01(\x0e\x32\x1a.google.protobuf.NullValue\x1a\x36\n\x14MapStringStringEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x35\n\x13MapStringInt32Entry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01*3\n\x10\x45xampleEnumModel\x12\t\n\x05\x45NUM0\x10\x00\x12\t\n\x05\x45NUM1\x10\x01\x12\t\n\x05\x45NUM2\x10\x02\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -48,8 +48,8 @@ _EXAMPLEENUMMODEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=753,
-  serialized_end=804,
+  serialized_start=811,
+  serialized_end=862,
 )
 _sym_db.RegisterEnumDescriptor(_EXAMPLEENUMMODEL)
 
@@ -131,8 +131,8 @@ _EXAMPLEDBMODEL_MAPSTRINGSTRINGENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=642,
-  serialized_end=696,
+  serialized_start=700,
+  serialized_end=754,
 )
 
 _EXAMPLEDBMODEL_MAPSTRINGINT32ENTRY = _descriptor.Descriptor(
@@ -168,8 +168,8 @@ _EXAMPLEDBMODEL_MAPSTRINGINT32ENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=698,
-  serialized_end=751,
+  serialized_start=756,
+  serialized_end=809,
 )
 
 _EXAMPLEDBMODEL = _descriptor.Descriptor(
@@ -208,63 +208,84 @@ _EXAMPLEDBMODEL = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='map_string_string', full_name='ExampleDBModel.map_string_string', index=4,
+      name='double_key', full_name='ExampleDBModel.double_key', index=4,
+      number=14, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='float_key', full_name='ExampleDBModel.float_key', index=5,
+      number=15, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='int64_key', full_name='ExampleDBModel.int64_key', index=6,
+      number=16, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='map_string_string', full_name='ExampleDBModel.map_string_string', index=7,
       number=5, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='map_string_int32', full_name='ExampleDBModel.map_string_int32', index=5,
+      name='map_string_int32', full_name='ExampleDBModel.map_string_int32', index=8,
       number=6, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='string_array_key', full_name='ExampleDBModel.string_array_key', index=6,
+      name='string_array_key', full_name='ExampleDBModel.string_array_key', index=9,
       number=7, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='int32_array_key', full_name='ExampleDBModel.int32_array_key', index=7,
+      name='int32_array_key', full_name='ExampleDBModel.int32_array_key', index=10,
       number=8, type=5, cpp_type=1, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='complex_array_key', full_name='ExampleDBModel.complex_array_key', index=8,
+      name='complex_array_key', full_name='ExampleDBModel.complex_array_key', index=11,
       number=9, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='enum_key', full_name='ExampleDBModel.enum_key', index=9,
+      name='enum_key', full_name='ExampleDBModel.enum_key', index=12,
       number=10, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='timestamp_key', full_name='ExampleDBModel.timestamp_key', index=10,
+      name='timestamp_key', full_name='ExampleDBModel.timestamp_key', index=13,
       number=11, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='struct_key', full_name='ExampleDBModel.struct_key', index=11,
+      name='struct_key', full_name='ExampleDBModel.struct_key', index=14,
       number=12, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='null_key', full_name='ExampleDBModel.null_key', index=12,
+      name='null_key', full_name='ExampleDBModel.null_key', index=15,
       number=13, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -283,7 +304,7 @@ _EXAMPLEDBMODEL = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=142,
-  serialized_end=751,
+  serialized_end=809,
 )
 
 _EXAMPLEDBMODEL_MAPSTRINGSTRINGENTRY.containing_type = _EXAMPLEDBMODEL

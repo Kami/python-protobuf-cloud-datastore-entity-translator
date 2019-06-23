@@ -82,10 +82,21 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         elif field_type == descriptor.FieldDescriptor.TYPE_STRING:
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
             value_pb.string_value = field_value
-        elif field_type == descriptor.FieldDescriptor.TYPE_DOUBLE:
+        elif field_type in [descriptor.FieldDescriptor.TYPE_DOUBLE,
+                descriptor.FieldDescriptor.TYPE_FLOAT]:
+            if field_value == float(0):
+                # Value not provided, skip it
+                continue
+
+            # NOTE: Datastore only supports double type so we map float to double
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
             value_pb.double_value = field_value
-        elif field_type == descriptor.FieldDescriptor.TYPE_INT32:
+        elif field_type in [descriptor.FieldDescriptor.TYPE_INT32,
+                descriptor.FieldDescriptor.TYPE_INT64]:
+            if field_value == 0:
+                # Value not provided, skip it
+                continue
+
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
             value_pb.integer_value = field_value
         elif field_type == descriptor.FieldDescriptor.TYPE_ENUM:

@@ -41,6 +41,9 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.string_key = u'foo bar baz'
         example_pb.bool_key = True
         example_pb.bytes_key = b'foobytesstring'
+        example_pb.double_key = 1.2345
+        example_pb.float_key = float(20.55500030517578)
+        example_pb.int64_key = 9223372036854775
         example_pb.map_string_string['foo'] = u'bar'
         example_pb.map_string_string['bar'] = u'baz'
         example_pb.map_string_string['unicode'] = u'čđć'
@@ -76,6 +79,9 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'string_key': u'foo bar baz',
             'bool_key': True,
             'bytes_key': b'foobytesstring',
+            'double_key': 1.2345,
+            'float_key': float(20.55500030517578),
+            'int64_key': 9223372036854775,
             'map_string_string': {
                 'foo': u'bar',
                 'bar': u'baz',
