@@ -1,2 +1,3 @@
+six
 protobuf
 google-cloud-datastore
