@@ -122,3 +122,55 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
+
+    def test_translate_empty_values(self):
+        # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
+        # determine if a value is set / provided. We just use the default values.
+        # See https://github.com/googleapis/google-cloud-python/issues/1402
+        # Verify that the default values are correctly serialized
+        entity = datastore.Entity()
+        entity.update()
+
+        entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
+        entity_roundtrip = datastore.helpers.entity_from_protobuf(entity_pb_native)
+
+        # Assert that end result after round trip is the same
+        self.assertEqual(entity, entity_roundtrip)
+
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.bool_key = False
+        example_pb.string_key = ''
+        example_pb.int32_key = 0
+        example_pb.int64_key = 0
+        example_pb.double_key = 0.0
+        example_pb.float_key = 0.0
+        example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM1
+        example_pb.bool_key = False
+        example_pb.bytes_key = b''
+        example_pb.null_key = 1
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+
+        entity = datastore.Entity()
+        example_dict = {
+            'bool_key': False,
+            'string_key': u'',
+            'int32_key': 0,
+            'int64_key': 0,
+            'double_key': 0.0,
+            'float_key': 0.0,
+            'enum_key': example_pb2.ExampleEnumModel.ENUM1,
+            'bool_key': False,
+            'bytes_key': b'',
+            'null_key': None,
+            'map_string_string': {},
+            'map_string_int32': {}
+        }
+        entity.update(example_dict)
+
+        entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
+
+        self.assertEqual(entity_pb_native, entity_pb_translated)
+        self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
+        self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
+            sorted(entity_pb_translated.SerializePartialToString()))

@@ -60,17 +60,23 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         field_value = getattr(model_pb, field_name, None)
 
         if field_value is None:
-            # Value not set, skip it
+            # Value not set or it uses a default value, skip it
+            # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
+            # determine if a value is set / provided.
+            # One option would be to just use the default value.
+            # See:
+            # - https://github.com/googleapis/google-cloud-python/issues/1402
+            # - https://github.com/googleapis/google-cloud-python/issues/1402
             continue
 
         attr_type = get_pb_attr_type(field_value)
 
         if attr_type == 'array_value':
             if len(field_value) == 0:
-                continue
                 # TODO: Should we include empty value?
                 # array_value = entity_pb2.ArrayValue(values=[])
                 # value_pb.array_value.CopyFrom(array_value)
+                continue
             else:
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
 
@@ -84,19 +90,11 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
             value_pb.string_value = field_value
         elif field_type in [descriptor.FieldDescriptor.TYPE_DOUBLE,
                 descriptor.FieldDescriptor.TYPE_FLOAT]:
-            if field_value == float(0):
-                # Value not provided, skip it
-                continue
-
             # NOTE: Datastore only supports double type so we map float to double
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
             value_pb.double_value = field_value
         elif field_type in [descriptor.FieldDescriptor.TYPE_INT32,
                 descriptor.FieldDescriptor.TYPE_INT64]:
-            if field_value == 0:
-                # Value not provided, skip it
-                continue
-
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
             value_pb.integer_value = field_value
         elif field_type == descriptor.FieldDescriptor.TYPE_ENUM:
@@ -123,6 +121,10 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
             field_type = model_pb.DESCRIPTOR.fields_by_name[field_name]
 
             if field_type.message_type.full_name == 'google.protobuf.Timestamp':
+                if str(field_value) == '':
+                    # Value not set
+                    continue
+
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
                 value_pb.timestamp_value.CopyFrom(field_value)
             elif isinstance(field_value, ScalarMapContainer):
