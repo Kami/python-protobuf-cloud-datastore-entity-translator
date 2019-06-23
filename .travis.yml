@@ -29,4 +29,4 @@ cache:
   apt: true
   directories:
     - $HOME/.cache/pip # pip cache
-    - .tox
+#    - .tox
