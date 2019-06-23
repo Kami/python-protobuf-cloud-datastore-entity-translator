@@ -22,6 +22,24 @@ for database models. This way those definitions can be shared by multiple progra
 each language just needs a light translator library (like this one) which knows how to translate
 arbitrary Protobuf object into Entity Protobuf object and vice-versa.
 
+## Gotchas
+
+In protobuf syntax version 3 a concept of field being set has been removed and combined with a
+concept of a default value. This means that even when a field is not set, a default value which
+is specific to that field type will be returned.
+
+As far as this library is concerned, this means when you are converting / translating Protobuf
+object with no values set, translated object will still contain default values for fields which
+are not set.
+
+For details, see:
+
+* https://developers.google.com/protocol-buffers/docs/reference/python-generated
+* https://github.com/protocolbuffers/protobuf/issues/1606
+* https://github.com/googleapis/google-cloud-python/issues/1402
+* https://github.com/googleapis/google-cloud-python/pull/1450
+* https://github.com/googleapis/google-cloud-python/pull/1329
+
 ## Examples
 
 For example protobuf definitions, see ``protobuf/`` directory.
