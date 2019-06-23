@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -29,6 +30,8 @@ __all__ = [
 
 
 class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
+    maxDiff = None
+
     def test_translate_roundtrip(self):
         dt = datetime.datetime(2019, 12, 12, 10, 00, 00, tzinfo=UTC)
 
@@ -40,6 +43,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.bytes_key = b'foobytesstring'
         example_pb.map_string_string['foo'] = 'bar'
         example_pb.map_string_string['bar'] = 'baz'
+        example_pb.map_string_string['unicode'] = 'čđć'
         example_pb.map_string_int32['key1'] = 20
         example_pb.map_string_int32['key2'] = 30
         example_pb.string_array_key.append('item1')
@@ -61,7 +65,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.struct_key.update({
             'key1': 'val1',
             'key2': 2,
-            'key3': [1, 2, 3]
+            'key3': [1, 2, 3],
+            'key4': 'čđć'
         })
 
         # Create example Entity protobuf object via google-cloud-datastore library with the
@@ -73,7 +78,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'bytes_key': b'foobytesstring',
             'map_string_string': {
                 'foo': 'bar',
-                'bar': 'baz'
+                'bar': 'baz',
+                'unicode': 'čđć'
             },
             'map_string_int32': {
                 'key1': 20,
@@ -87,7 +93,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'struct_key': {
                 'key1': 'val1',
                 'key2': 2,
-                'key3': [1, 2, 3]
+                'key3': [1, 2, 3],
+                'key4': 'čđć'
             },
             'timestamp_key': dt,
             'null_key': None
