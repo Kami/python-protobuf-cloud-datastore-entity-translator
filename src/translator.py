@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from typing import Any
+from datetime import datetime
 
 import six
 
@@ -142,12 +143,59 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
     return entity_pb
 
 
-def entity_pb_to_model_pb():
+def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
     """
     Translate Entity protobuf object to protobuf based database model object.
+
+    :param model_pb_module: Name of the module which contains Protobuf class definition for the
+                            DB model class.
+    :param model_pb_class: Protobuf class to convert the Entity object to.
+    :param entity_pb: Entity protobuf instance to convert to database model instance.
     """
-    # TODO
-    pass
+    model_pb_field_names = list(iter(model_pb_class.DESCRIPTOR.fields))
+    model_pb_field_names = [field.name for field in model_pb_field_names if field not in ['key']]
+
+    model_pb = model_pb_class()
+
+    for prop_name, value_pb in datastore.helpers._property_tuples(entity_pb):
+        value = datastore.helpers._get_value_from_value_pb(value_pb)
+
+        # Field not defined on the model class, ignore it
+        # TODO: Perhaps add strict mode and throw when strict=True and field is not defined on the
+        # model class?
+        if prop_name not in model_pb_field_names:
+            continue
+
+        def set_model_pb_value(model_pb, prop_name, value, is_nested=False):
+            if isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        # Handle nested models
+                        if model_pb_class.DESCRIPTOR.fields_by_name[prop_name].message_type:
+                            nested_model_name = model_pb_class.DESCRIPTOR.fields_by_name[prop_name].message_type.full_name
+                            nested_model_class = getattr(model_pb_module, nested_model_name)
+                            item_pb = nested_model_class()
+                            set_model_pb_value(item_pb, prop_name, item, is_nested=True)
+                            getattr(model_pb, prop_name).append(item_pb)
+                    else:
+                        getattr(model_pb, prop_name).append(item)
+            elif isinstance(value, dict):
+                if is_nested:
+                    for key, value in six.iteritems(value):
+                        set_model_pb_value(model_pb, key, value)
+                else:
+                    getattr(model_pb, prop_name).update(dict(value))
+            elif isinstance(value, datetime):
+                getattr(model_pb, prop_name).FromDatetime(value)
+            elif value is None:
+                # NULL type
+                setattr(model_pb, prop_name, 0)
+            else:
+                setattr(model_pb, prop_name, value)
+
+        set_model_pb_value(model_pb, prop_name, value)
+
+    return model_pb
 
 
 def get_pb_attr_type(value):

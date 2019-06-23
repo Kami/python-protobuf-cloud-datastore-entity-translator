@@ -23,6 +23,7 @@ from pytz import UTC
 from tests.generated import example_pb2
 
 from src.translator import model_pb_to_entity_pb
+from src.translator import entity_pb_to_model_pb
 
 __all__ = [
     'ModelPbToEntityPbTranslatorTestCase'
@@ -122,6 +123,13 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
+
+        # Try converting it back to the original entity and verify it matches the input
+        example_pb_converted = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+                                                     entity_pb_native)
+        self.assertEqual(example_pb_converted, example_pb)
+        self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
+            sorted(example_pb.SerializePartialToString()))
 
     def test_translate_empty_values(self):
         # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
