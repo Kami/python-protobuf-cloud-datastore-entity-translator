@@ -44,7 +44,45 @@ For details, see:
 
 For example protobuf definitions, see ``protobuf/`` directory.
 
-TBW.
+
+```python
+from google.cloud import datastore
+
+from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
+from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
+
+from generated import my_model_pb2
+
+# 1. Store your database model object which is represented using a custom Protobuf message class
+# instance inside Google Datastore
+
+# Create database model Protobuf instance
+my_model_pb = MyModelPB()
+my_model_pb.key1 = 'value1'
+my_model_pb.key2 = 200
+my_model_pb['foo'] = 'bar'
+my_model_pb['bar'] = 'baz'
+
+# Convert it to entity which can be used with datastore
+entity_pb = model_pb_to_entity_pb(my_model_pb)
+
+# Store it in the datastore
+# To avoid conversion back and forth you can also use lower level client methods which
+# work directly with Entity Protobuf objects
+entity = datastore.helpers.entity_from_protobuf(entity_pb)
+
+client = Client(...)
+client.put(entity)
+
+# 2. Retrieve entity from the datastore and convert it to your Protobuf DB model instance class
+# Same here - you can also use low level client to retrieve Entity protobuf object directly and
+# avoid unnecessary conversion round trip
+key = client.key('MyCustomEntity', 'some_primary_key')
+entity = client.get(key)
+entity_pb = datastore.helpers.entity_to_protobuf(entity)
+
+my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb)
+```
 
 ## License
 
