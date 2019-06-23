@@ -38,24 +38,24 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Create an instance of ExampleDBModel Protobuf message
         example_pb = example_pb2.ExampleDBModel()
         example_pb.int32_key = 100
-        example_pb.string_key = 'foo bar baz'
+        example_pb.string_key = u'foo bar baz'
         example_pb.bool_key = True
         example_pb.bytes_key = b'foobytesstring'
-        example_pb.map_string_string['foo'] = 'bar'
-        example_pb.map_string_string['bar'] = 'baz'
-        example_pb.map_string_string['unicode'] = 'čđć'
+        example_pb.map_string_string['foo'] = u'bar'
+        example_pb.map_string_string['bar'] = u'baz'
+        example_pb.map_string_string['unicode'] = u'čđć'
         example_pb.map_string_int32['key1'] = 20
         example_pb.map_string_int32['key2'] = 30
-        example_pb.string_array_key.append('item1')
-        example_pb.string_array_key.append('item2')
+        example_pb.string_array_key.append(u'item1')
+        example_pb.string_array_key.append(u'item2')
         example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM1
         example_pb.int32_array_key.append(100)
         example_pb.int32_array_key.append(200)
         example_pb.int32_array_key.append(300)
 
-        example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key='value 1',
+        example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
             int32_key=12345)
-        example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key='value 2',
+        example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
             int32_key=5000)
 
         example_pb.complex_array_key.append(example_placeholder_pb1)
@@ -63,38 +63,38 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         example_pb.timestamp_key.FromDatetime(dt)
         example_pb.struct_key.update({
-            'key1': 'val1',
+            'key1': u'val1',
             'key2': 2,
             'key3': [1, 2, 3],
-            'key4': 'čđć'
+            'key4': u'čđć'
         })
 
         # Create example Entity protobuf object via google-cloud-datastore library with the
         # matching values
         example_dict = {
         'int32_key': 100,
-        'string_key': 'foo bar baz',
+        'string_key': u'foo bar baz',
             'bool_key': True,
             'bytes_key': b'foobytesstring',
             'map_string_string': {
-                'foo': 'bar',
-                'bar': 'baz',
-                'unicode': 'čđć'
+                'foo': u'bar',
+                'bar': u'baz',
+                'unicode': u'čđć'
             },
             'map_string_int32': {
                 'key1': 20,
                 'key2': 30,
             },
-            'string_array_key': ['item1', 'item2'],
+            'string_array_key': [u'item1', u'item2'],
             'int32_array_key': [100, 200, 300],
-            'complex_array_key': [{'string_key': 'value 1', 'int32_key': 12345},
-                                  {'string_key': 'value 2', 'int32_key': 5000}],
+            'complex_array_key': [{'string_key': u'value 1', 'int32_key': 12345},
+                                  {'string_key': u'value 2', 'int32_key': 5000}],
             'enum_key': example_pb2.ExampleEnumModel.ENUM1,
             'struct_key': {
-                'key1': 'val1',
+                'key1': u'val1',
                 'key2': 2,
                 'key3': [1, 2, 3],
-                'key4': 'čđć'
+                'key4': u'čđć'
             },
             'timestamp_key': dt,
             'null_key': None

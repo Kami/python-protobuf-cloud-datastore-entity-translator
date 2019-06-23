@@ -103,6 +103,10 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
             value_pb.boolean_value = field_value
         elif field_type == descriptor.FieldDescriptor.TYPE_BYTES:
             value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
+
+            if isinstance(field_value, six.string_types):
+                field_value = field_value.encode('utf-8')
+
             value_pb.blob_value = field_value
         elif field_type == descriptor.FieldDescriptor.TYPE_MESSAGE:
             # Complex type, convert to entity
