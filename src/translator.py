@@ -62,11 +62,7 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         if field_value is None:
             # Value not set or it uses a default value, skip it
             # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
-            # determine if a value is set / provided.
-            # One option would be to just use the default value.
-            # See:
-            # - https://github.com/googleapis/google-cloud-python/issues/1402
-            # - https://github.com/googleapis/google-cloud-python/issues/1402
+            # determine if a value is set / provided so we just use and return defualt values.
             continue
 
         attr_type = get_pb_attr_type(field_value)
