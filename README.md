@@ -1,5 +1,7 @@
 # Protobuf Message to Google Datastore Entity Protobuf Message Translator
 
+[![Tests Build Status](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator.svg?branch=master)](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator) [![Codecov](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator/badge.svg?branch=master&service=github)](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator?branch=master)
+
 This repository contains a Python library which converts arbitrary protobuf message objects into
 Entity protobuf objects which can be used with Google Datastore.
 
