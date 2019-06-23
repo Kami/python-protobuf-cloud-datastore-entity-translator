@@ -66,12 +66,14 @@ my_model_pb.key2 = 200
 my_model_pb['foo'] = 'bar'
 my_model_pb['bar'] = 'baz'
 
-# Convert it to entity which can be used with datastore
+# Convert it to entity which can be used with Google Datastore
 entity_pb = model_pb_to_entity_pb(my_model_pb)
 
 # Store it in the datastore
 # To avoid conversion back and forth you can also use lower level client methods which
 # work directly with Entity Protobuf objects
+# For information on the low level client usage, see
+# https://github.com/GoogleCloudPlatform/google-cloud-datastore/blob/master/python/demos/trivial/adams.py#L66
 entity = datastore.helpers.entity_from_protobuf(entity_pb)
 
 client = Client(...)
@@ -84,7 +86,8 @@ key = client.key('MyCustomEntity', 'some_primary_key')
 entity = client.get(key)
 entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
-my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb)
+my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb
+print(my_model_pb)
 ```
 
 ## License
