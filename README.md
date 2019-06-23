@@ -58,6 +58,9 @@ from generated import my_model_pb2
 
 # Create database model Protobuf instance
 my_model_pb = MyModelPB()
+# NOTE: "key" is a special attribute which is used as entity primary key
+my_model_pb.key = 'some_primary_key'
+# Other entity attributes
 my_model_pb.key1 = 'value1'
 my_model_pb.key2 = 200
 my_model_pb['foo'] = 'bar'
