@@ -12,8 +12,11 @@ matrix:
       dist: xenial
       sudo: required
     - env: ENV=lint
-      python: 2.7
+      python: 3.7
       before_script: TOX_ENV=lint
+    - env: ENV=coverage
+      python: 3.7
+      before_script: TOX_ENV=coverage-travis
 
 install:
   - pip install "tox==3.12.1"
