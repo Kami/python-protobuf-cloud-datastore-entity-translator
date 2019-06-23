@@ -1,0 +1,29 @@
+language: python
+sudo: false
+dist: trusty
+os: linux
+
+matrix:
+  fast_finish: false
+  include:
+    - python: 2.7
+    - python: 3.6
+    - python: 3.7
+      dist: xenial
+      sudo: required
+    - env: ENV=lint
+      python: 2.7
+      before_script: TOX_ENV=lint
+
+install:
+  - pip install "tox==3.12.1"
+  - TOX_ENV=py$TRAVIS_PYTHON_VERSION
+
+script:
+  - tox -e $TOX_ENV
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/pip # pip cache
+    - .tox
