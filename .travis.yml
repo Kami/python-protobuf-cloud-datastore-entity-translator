@@ -27,7 +27,6 @@ matrix:
 
 install:
   - pip install "tox==3.12.1"
-  - TOX_ENV=py$TRAVIS_PYTHON_VERSION
   - if [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/run-datastore-emulator.sh; fi
 
 script:
