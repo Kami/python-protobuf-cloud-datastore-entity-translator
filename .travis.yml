@@ -8,22 +8,22 @@ matrix:
   include:
     - env: ENV=lint
       python: 3.7
-      before_script: TOX_ENV=lint
+      before_install: TOX_ENV=lint
     - env: ENV=py2.7-unit-tests
       python: 2.7
-      before_script: TOX_ENV=py2.7-unit-tests
+      before_install: TOX_ENV=py2.7-unit-tests
     - env: ENV=py3.6-unit-tests
       python: 3.6
-      before_script: TOX_ENV=py3.6-unit-tests
+      before_install: TOX_ENV=py3.6-unit-tests
     - env: ENV=py3.7-unit-tests
       python: 3.7
-      before_script: TOX_ENV=py3.7-unit-tests
+      before_install: TOX_ENV=py3.7-unit-tests
     - env: ENV=integration-tests
       python: 3.7
-      before_script: TOX_ENV=py3.7-integration-tests
+      before_install: TOX_ENV=py3.7-integration-tests
     - env: ENV=coverage
       python: 3.7
-      before_script: TOX_ENV=coverage-travis
+      before_install: TOX_ENV=coverage-travis
 
 install:
   - pip install "tox==3.12.1"
