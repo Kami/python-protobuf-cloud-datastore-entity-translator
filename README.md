@@ -32,6 +32,31 @@ As far as this library is concerned, this means when you are converting / transl
 object with no values set, translated object will still contain default values for fields which
 are not set.
 
+For example, the output / end result of both those two calls will be the same:
+
+```python
+# Field values are explicitly provided, but they match default values
+example_pb = example_pb2.ExampleDBModel()
+example_pb.bool_key = False
+example_pb.string_key = ''
+example_pb.int32_key = 0
+example_pb.int64_key = 0
+example_pb.double_key = 0.0
+example_pb.float_key = 0.0
+example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM0
+example_pb.bool_key = False
+example_pb.bytes_key = b''
+example_pb.null_key = 1
+
+entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+print(entity_pb_translated)
+
+# No field values are provided, implicit default values are used during serialization
+example_pb = example_pb2.ExampleDBModel()
+entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+print(entity_pb_translated)
+```
+
 For details, see:
 
 * https://developers.google.com/protocol-buffers/docs/reference/python-generated
