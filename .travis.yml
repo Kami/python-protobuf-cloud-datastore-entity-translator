@@ -12,6 +12,9 @@ matrix:
     - env: ENV=lint
       python: 3.7
       before_script: TOX_ENV=lint
+    - env: ENV=integration-tests
+      python: 3.7
+      before_script: TOX_ENV=py3.7-integration-tests
     - env: ENV=coverage
       python: 3.7
       before_script: TOX_ENV=coverage-travis
@@ -21,6 +24,7 @@ install:
   - TOX_ENV=py$TRAVIS_PYTHON_VERSION
 
 script:
+  - if [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/run-datastore-emulator.sh; fi
   - tox -e $TOX_ENV
 
 cache:

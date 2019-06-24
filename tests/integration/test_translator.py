@@ -27,7 +27,7 @@ from google.cloud import datastore
 from pytz import UTC
 
 from tests.generated import example_pb2
-from tests.unit.mocks import EmulatorCreds
+from tests.mocks import EmulatorCreds
 
 from src.translator import model_pb_to_entity_pb
 from src.translator import entity_pb_to_model_pb
@@ -106,7 +106,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         self.assertEqual(entity_native_retrieved, example_dict)
 
         # Store custom Protobuf object in a datastore by translating it to Entity object
-
+        # pylint: disable=no-member
         example_pb = example_pb2.ExampleDBModel()
         example_pb.int32_key = 100
         example_pb.string_key = u'foo bar baz'
@@ -146,6 +146,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         key_translated = self.client.key('ExampleModel', 'translated_entity')
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
+        # pylint: enable=no-member
         entity_translated = datastore.helpers.entity_from_protobuf(entity_pb_translated)
         self.client.put(entity_translated)
 
