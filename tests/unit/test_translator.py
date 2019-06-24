@@ -131,11 +131,12 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
 
-    def test_translate_empty_values(self):
+    def test_translate_values_not_set_default_values_used(self):
         # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
         # determine if a value is set / provided. We just use the default values.
         # See https://github.com/googleapis/google-cloud-python/issues/1402
-        # Verify that the default values are correctly serialized
+        # Verify that the default values are correctly serialized when explicitly provided and
+        # when not set
         entity = datastore.Entity()
         entity.update()
 
@@ -145,6 +146,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Assert that end result after round trip is the same
         self.assertEqual(entity, entity_roundtrip)
 
+        # Create new instance which explicitly provides values for all the fields which are the
+        # same as the default values
         example_pb = example_pb2.ExampleDBModel()
         example_pb.bool_key = False
         example_pb.string_key = ''
@@ -152,7 +155,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.int64_key = 0
         example_pb.double_key = 0.0
         example_pb.float_key = 0.0
-        example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM1
+        example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM0
         example_pb.bool_key = False
         example_pb.bytes_key = b''
         example_pb.null_key = 1
@@ -167,7 +170,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'int64_key': 0,
             'double_key': 0.0,
             'float_key': 0.0,
-            'enum_key': example_pb2.ExampleEnumModel.ENUM1,
+            'enum_key': example_pb2.ExampleEnumModel.ENUM0,
             'bool_key': False,
             'bytes_key': b'',
             'null_key': None,
@@ -182,3 +185,12 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
+
+        # Serializing object with all values set to default values should result in the same
+        # end result as serializing an empty object where implicit default values are used
+        example_pb_empty = example_pb2.ExampleDBModel()
+        entity_pb_empty_translated = model_pb_to_entity_pb(model_pb=example_pb_empty,
+                                                           is_top_level=True)
+
+        self.assertEqual(entity_pb_empty_translated, entity_pb_translated)
+        self.assertEqual(entity_pb_empty_translated, entity_pb_native)
