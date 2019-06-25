@@ -4,3 +4,4 @@ nose
 rednose
 coverage
 codecov
+requests
