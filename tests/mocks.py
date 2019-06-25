@@ -129,7 +129,7 @@ EXAMPLE_PB_DEFAULT_VALUES.float_key = 0.0
 EXAMPLE_PB_DEFAULT_VALUES.enum_key = example_pb2.ExampleEnumModel.ENUM0
 EXAMPLE_PB_DEFAULT_VALUES.bool_key = False
 EXAMPLE_PB_DEFAULT_VALUES.bytes_key = b''
-EXAMPLE_PB_DEFAULT_VALUES.null_key = 1
+EXAMPLE_PB_DEFAULT_VALUES.null_key = 0
 # pylint: enable=no-member
 
 

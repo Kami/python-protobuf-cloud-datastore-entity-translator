@@ -27,7 +27,9 @@ from google.cloud import datastore
 from tests.generated import example_pb2
 from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
+from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
+from tests.mocks import EXAMPLE_PB_DEFAULT_VALUES
 
 from src.translator import model_pb_to_entity_pb
 from src.translator import entity_pb_to_model_pb
@@ -105,3 +107,94 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
                                                      entity_pb_retrieved)
         self.assertEqual(example_pb_retrieved, example_pb)
+
+    def test_store_and_retrieve_default_values_and_translated_object_from_datastore(self):
+        key_native = self.client.key('ExampleModel', 'native_entity_default_values')
+
+        entity_native = datastore.Entity(key=key_native)
+        entity_native.update(EXAMPLE_DICT_DEFAULT_VALUES)
+        self.client.put(entity_native)
+
+        entity_native_retrieved = self.client.get(key_native)
+        self.assertTrue(entity_native_retrieved)
+
+        # Verify retrieved data matches the original input
+        self.assertEqual(entity_native_retrieved, EXAMPLE_DICT_DEFAULT_VALUES)
+
+        # Store custom Protobuf object in a datastore by translating it to Entity object
+        key_translated = self.client.key('ExampleModel', 'translated_entity_default_values')
+        example_pb = EXAMPLE_PB_DEFAULT_VALUES
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
+        entity_translated = datastore.helpers.entity_from_protobuf(entity_pb_translated)
+        self.client.put(entity_translated)
+
+        # Verify that the translated entity results in the same end result as using native
+        # entity object
+        entity_translated_retrieved = self.client.get(key_translated)
+
+        self.assertTrue(entity_translated_retrieved.key != entity_native_retrieved.key)
+
+        # NOTE: key won't be the same so we clear it
+        entity_translated_retrieved.key = None
+        entity_native_retrieved.key = None
+
+        self.assertEqual(entity_translated_retrieved, entity_native_retrieved)
+
+        # If we translate retrieved entity back to the original Protobuf object definition, it
+        # should be the same as the original model (minus the key since the original model doesn't
+        # contain a key)
+        entity_pb_retrieved = datastore.helpers.entity_to_protobuf(entity_translated_retrieved)
+        entity_pb_translated.ClearField('key')
+        self.assertEqual(entity_pb_translated, entity_pb_retrieved)
+
+        example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+                                                     entity_pb_retrieved)
+        self.assertEqual(example_pb_retrieved, example_pb)
+
+        # Storing and retrieving empty object should have the same end result
+        key_native_empty = self.client.key('ExampleModel', 'native_entity_empty')
+
+        entity_native_empty = datastore.Entity(key=key_native_empty)
+        entity_native_empty.update({})
+        self.client.put(entity_native_empty)
+
+        entity_native_empty_retrieved = self.client.get(key_native_empty)
+        self.assertTrue(entity_native_empty_retrieved is not None)
+
+        # Verify retrieved data matches the original input
+        self.assertEqual(entity_native_empty_retrieved, {})
+
+        # Store custom Protobuf object in a datastore by translating it to Entity object
+        key_translated_empty = self.client.key('ExampleModel', 'translated_entity_empty')
+        example_pb = example_pb2.ExampleDBModel()
+        entity_pb_translated_empty = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated_empty.key.CopyFrom(key_translated_empty.to_protobuf())
+        entity_translated_empty = datastore.helpers.entity_from_protobuf(entity_pb_translated_empty)
+        self.client.put(entity_translated_empty)
+
+        # Verify that the translated entity results in the same end result as using native
+        # entity object
+        entity_translated_empty_retrieved = self.client.get(key_translated_empty)
+
+        self.assertTrue(entity_translated_empty_retrieved.key != entity_native_empty_retrieved.key)
+
+        # NOTE: key won't be the same so we clear it
+        entity_translated_empty_retrieved.key = None
+        entity_native_empty_retrieved.key = None
+
+        #self.assertEqual(entity_translated_empty_retrieved, entity_native_empty_retrieved)
+        #return
+
+        # If we translate retrieved entity back to the original Protobuf object definition, it
+        # should be the same as the original model (minus the key since the original model doesn't
+        # contain a key)
+        entity_pb_empty_retrieved = datastore.helpers.entity_to_protobuf(entity_translated_empty_retrieved)
+        entity_pb_translated_empty.ClearField('key')
+        entity_pb_empty_retrieved.ClearField('key')
+
+        self.assertEqual(entity_pb_translated_empty, entity_pb_empty_retrieved)
+
+        example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+                                                           entity_pb_empty_retrieved)
+        self.assertEqual(example_pb_empty_retrieved, example_pb)
