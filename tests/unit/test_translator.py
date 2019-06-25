@@ -15,10 +15,8 @@
 # limitations under the License.
 
 import unittest
-import datetime
 
 from google.cloud import datastore
-from pytz import UTC
 
 from tests.generated import example_pb2
 from tests.mocks import EXAMPLE_DICT_POPULATED
@@ -38,8 +36,6 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
     maxDiff = None
 
     def test_translate_roundtrip(self):
-        dt = datetime.datetime(2019, 12, 12, 10, 00, 00, tzinfo=UTC)
-
         # Create an instance of ExampleDBModel Protobuf message
         example_pb = EXAMPLE_PB_POPULATED
 

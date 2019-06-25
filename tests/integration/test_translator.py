@@ -92,6 +92,8 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         key_translated = self.client.key('ExampleModel', 'translated_entity_populated')
         example_pb = EXAMPLE_PB_POPULATED
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+
+        # pylint: disable=no-member
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
         entity_translated = datastore.helpers.entity_from_protobuf(entity_pb_translated)
         self.client.put(entity_translated)
@@ -136,6 +138,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         key_translated = self.client.key('ExampleModel', 'translated_entity_default_values')
         example_pb = EXAMPLE_PB_DEFAULT_VALUES
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        # pylint: disable=no-member
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
         entity_translated = datastore.helpers.entity_from_protobuf(entity_pb_translated)
         self.client.put(entity_translated)
@@ -180,6 +183,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         key_translated_empty = self.client.key('ExampleModel', 'translated_entity_empty')
         example_pb = example_pb2.ExampleDBModel()
         entity_pb_translated_empty = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        # pylint: disable=no-member
         entity_pb_translated_empty.key.CopyFrom(key_translated_empty.to_protobuf())
         entity_translated_empty = datastore.helpers.entity_from_protobuf(entity_pb_translated_empty)
         self.client.put(entity_translated_empty)
@@ -194,13 +198,14 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         entity_translated_empty_retrieved.key = None
         entity_native_empty_retrieved.key = None
 
-        #self.assertEqual(entity_translated_empty_retrieved, entity_native_empty_retrieved)
-        #return
+        # self.assertEqual(entity_translated_empty_retrieved, entity_native_empty_retrieved)
+        # return
 
         # If we translate retrieved entity back to the original Protobuf object definition, it
         # should be the same as the original model (minus the key since the original model doesn't
         # contain a key)
-        entity_pb_empty_retrieved = datastore.helpers.entity_to_protobuf(entity_translated_empty_retrieved)
+        entity_pb_empty_retrieved = \
+            datastore.helpers.entity_to_protobuf(entity_translated_empty_retrieved)
         entity_pb_translated_empty.ClearField('key')
         entity_pb_empty_retrieved.ClearField('key')
 
