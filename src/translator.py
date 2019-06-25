@@ -34,11 +34,21 @@ __all__ = [
 ]
 
 
-def model_pb_to_entity_pb(model_pb, is_top_level=True):
+def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, is_top_level=True):
     # type: ( ) -> entity_pb2.Entity
     """
     Translate protobuf based database model object to Entity object which can be used with Google
     Datastore client library.
+
+    :param model_pb: Instance of a custom Protobuf object to translate.
+
+    :param exclude_falsy_values: True to exclude field values which are falsy (e.g. None, False,
+                                 '', 0, etc.) and match the default values.
+
+                                 NOTE: Due to the design of protobuf v3, there is no way to
+                                 distinguish between a user explicitly providing a value which is
+                                 the same as a default value (e.g. 0 for an integer field) and
+                                 user not providing a value and default value being used instead.
     """
 
     if is_top_level and getattr(model_pb, 'key', None) is not None:
@@ -63,7 +73,10 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         if field_value is None:
             # Value not set or it uses a default value, skip it
             # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
-            # determine if a value is set / provided so we just use and return defualt values.
+            # determine if a value is set / provided so we just use and return default values.
+            continue
+
+        if exclude_falsy_values and not field_value:
             continue
 
         attr_type = get_pb_attr_type(field_value)

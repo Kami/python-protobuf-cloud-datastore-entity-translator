@@ -106,6 +106,17 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_empty_translated, entity_pb_translated)
         self.assertEqual(entity_pb_empty_translated, entity_pb_native)
 
+        # Test a scenario using exclude_falsy_values=True. All the default falsy values
+        # should be excluded.
+        example_pb_empty = example_pb2.ExampleDBModel()
+        entity_pb_empty_translated = model_pb_to_entity_pb(model_pb=example_pb_empty,
+                                                           exclude_falsy_values=True)
+
+        entity = datastore.Entity()
+        entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
+
+        self.assertEqual(entity_pb_empty_translated, entity_pb_native)
+
     def test_translate_model_partially_populated(self):
         # Test scenario where only a single field on the model is populated
         example_pb = example_pb2.ExampleDBModel()
