@@ -57,19 +57,12 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
 
         # Instantiate client with mock credentials object
         self.client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session())
+        self._clear_datastore()
 
-        # Clear datastore, ensure it's empty
-        query = self.client.query(kind='ExampleModel')
-        query.keys_only()
+    def tearDown(self):
+        super(GoogleDatastoreTranslatorIntegrationTestCase, self).tearDown()
 
-        for entity in query.fetch():
-            self.client.delete(entity.key)
-
-        query = self.client.query(kind='ExampleModel')
-        query.keys_only()
-        result = list(query.fetch())
-
-        self.assertEqual(len(result), 0)
+        self._clear_datastore()
 
     def test_store_and_retrieve_populated_translated_object_from_datastore(self):
         """
@@ -214,3 +207,19 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
                                                            entity_pb_empty_retrieved)
         self.assertEqual(example_pb_empty_retrieved, example_pb)
+
+    def _clear_datastore(self):
+        # Clear datastore, ensure it's empty
+        query = self.client.query(kind='ExampleModel')
+        query.keys_only()
+        entity_keys = [entity.key for entity in query.fetch()]
+
+        # NOTE: We do that to ensure consistent delete because datastore is eventually consistent
+        self.client.delete_multi(entity_keys)
+        self.client.delete_multi(entity_keys)
+
+        query = self.client.query(kind='ExampleModel')
+        query.keys_only()
+        result = list(query.fetch())
+
+        self.assertEqual(len(result), 0)
