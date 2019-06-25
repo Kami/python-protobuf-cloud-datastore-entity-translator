@@ -122,59 +122,68 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb = example_pb2.ExampleDBModel()
         example_pb.int32_key = 555
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
         self.assertEqual(entity_pb_serialized.properties['int32_key'].integer_value, 555)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'int32_key')
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.string_key = 'some string value'
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'string_key')
         self.assertEqual(entity_pb_serialized.properties['string_key'].string_value,
             'some string value')
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.bool_key = True
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'bool_key')
         self.assertEqual(entity_pb_serialized.properties['bool_key'].boolean_value, True)
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.bytes_key = b'abcdefg'
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'bytes_key')
         self.assertEqual(entity_pb_serialized.properties['bytes_key'].blob_value, b'abcdefg')
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.double_key = 123.456
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'double_key')
         self.assertEqual(entity_pb_serialized.properties['double_key'].double_value,
             123.456)
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.float_key = 456.78900146484375
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'float_key')
         self.assertEqual(entity_pb_serialized.properties['float_key'].double_value,
             456.78900146484375)
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.int64_key = 1000000000
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'int64_key')
         self.assertEqual(entity_pb_serialized.properties['int64_key'].integer_value, 1000000000)
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.enum_key = 2
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'enum_key')
         self.assertEqual(entity_pb_serialized.properties['enum_key'].integer_value, 2)
 
         example_pb = example_pb2.ExampleDBModel()
         example_pb.string_array_key.append('value1')
         example_pb.string_array_key.append('value2')
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'string_array_key')
         self.assertEqual(
             len(entity_pb_serialized.properties['string_array_key'].array_value.values),
             2)
@@ -191,7 +200,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.int32_array_key.append(1111)
         example_pb.int32_array_key.append(2222)
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'int32_array_key')
         self.assertEqual(len(entity_pb_serialized.properties['int32_array_key'].array_value.values),
                 2)
         self.assertEqual(
@@ -205,7 +215,9 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.map_string_string['key1'] = 'value1'
         example_pb.map_string_string['key2'] = 'value2'
 
-        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb)
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized,
+                'map_string_string')
         self.assertEqual(
             entity_pb_serialized.properties['map_string_string'].entity_value
             .properties['key1'].string_value,
@@ -213,3 +225,15 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_serialized.properties['map_string_string'].entity_value
             .properties['key2'].string_value,
             'value2')
+
+
+    def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
+        """
+        Assert that the provided Entity protobuf object only has a single field which is provided
+        set (aka that field contains a non-falsy value)>
+        """
+        entity = datastore.helpers.entity_from_protobuf(entity_pb)
+        entity = dict(entity)
+
+        self.assertEqual(len(entity.keys()), 1, 'Provided entity has more than 1 field populated')
+        self.assertTrue(field_name in entity.keys(), '%s field is not populated' % (field_name))
