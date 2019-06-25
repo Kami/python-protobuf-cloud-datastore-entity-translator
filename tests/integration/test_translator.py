@@ -76,7 +76,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         Test case which stores raw entity object in the datastore and verifies it matched the
         same object which is stored using translated Protobuf definition.
         """
-        key_native = self.client.key('ExampleModel', 'native_entity')
+        key_native = self.client.key('ExampleModel', 'native_entity_populated')
 
         entity_native = datastore.Entity(key=key_native)
         entity_native.update(EXAMPLE_DICT_POPULATED)
@@ -89,7 +89,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         self.assertEqual(entity_native_retrieved, EXAMPLE_DICT_POPULATED)
 
         # Store custom Protobuf object in a datastore by translating it to Entity object
-        key_translated = self.client.key('ExampleModel', 'translated_entity')
+        key_translated = self.client.key('ExampleModel', 'translated_entity_populated')
         example_pb = EXAMPLE_PB_POPULATED
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
