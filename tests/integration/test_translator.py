@@ -58,7 +58,18 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # Instantiate client with mock credentials object
         self.client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session())
 
-        # TODO: Clear datastore, ensure it's empty
+        # Clear datastore, ensure it's empty
+        query = self.client.query(kind='ExampleModel')
+        query.keys_only()
+
+        for entity in query.fetch():
+            self.client.delete(entity.key)
+
+        query = self.client.query(kind='ExampleModel')
+        query.keys_only()
+        result = list(query.fetch())
+
+        self.assertEqual(len(result), 0)
 
     def test_store_and_retrieve_populated_translated_object_from_datastore(self):
         """
