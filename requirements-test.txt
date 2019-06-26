@@ -5,3 +5,4 @@ rednose
 coverage
 codecov
 requests
+mypy-protobuf
