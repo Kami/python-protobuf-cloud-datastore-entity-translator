@@ -16,15 +16,18 @@
 
 import unittest
 
+import requests
 from google.cloud import datastore
 
 from tests.generated import example_pb2
+from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
 from tests.mocks import EXAMPLE_PB_DEFAULT_VALUES
 
 from src.translator import model_pb_to_entity_pb
+from src.translator import model_pb_with_key_to_entity_pb
 from src.translator import entity_pb_to_model_pb
 
 __all__ = [
@@ -226,6 +229,23 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             .properties['key2'].string_value,
             'value2')
 
+    def test_model_pb_with_key_to_entity_pb(self):
+        client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session(),
+                                  namespace='namespace1', project='project1')
+
+        example_pb = example_pb2.ExampleDBModelWithKey()
+        example_pb.key = 'primary_key_one'
+        example_pb.string_key = 'value'
+        example_pb.int32_key = 100
+
+        entity_pb_translated = model_pb_with_key_to_entity_pb(client=client, model_pb=example_pb)
+
+        self.assertEqual(entity_pb_translated.key.partition_id.namespace_id, 'namespace1')
+        self.assertEqual(entity_pb_translated.key.partition_id.project_id, 'project1')
+        self.assertEqual(entity_pb_translated.key.path[0].kind, 'ExampleDBModelWithKey')
+        self.assertEqual(entity_pb_translated.key.path[0].name, 'primary_key_one')
+        self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value')
+        self.assertEqual(entity_pb_translated.properties['int32_key'].integer_value, 100)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         """

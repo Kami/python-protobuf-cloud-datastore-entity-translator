@@ -30,8 +30,34 @@ from google.protobuf.pyext._message import RepeatedCompositeContainer
 
 __all__ = [
     'model_pb_to_entity_pb',
+    'model_pb_with_key_to_entity_pb',
     'entity_pb_to_model_pb'
 ]
+
+
+def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False):
+    """
+    Same as "model_pb_to_entity_pb", but it assumes model_pb which is passed to this function also
+    contains "key" string field which is used to construct a primary key for the Entity PB object.
+
+    NOTE: Datastore client instance needs to be passed to this method so
+    namespace and project can be inferred from it (namespace_id and project_id are used as part of
+    a composite primary key).
+    """
+    entity_pb = model_pb_to_entity_pb(model_pb=model_pb, exclude_falsy_values=exclude_falsy_values)
+
+    if getattr(model_pb, 'key', None) is not None:
+        # Special handling for top level key attribute which we assume will service as a primary
+        # key (if provided)
+        # NOTE: We use model name as the value for "kind" part of the key. Aka if Protobuf
+        # message name is "MyClassDBModel", kind will be set to "MyClassDBModel"
+        model_name = model_pb.DESCRIPTOR.name
+
+        key_str = model_pb.key
+        key_pb = client.key(model_name, key_str).to_protobuf()
+        entity_pb.key.CopyFrom(key_pb)  # pylint: disable=no-member
+
+    return entity_pb
 
 
 def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, is_top_level=True):
@@ -50,16 +76,6 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, is_top_level=Tru
                                  the same as a default value (e.g. 0 for an integer field) and
                                  user not providing a value and default value being used instead.
     """
-
-    if is_top_level and getattr(model_pb, 'key', None) is not None:
-        # Special handling for top level key attribute which we assume will service as a primary
-        # key (if provided)
-        # TODO
-        # key_str = model_pb.key
-        # key_pb = client.key('EntityKind', key_str).to_protobuf()
-        # entity_pb.key.CopyFrom(key_pb)
-        pass
-
     fields = list(iter(model_pb.DESCRIPTOR.fields))
     fields = [field for field in fields if field not in ['key']]
 

@@ -14,6 +14,23 @@ message ExampleNestedModel {
     int32 int32_key = 2;
 }
 
+message ExampleDBModelWithKey {
+    // Special field which is used for constructing a primary key
+    //
+    // Actual key is composed of the following components:
+    //
+    // - namespace_id - this is inferred from the client object passed to the
+    //  "model_pb_with_key_to_entity_pb" function
+    // - project_id - this is inferred from the client object passed to the
+    //  "model_pb_with_key_to_entity_pb" function
+    // - key - string value which uniquely identifies this object. This value is specified by
+    // setting the "key" string field on this object
+    string key = 1;
+
+    string string_key= 2;
+    int32 int32_key = 3;
+}
+
 message ExampleDBModel {
     // Simple type
     int32 int32_key = 1;

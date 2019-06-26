@@ -19,6 +19,7 @@ __all__ = [
 ]
 
 import os
+import time
 import unittest
 
 import requests
@@ -217,6 +218,8 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # NOTE: We do that to ensure consistent delete because datastore is eventually consistent
         self.client.delete_multi(entity_keys)
         self.client.delete_multi(entity_keys)
+        self.client.delete_multi(entity_keys)
+        time.sleep(0.2)
 
         query = self.client.query(kind='ExampleModel')
         query.keys_only()
