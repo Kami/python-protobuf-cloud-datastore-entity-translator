@@ -19,6 +19,7 @@ __all__ = [
 ]
 
 import os
+import time
 import unittest
 
 import requests
@@ -46,6 +47,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
     """
 
     def setUp(self):
+        # type: () -> None
         super(GoogleDatastoreTranslatorIntegrationTestCase, self).setUp()
 
         # Set environment variables which are needed for emulator to work
@@ -60,11 +62,13 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         self._clear_datastore()
 
     def tearDown(self):
+        # type: () -> None
         super(GoogleDatastoreTranslatorIntegrationTestCase, self).tearDown()
 
         self._clear_datastore()
 
     def test_store_and_retrieve_populated_translated_object_from_datastore(self):
+        # type: () -> None
         """
         Test case which stores raw entity object in the datastore and verifies it matched the
         same object which is stored using translated Protobuf definition.
@@ -84,7 +88,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # Store custom Protobuf object in a datastore by translating it to Entity object
         key_translated = self.client.key('ExampleModel', 'translated_entity_populated')
         example_pb = EXAMPLE_PB_POPULATED
-        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
 
         # pylint: disable=no-member
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
@@ -115,6 +119,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         self.assertEqual(example_pb_retrieved, example_pb)
 
     def test_store_and_retrieve_default_values_and_translated_object_from_datastore(self):
+        # type: () -> None
         key_native = self.client.key('ExampleModel', 'native_entity_default_values')
 
         entity_native = datastore.Entity(key=key_native)
@@ -130,7 +135,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # Store custom Protobuf object in a datastore by translating it to Entity object
         key_translated = self.client.key('ExampleModel', 'translated_entity_default_values')
         example_pb = EXAMPLE_PB_DEFAULT_VALUES
-        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
         # pylint: disable=no-member
         entity_pb_translated.key.CopyFrom(key_translated.to_protobuf())
         entity_translated = datastore.helpers.entity_from_protobuf(entity_pb_translated)
@@ -175,7 +180,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # Store custom Protobuf object in a datastore by translating it to Entity object
         key_translated_empty = self.client.key('ExampleModel', 'translated_entity_empty')
         example_pb = example_pb2.ExampleDBModel()
-        entity_pb_translated_empty = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated_empty = model_pb_to_entity_pb(model_pb=example_pb)
         # pylint: disable=no-member
         entity_pb_translated_empty.key.CopyFrom(key_translated_empty.to_protobuf())
         entity_translated_empty = datastore.helpers.entity_from_protobuf(entity_pb_translated_empty)
@@ -209,6 +214,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         self.assertEqual(example_pb_empty_retrieved, example_pb)
 
     def _clear_datastore(self):
+        # type: () -> None
         # Clear datastore, ensure it's empty
         query = self.client.query(kind='ExampleModel')
         query.keys_only()
@@ -217,6 +223,8 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         # NOTE: We do that to ensure consistent delete because datastore is eventually consistent
         self.client.delete_multi(entity_keys)
         self.client.delete_multi(entity_keys)
+        self.client.delete_multi(entity_keys)
+        time.sleep(0.2)
 
         query = self.client.query(kind='ExampleModel')
         query.keys_only()

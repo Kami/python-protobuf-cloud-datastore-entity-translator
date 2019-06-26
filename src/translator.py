@@ -14,42 +14,74 @@
 # limitations under the License.
 
 from typing import Any
+from typing import Type
+from typing import cast
+from types import ModuleType
 from datetime import datetime
 
 import six
 
-from google.cloud.datastore_v1.proto import entity_pb2
 from google.cloud import datastore
+from google.cloud.datastore_v1.proto import entity_pb2
+from google.protobuf import message
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
 
+from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
 
 __all__ = [
     'model_pb_to_entity_pb',
+    'model_pb_with_key_to_entity_pb',
     'entity_pb_to_model_pb'
 ]
 
 
-def model_pb_to_entity_pb(model_pb, is_top_level=True):
-    # type: ( ) -> entity_pb2.Entity
+def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False):
+    # type: (datastore.Client, message.Message, bool) -> entity_pb2.Entity
+    """
+    Same as "model_pb_to_entity_pb", but it assumes model_pb which is passed to this function also
+    contains "key" string field which is used to construct a primary key for the Entity PB object.
+
+    NOTE: Datastore client instance needs to be passed to this method so
+    namespace and project can be inferred from it (namespace_id and project_id are used as part of
+    a composite primary key).
+    """
+    entity_pb = model_pb_to_entity_pb(model_pb=model_pb, exclude_falsy_values=exclude_falsy_values)
+
+    if getattr(model_pb, 'key', None) is not None:
+        # Special handling for top level key attribute which we assume will service as a primary
+        # key (if provided)
+        # NOTE: We use model name as the value for "kind" part of the key. Aka if Protobuf
+        # message name is "MyClassDBModel", kind will be set to "MyClassDBModel"
+        model_name = model_pb.DESCRIPTOR.name
+
+        key_str = model_pb.key  # type: ignore
+        key_pb = client.key(model_name, key_str).to_protobuf()
+        entity_pb.key.CopyFrom(key_pb)  # pylint: disable=no-member
+
+    return entity_pb
+
+
+def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
+    # type: (message.Message, bool) -> entity_pb2.Entity
     """
     Translate protobuf based database model object to Entity object which can be used with Google
     Datastore client library.
+
+    :param model_pb: Instance of a custom Protobuf object to translate.
+
+    :param exclude_falsy_values: True to exclude field values which are falsy (e.g. None, False,
+                                 '', 0, etc.) and match the default values.
+
+                                 NOTE: Due to the design of protobuf v3, there is no way to
+                                 distinguish between a user explicitly providing a value which is
+                                 the same as a default value (e.g. 0 for an integer field) and
+                                 user not providing a value and default value being used instead.
     """
-
-    if is_top_level and getattr(model_pb, 'key', None) is not None:
-        # Special handling for top level key attribute which we assume will service as a primary
-        # key (if provided)
-        # TODO
-        # key_str = model_pb.key
-        # key_pb = client.key('EntityKind', key_str).to_protobuf()
-        # entity_pb.key.CopyFrom(key_pb)
-        pass
-
     fields = list(iter(model_pb.DESCRIPTOR.fields))
     fields = [field for field in fields if field not in ['key']]
 
@@ -63,7 +95,10 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
         if field_value is None:
             # Value not set or it uses a default value, skip it
             # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
-            # determine if a value is set / provided so we just use and return defualt values.
+            # determine if a value is set / provided so we just use and return default values.
+            continue
+
+        if exclude_falsy_values and not field_value:
             continue
 
         attr_type = get_pb_attr_type(field_value)
@@ -144,6 +179,7 @@ def model_pb_to_entity_pb(model_pb, is_top_level=True):
 
 
 def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
+    # type: (ModuleType, Type[GeneratedProtocolMessageType], entity_pb2.Entity) -> message.Message
     """
     Translate Entity protobuf object to protobuf based database model object.
 
@@ -232,6 +268,7 @@ def get_pb_attr_type(value):
 
 
 def get_entity_pb_for_value(value):
+    # type: (Any) -> entity_pb2.Entity
     """
     Return Entity protobuf object for the provided Python value.
     """
@@ -250,6 +287,7 @@ def get_entity_pb_for_value(value):
 
 
 def set_value_pb_item_value(value_pb, value):
+    # type: (entity_pb2.Value, Any) -> entity_pb2.Value
     """
     Set a value attribute on the Value object based on the type of the provided value.
 
@@ -257,10 +295,12 @@ def set_value_pb_item_value(value_pb, value):
     """
     if isinstance(value, struct_pb2.ListValue):
         # Cast special ListValue type to a list
+        value = cast(Any, value)
         value = list(value)
 
     if isinstance(value, float) and value.is_integer():
         # Special case because of how Protobuf handles ints in some scenarios (e.g. Struct)
+        value = cast(Any, value)
         value = int(value)
 
     if isinstance(value, six.text_type):
