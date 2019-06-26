@@ -18,6 +18,7 @@ import unittest
 
 import requests
 from google.cloud import datastore
+from google.cloud.datastore_v1.proto import entity_pb2
 
 from tests.generated import example_pb2
 from tests.mocks import EmulatorCreds
@@ -39,6 +40,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
     maxDiff = None
 
     def test_translate_fully_populated_model_roundtrip(self):
+        # type: () -> None
         # Create an instance of ExampleDBModel Protobuf message
         example_pb = EXAMPLE_PB_POPULATED
 
@@ -55,7 +57,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Assert that end result after round trip is the same
         self.assertEqual(entity, entity_roundtrip)
 
-        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
 
         self.assertEqual(entity_pb_native, entity_pb_translated)
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
@@ -70,6 +72,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             sorted(example_pb.SerializePartialToString()))
 
     def test_translate_values_not_set_default_values_used(self):
+        # type: () -> None
         # NOTE: proto3 syntax doesn't support HasField() anymore so there is now way for us to
         # determine if a value is set / provided. We just use the default values.
         # See https://github.com/googleapis/google-cloud-python/issues/1402
@@ -88,7 +91,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # same as the default values
         example_pb = EXAMPLE_PB_DEFAULT_VALUES
 
-        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb, is_top_level=True)
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
 
         entity = datastore.Entity()
         entity.update(EXAMPLE_DICT_DEFAULT_VALUES)
@@ -103,8 +106,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Serializing object with all values set to default values should result in the same
         # end result as serializing an empty object where implicit default values are used
         example_pb_empty = example_pb2.ExampleDBModel()
-        entity_pb_empty_translated = model_pb_to_entity_pb(model_pb=example_pb_empty,
-                                                           is_top_level=True)
+        entity_pb_empty_translated = model_pb_to_entity_pb(model_pb=example_pb_empty)
 
         self.assertEqual(entity_pb_empty_translated, entity_pb_translated)
         self.assertEqual(entity_pb_empty_translated, entity_pb_native)
@@ -121,6 +123,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_empty_translated, entity_pb_native)
 
     def test_translate_model_partially_populated(self):
+        # type: () -> None
         # Test scenario where only a single field on the model is populated
         example_pb = example_pb2.ExampleDBModel()
         example_pb.int32_key = 555
@@ -175,7 +178,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_serialized.properties['int64_key'].integer_value, 1000000000)
 
         example_pb = example_pb2.ExampleDBModel()
-        example_pb.enum_key = 2
+        example_pb.enum_key = 2  # type: ignore
 
         entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
         self.assertEntityPbHasPopulatedField(entity_pb_serialized, 'enum_key')
@@ -230,6 +233,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'value2')
 
     def test_model_pb_with_key_to_entity_pb(self):
+        # type: () -> None
         client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session(),
                                   namespace='namespace1', project='project1')
 
@@ -248,6 +252,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['int32_key'].integer_value, 100)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
+        # type: (entity_pb2.Entity, str) -> None
         """
         Assert that the provided Entity protobuf object only has a single field which is provided
         set (aka that field contains a non-falsy value)>
