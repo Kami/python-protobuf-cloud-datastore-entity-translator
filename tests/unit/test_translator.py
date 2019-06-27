@@ -251,6 +251,30 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value')
         self.assertEqual(entity_pb_translated.properties['int32_key'].integer_value, 100)
 
+    def test_model_pb_to_entity_pb_invalid_argument_type(self):
+        # type: () -> None
+        class Invalid(object):
+            pass
+
+        example_pb = Invalid()
+
+        expected_msg = 'model_pb argument is not a valid Protobuf class instance'
+        self.assertRaisesRegexp(ValueError, expected_msg, model_pb_to_entity_pb,
+                                example_pb)  # type: ignore
+
+    def test_model_pb_with_key_to_entity_pb_invalid_argument_type(self):
+        # type: () -> None
+        class Invalid(object):
+            pass
+
+        client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session(),
+                                  namespace='namespace1', project='project1')
+        example_pb = Invalid()
+
+        expected_msg = 'model_pb argument is not a valid Protobuf class instance'
+        self.assertRaisesRegexp(ValueError, expected_msg, model_pb_with_key_to_entity_pb, client,
+                                example_pb)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
