@@ -16,6 +16,10 @@
 """
 Simple HTTP server which allows users to retrieve and store arbitrary Protobuf objects inside Cloud
 Datastore.
+
+To run it:
+
+$ gunicorn examples/http_api.py:app
 """
 
 import importlib
