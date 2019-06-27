@@ -31,7 +31,6 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 
-from google.protobuf import message
 from google.protobuf import json_format
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.cloud import datastore
