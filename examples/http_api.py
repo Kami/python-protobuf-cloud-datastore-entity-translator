@@ -19,12 +19,17 @@ Datastore.
 """
 
 import importlib
+from typing import Type
+from typing import Tuple
+from types import ModuleType
 
 from flask import Flask
 from flask import request
 from flask import jsonify
 
+from google.protobuf import message
 from google.protobuf import json_format
+from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.cloud import datastore
 
 from src.translator import model_pb_to_entity_pb
@@ -48,22 +53,7 @@ def put_db_object(key):
     model_name = body['model_name']
     model_data = body['json_string']
 
-    # 1. Parse the JSON serialized data into native Protobuf object
-    split = model_name.rsplit('.', 1)
-
-    if len(split) != 2:
-        raise ValueError('Invalid module name: %s' % (model_name))
-
-    module_path, class_name = split
-
-    try:
-        module = importlib.import_module(module_path)
-        model_class = getattr(module, class_name, None)
-    except Exception as e:
-        raise ValueError('Class "%s" not found: %s' % (model_name), str(e))
-
-    if not model_class:
-        raise ValueError('Class "%s" not found' % (model_name))
+    module, model_class = get_module_and_class_for_model_name(model_name=model_name)
 
     model_pb = json_format.Parse(model_data, model_class())
 
@@ -92,21 +82,9 @@ def get_db_object(key):
     as JSON.
     """
     model_name = request.args.get('model_name', '')
-    split = model_name.rsplit('.', 1)
+    module, model_class = get_module_and_class_for_model_name(model_name=model_name)
 
-    if len(split) != 2:
-        raise ValueError('Invalid module name: %s' % (model_name))
-
-    module_path, class_name = split
-
-    try:
-        module = importlib.import_module(module_path)
-        model_class = getattr(module, class_name, None)
-    except Exception as e:
-        raise ValueError('Class "%s" not found: %s' % (model_name, str(e)))
-
-    if not model_class:
-        raise ValueError('Class "%s" not found' % (model_name))
+    class_name = model_class.DESCRIPTOR.name
 
     # 1. Retrieve Entity from datastore
     client = datastore.Client()
@@ -129,3 +107,25 @@ def get_db_object(key):
     })
 
     return result, 200, {'Content-Type': 'application/json'}
+
+
+def get_module_and_class_for_model_name(model_name):
+    # type: (str) -> Tuple[ModuleType, Type[GeneratedProtocolMessageType]]
+    split = model_name.rsplit('.', 1)
+
+    if len(split) != 2:
+        raise ValueError('Invalid module name: %s' % (model_name))
+
+    module_path, class_name = split
+
+    try:
+        module = importlib.import_module(module_path)
+        model_class = getattr(module, class_name, None)
+    except Exception as e:
+        raise ValueError('Class "%s" not found: %s. Make sure "%s" is in PYTHONPATH' %
+                         (model_name, module_path, str(e)))
+
+    if not model_class:
+        raise ValueError('Class "%s" not found in module "%s"' % (model_name, module_path))
+
+    return module, model_class
