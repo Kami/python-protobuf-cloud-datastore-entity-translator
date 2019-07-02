@@ -29,11 +29,16 @@ INIT_FILE = os.path.join(BASE_DIR, 'src', '__init__.py')
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
 
+with open(os.path.join(BASE_DIR, 'README.md'), encoding='utf-8') as f:
+    LONG_DESCRIPTION = f.read()
+
 setup(
     name='protobuf-cloud-datastore-translator',
     version=version,
-    description=('Library which converts arbitrary protobuf message objects into '
-                 'Entity protobuf objects which can be used with Google Datastore.'),
+    description=('Library which converts arbitrary Protobuf message objects into '
+                 'Entity Protobuf objects which can be used with Google Datastore.'),
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     author='Tomaz Muraus',
     author_email='tomaz@tomaz.me',
     license='Apache License (2.0)',
@@ -44,10 +49,10 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     install_requires=install_reqs,
     dependency_links=dep_links,
-    test_suite='tests/unit/test_translator.py',
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(exclude=['setuptools', 'tests']),
