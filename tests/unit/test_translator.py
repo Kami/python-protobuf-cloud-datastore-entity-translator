@@ -275,6 +275,36 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertRaisesRegexp(ValueError, expected_msg, model_pb_with_key_to_entity_pb, client,
                                 example_pb)
 
+    def test_entity_pb_to_model_pb_strict_mode(self):
+        # type: () -> None
+
+        entity_pb = entity_pb2.Entity()
+        entity_native = datastore.Entity()
+        entity_native.update({'string_key': 'test value', 'int32_key': 20, 'non_valid_key': 'bar'})
+        entity_pb = datastore.helpers.entity_to_protobuf(entity_native)
+
+        # 1. Not using strict mode. Field which is available on the Entity object, but not model
+        # object should be ignored
+        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb)
+
+        self.assertEqual(example_pb.string_key, 'test value')
+        self.assertEqual(example_pb.int32_key, 20)
+        self.assertEqual(example_pb.int32_key, 20)
+        self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
+
+        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb,
+                                          strict=False)
+
+        self.assertEqual(example_pb.string_key, 'test value')
+        self.assertEqual(example_pb.int32_key, 20)
+        self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
+
+        # 2. Using strict mode, exception should be thrown
+        expected_msg = ('Database object contains field "non_valid_key" which is not defined on '
+                        'the database model class "ExampleDBModel"')
+        self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb, example_pb2,
+                                example_pb2.ExampleDBModel, entity_pb, strict=True)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """

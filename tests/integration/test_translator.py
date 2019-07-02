@@ -39,6 +39,10 @@ __all__ = [
     'GoogleDatastoreTranslatorIntegrationTestCase'
 ]
 
+START_EMULATOR_STRING = """
+gcloud beta emulators datastore start --host-port=127.0.0.1:8081 --no-store-on-disk
+""".strip()
+
 
 class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
     """
@@ -57,8 +61,19 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         os.environ['DATASTORE_EMULATOR_HOST_PATH'] = 'localhost:8081/datastore'
         os.environ['DATASTORE_HOST'] = 'http://localhost:8081'
 
+        # 1. Verify datastore emulator is running
+        try:
+            requests.get(os.environ['DATASTORE_HOST'], timeout=1)
+        except requests.exceptions.ConnectionError as e:
+            raise ValueError('Can\'t reach "%s". Make sure Google Cloud Datastore emulator is '
+                    'running and listening on "%s": %s.\n\nYou can start emulator using "%s" '
+                    'command.' % (os.environ['DATASTORE_HOST'],
+                                  os.environ['DATASTORE_EMULATOR_HOST'], str(e),
+                                  START_EMULATOR_STRING))
+
         # Instantiate client with mock credentials object
-        self.client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session())
+        self.client = datastore.Client(credentials=EmulatorCreds(),
+                _http=requests.Session())
         self._clear_datastore()
 
     def tearDown(self):

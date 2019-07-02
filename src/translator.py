@@ -16,6 +16,7 @@
 from typing import Any
 from typing import Type
 from typing import cast
+from typing import TypeVar
 from types import ModuleType
 from datetime import datetime
 
@@ -28,7 +29,6 @@ from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
 
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
@@ -38,6 +38,9 @@ __all__ = [
     'model_pb_with_key_to_entity_pb',
     'entity_pb_to_model_pb'
 ]
+
+# Type which represents an arbitrary ModelPB class which is a subclass of message.Message
+T_model_pb = TypeVar('T_model_pb', bound=message.Message)
 
 
 def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False):
@@ -181,8 +184,12 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
     return entity_pb
 
 
-def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
-    # type: (ModuleType, Type[GeneratedProtocolMessageType], entity_pb2.Entity) -> message.Message
+def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
+                          model_pb_class,   # type: Type[T_model_pb]
+                          entity_pb,        # type: entity_pb2.Entity
+                          strict=False      # type: bool
+                          ):
+    # type: (...) -> T_model_pb
     """
     Translate Entity protobuf object to protobuf based database model object.
 
@@ -190,6 +197,8 @@ def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
                             DB model class.
     :param model_pb_class: Protobuf class to convert the Entity object to.
     :param entity_pb: Entity protobuf instance to convert to database model instance.
+    :param strict: True to run in a strict mode and throw an exception if we encounter a field on
+                   the database object which is not defined on the model definition.
     """
     model_pb_field_names = list(iter(model_pb_class.DESCRIPTOR.fields))
     model_pb_field_names = [field.name for field in model_pb_field_names if field not in ['key']]
@@ -199,11 +208,14 @@ def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb):
     for prop_name, value_pb in datastore.helpers._property_tuples(entity_pb):
         value = datastore.helpers._get_value_from_value_pb(value_pb)
 
-        # Field not defined on the model class, ignore it
-        # TODO: Perhaps add strict mode and throw when strict=True and field is not defined on the
-        # model class?
+        # Field not defined on the model class
         if prop_name not in model_pb_field_names:
-            continue
+            if strict:
+                msg = ('Database object contains field "%s" which is not defined on the database '
+                       'model class "%s"' % (prop_name, model_pb.DESCRIPTOR.name))
+                raise ValueError(msg)
+            else:
+                continue
 
         def set_model_pb_value(model_pb, prop_name, value, is_nested=False):
             if isinstance(value, list):
