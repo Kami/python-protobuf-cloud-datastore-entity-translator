@@ -82,6 +82,9 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                                  the same as a default value (e.g. 0 for an integer field) and
                                  user not providing a value and default value being used instead.
     """
+    if not isinstance(model_pb, message.Message):
+        raise ValueError('model_pb argument is not a valid Protobuf class instance')
+
     fields = list(iter(model_pb.DESCRIPTOR.fields))
     fields = [field for field in fields if field not in ['key']]
 
