@@ -3,6 +3,8 @@ syntax = "proto3";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
+import "example2.proto";
+
 enum ExampleEnumModel {
     ENUM0 = 0;
     ENUM1 = 1;
@@ -32,7 +34,7 @@ message ExampleDBModelWithKey {
 }
 
 message ExampleDBModel {
-    // Simple type
+    // Simple types
     int32 int32_key = 1;
     string string_key = 2;
     bool bool_key = 3;
@@ -59,4 +61,12 @@ message ExampleDBModel {
 
     // Other special types
     google.protobuf.NullValue null_key = 13;
+}
+
+// DB model which references types from another file (example2.proto)
+message ExampleWithReferencedTypeDBModel {
+    string string_key = 1;
+
+    ExampleEnumModel referenced_enum = 2;
+    ExampleReferencedType referenced_type_key = 3;
 }

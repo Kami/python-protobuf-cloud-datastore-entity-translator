@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+import importlib
+
 from typing import Any
 from typing import Type
 from typing import cast
@@ -29,6 +32,7 @@ from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
 
+from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
@@ -178,6 +182,11 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
                 entity_pb_item = get_entity_pb_for_value(value=dict(field_value))
                 value_pb.entity_value.CopyFrom(entity_pb_item)
+            else:
+                # Nested type, potentially referenced from another Protobuf definition file
+                value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
+                entity_pb_item = model_pb_to_entity_pb(field_value)
+                value_pb.entity_value.CopyFrom(entity_pb_item)
         else:
             raise ValueError('Unsupported field type for field "%s"' % (field_name))
 
@@ -224,8 +233,11 @@ def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
                         # Handle nested models
                         if model_pb_class.DESCRIPTOR.fields_by_name[prop_name].message_type:
                             field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+
+                            # Dynamically import nested model from a corresponding file
                             nested_model_name = field.message_type.full_name
-                            nested_model_class = getattr(model_pb_module, nested_model_name)
+                            nested_model_module = get_python_module_for_field(field=field)
+                            nested_model_class = getattr(nested_model_module, nested_model_name)
 
                             # Instantiate an instance of nested field Protobuf class
                             item_pb = nested_model_class()
@@ -235,9 +247,29 @@ def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
                     else:
                         getattr(model_pb, prop_name).append(item)
             elif isinstance(value, dict):
+                # We assume it's a referenced protobuf type if it doesn't contain "update()" method
+                # google.protobuf.Struct and Map types contain "update()" methods so we can treat
+                # them as simple dictionaries
+                field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+                is_nested_model_type = (bool(field.message_type) and
+                                        not hasattr(getattr(model_pb, prop_name, {}), 'update'))
+
                 if is_nested:
                     for key, value in six.iteritems(value):
                         set_model_pb_value(model_pb, key, value)
+                elif is_nested_model_type:
+                    # Custom type definition potentially defined in different file
+                    field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+
+                    # Dynamically import nested model from a corresponding file
+                    nested_model_name = field.message_type.full_name
+                    nested_model_module = get_python_module_for_field(field=field)
+                    nested_model_class = getattr(nested_model_module, nested_model_name)
+
+                    item_pb = nested_model_class()
+                    set_model_pb_value(item_pb, prop_name, value, is_nested=True)
+
+                    getattr(model_pb, prop_name).CopyFrom(item_pb)
                 else:
                     getattr(model_pb, prop_name).update(dict(value))
             elif isinstance(value, datetime):
@@ -270,7 +302,7 @@ def get_pb_attr_type(value):
         name = 'string'
     elif isinstance(value, six.binary_type):
         name = 'blob'
-    elif isinstance(value, (dict, ScalarMapContainer, struct_pb2.Struct)):
+    elif isinstance(value, (dict, ScalarMapContainer, struct_pb2.Struct, message.Message)):
         name = 'dict'
     elif isinstance(value, (list, RepeatedScalarContainer, RepeatedCompositeContainer)):
         name = 'array'
@@ -340,3 +372,22 @@ def set_value_pb_item_value(value_pb, value):
         raise ValueError('Unsupported type for value: %s' % (value))
 
     return value_pb
+
+
+def get_python_module_for_field(field):
+    # type: (FieldDescriptor) -> ModuleType
+    """
+    Return Python module for the provided Protobuf field.
+
+    NOTE: This function will also import the module if it's not already available in sys.path.
+    """
+    model_file = field.message_type.file.name
+
+    # TODO: Take field.message_type.file.package into account
+    module_name = model_file.replace('.proto', '_pb2').replace('/', '.')
+
+    if module_name not in sys.modules:
+        module = importlib.import_module(module_name)
+
+    module = sys.modules[module_name]
+    return module

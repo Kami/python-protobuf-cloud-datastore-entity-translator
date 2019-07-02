@@ -21,6 +21,7 @@ from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
 
 from tests.generated import example_pb2
+from tests.generated import example2_pb2
 from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
@@ -304,6 +305,38 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
                         'the database model class "ExampleDBModel"')
         self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb, example_pb2,
                                 example_pb2.ExampleDBModel, entity_pb, strict=True)
+
+    def test_model_pb_to_entity_pb_referenced_type(self):
+        # Test a scenario where model pb references a type from another protobuf file
+        example_referenced_type_pb = example2_pb2.ExampleReferencedType()
+        example_referenced_type_pb.key_1 = 'value 1'
+        example_referenced_type_pb.key_2 = 'value 2'
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['key_1'].string_value, 'value 1')
+        self.assertEqual(entity_pb_translated.properties['key_2'].string_value, 'value 2')
+
+        example_with_referenced_type_pb = example_pb2.ExampleWithReferencedTypeDBModel()
+        example_with_referenced_type_pb.string_key = 'value 3'
+        example_with_referenced_type_pb.referenced_enum = example2_pb2.ExampleReferencedEnum.KEY1
+        example_with_referenced_type_pb.referenced_type_key.CopyFrom(example_referenced_type_pb)
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
+        self.assertEqual(entity_pb_translated.properties['referenced_enum'].integer_value, 1)
+        self.assertEqual(entity_pb_translated.properties['referenced_type_key'].entity_value.
+                properties['key_1'].string_value,
+                'value 1')
+        self.assertEqual(entity_pb_translated.properties['referenced_type_key'].entity_value.
+                properties['key_2'].string_value,
+                'value 2')
+
+        # Perform the round trip, translate it back to the model and verity it matches the original
+        # input
+        model_pb_round_trip = entity_pb_to_model_pb(example_pb2,
+                                                    example_pb2.ExampleWithReferencedTypeDBModel,
+                                                    entity_pb_translated)
+        self.assertEqual(model_pb_round_trip, example_with_referenced_type_pb)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
