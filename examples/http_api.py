@@ -25,6 +25,7 @@ $ gunicorn examples/http_api.py:app
 import importlib
 from typing import Type
 from typing import Tuple
+from typing import Dict
 from types import ModuleType
 
 from flask import Flask
@@ -43,7 +44,7 @@ app = Flask(__name__)
 
 @app.route('/datastore/put/<key>', methods=['POST'])
 def put_db_object(key):
-    # type: (str) -> str
+    # type: (str) -> Tuple[str, int, Dict[str, str]]
     """
     Store arbitrary Protobuf object in Google Datastore.
 
@@ -69,17 +70,15 @@ def put_db_object(key):
     key_pb = client.key(model_pb.DESCRIPTOR.name, key).to_protobuf()
     entity_pb.key.CopyFrom(key_pb)  # pylint: disable=no-member
 
-    # Set key on the object
-
     # 3. Store it inside datastore
     entity = datastore.helpers.entity_from_protobuf(entity_pb)
     client.put(entity)
-    return ''
+    return '', 200, {}
 
 
 @app.route('/datastore/get/<key>')
 def get_db_object(key):
-    # type: (str) -> tuple
+    # type: (str) -> Tuple[str, int, Dict[str, str]]
     """
     Retrieve object from Google Datastore, serialize it into native object type and serialize it
     as JSON.
