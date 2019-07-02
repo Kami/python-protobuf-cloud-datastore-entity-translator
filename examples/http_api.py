@@ -30,7 +30,6 @@ from types import ModuleType
 
 from flask import Flask
 from flask import request
-from flask import jsonify
 
 from google.protobuf import json_format
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
@@ -106,12 +105,7 @@ def get_db_object(key):
     # 3. Serialize it to JSON
     model_pb_json = json_format.MessageToJson(model_pb)
 
-    result = jsonify({
-        'model_name': model_name,
-        'json_string': model_pb_json
-    })
-
-    return result, 200, {'Content-Type': 'application/json'}
+    return model_pb_json, 200, {'Content-Type': 'application/json'}
 
 
 def get_module_and_class_for_model_name(model_name):
