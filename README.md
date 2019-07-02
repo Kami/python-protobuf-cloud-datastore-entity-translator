@@ -69,6 +69,7 @@ For details, see:
 
 For example protobuf definitions, see ``protobuf/`` directory.
 
+Example usage:
 
 ```python
 from google.cloud import datastore
@@ -82,7 +83,7 @@ from generated import my_model_pb2
 # instance inside Google Datastore
 
 # Create database model Protobuf instance
-my_model_pb = MyModelPB()
+my_model_pb = MyModelDB()
 # NOTE: "key" is a special attribute which is used as entity primary key
 my_model_pb.key = 'some_primary_key'
 # Other entity attributes
@@ -91,33 +92,59 @@ my_model_pb.key2 = 200
 my_model_pb['foo'] = 'bar'
 my_model_pb['bar'] = 'baz'
 
-# Convert it to entity which can be used with Google Datastore
+# Convert it to Entity Protobuf object which can be used with Google Datastore
 entity_pb = model_pb_to_entity_pb(my_model_pb)
 
 # Store it in the datastore
 # To avoid conversion back and forth you can also use lower level client methods which
-# work directly with Entity Protobuf objects
+# work directly with the Entity Protobuf objects
 # For information on the low level client usage, see
 # https://github.com/GoogleCloudPlatform/google-cloud-datastore/blob/master/python/demos/trivial/adams.py#L66
+client = Client(...)
+key = self.client.key('MyModelDB', 'some_primary_key')
+entity_pb_translated.key.CopyFrom(key.to_protobuf())
+
 entity = datastore.helpers.entity_from_protobuf(entity_pb)
 
-client = Client(...)
 client.put(entity)
 
 # 2. Retrieve entity from the datastore and convert it to your Protobuf DB model instance class
 # Same here - you can also use low level client to retrieve Entity protobuf object directly and
 # avoid unnecessary conversion round trip
-key = client.key('MyCustomEntity', 'some_primary_key')
+key = client.key('MyModelDB', 'some_primary_key')
 entity = client.get(key)
 entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
-my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb
+my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb)
 print(my_model_pb)
+```
+
+### Tests
+
+Unit and integration tests can be found inside ``tests/`` directory.
+
+You can run unit and integration tests and other lint checks by using tox.
+
+```bash
+# Run all tox targets
+tox
+
+# Run only lint checks
+tox -e lint
+
+# Run unit tests under Python 2.7
+tox -e py2.7-unit-tests
+
+# Run Integration tests under Python 3.7
+tox -e py3.7-integration-tests
+
+# Run unit and integration tests and generate code coverage report
+tox -e coverage
 ```
 
 ## License
 
-Copyright Tomaz Muraus
+Copyright 2019 Tomaz Muraus
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except
 in compliance with the License. You may obtain a copy of the License in the [LICENSE](LICENSE) file,
