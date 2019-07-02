@@ -16,6 +16,7 @@
 from typing import Any
 from typing import Type
 from typing import cast
+from typing import TypeVar
 from types import ModuleType
 from datetime import datetime
 
@@ -28,7 +29,6 @@ from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
 
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
@@ -38,6 +38,9 @@ __all__ = [
     'model_pb_with_key_to_entity_pb',
     'entity_pb_to_model_pb'
 ]
+
+# Type which represents a arbitrary ModelPb class which is a subclass of message.Message
+T_model_pb = TypeVar('T_model_pb', bound=message.Message)
 
 
 def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False):
@@ -182,11 +185,11 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
 
 
 def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
-                          model_pb_class,   # type: Type[GeneratedProtocolMessageType]
+                          model_pb_class,   # type: Type[T_model_pb]
                           entity_pb,        # type: entity_pb2.Entity
                           strict=False      # type: bool
                           ):
-    # type: (...) -> message.Message
+    # type: (...) -> T_model_pb
     """
     Translate Entity protobuf object to protobuf based database model object.
 

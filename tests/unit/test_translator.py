@@ -287,15 +287,16 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # object should be ignored
         example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb)
 
-        self.assertEqual(example_pb.string_key, 'test value')  # type: ignore
-        self.assertEqual(example_pb.int32_key, 20)  # type: ignore
+        self.assertEqual(example_pb.string_key, 'test value')
+        self.assertEqual(example_pb.int32_key, 20)
+        self.assertEqual(example_pb.int32_key, 20)
         self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
 
         example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb,
                                           strict=False)
 
-        self.assertEqual(example_pb.string_key, 'test value')  # type: ignore
-        self.assertEqual(example_pb.int32_key, 20)  # type: ignore
+        self.assertEqual(example_pb.string_key, 'test value')
+        self.assertEqual(example_pb.int32_key, 20)
         self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
 
         # 2. Using strict mode, exception should be thrown
