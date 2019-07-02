@@ -22,6 +22,25 @@ for database models. This way those definitions can be shared by multiple progra
 each language just needs a light translator library (like this one) which knows how to translate
 arbitrary Protobuf object into Entity Protobuf object and vice-versa.
 
+## Features
+
+Right now the library supports the following Protobuf field types and functionality:
+
+* All the simple types (string, int32, int64, double, float, bytes, bool, enum)
+* Scalar / container types (map, repeated)
+* Complex types from Protobuf standard library (``google.protobuf.Timestamp``,
+  ``google.Protobuf.Struct``)
+* Using imports and referencing types from different Protobuf definition files. For example,
+  you can have Protobuf message definition called ``Model1DB`` inside file ``model1.proto`` which
+  has a field which references ``Model2DB`` from ``model2.proto`` file.
+
+  For that to work, you need to make sure that the root directory which contains all the generated
+  Protobuf Python files is available in ``PYTHONPATH``.
+
+  For example, if generated files are written to ``my_app/generated/``, ``my_app/generated/`` needs
+  to be in ``PYTHONPATH`` and this directory needs to be a Python package (it needs to contain
+  ``__init__.py`` file).
+
 ## Gotchas
 
 In protobuf syntax version 3 a concept of field being set has been removed and combined with a
