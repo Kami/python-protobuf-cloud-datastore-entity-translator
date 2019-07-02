@@ -41,6 +41,9 @@ Right now the library supports the following Protobuf field types and functional
   to be in ``PYTHONPATH`` and this directory needs to be a Python package (it needs to contain
   ``__init__.py`` file).
 
+For more information on the actual types supported by Google Datastore, refer to
+https://cloud.google.com/datastore/docs/concepts/entities#properties_and_value_types.
+
 ## Gotchas
 
 In protobuf syntax version 3 a concept of field being set has been removed and combined with a
