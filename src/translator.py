@@ -76,7 +76,7 @@ def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False)
 def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
     # type: (message.Message, bool) -> entity_pb2.Entity
     """
-    Translate protobuf based database model object to Entity object which can be used with Google
+    Translate Protobuf based database model object to Entity object which can be used with Google
     Datastore client library.
 
     :param model_pb: Instance of a custom Protobuf object to translate.
@@ -199,10 +199,10 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                           ):
     # type: (...) -> T_model_pb
     """
-    Translate Entity protobuf object to protobuf based database model object.
+    Translate Google Datastore Entity Protobuf object to Protobuf based database model object.
 
     :param model_pb_class: Protobuf class to convert the Entity object to.
-    :param entity_pb: Entity protobuf instance to convert to database model instance.
+    :param entity_pb: Entity Protobuf instance to convert to database model instance.
     :param strict: True to run in a strict mode and throw an exception if we encounter a field on
                    the database object which is not defined on the model definition.
     """
