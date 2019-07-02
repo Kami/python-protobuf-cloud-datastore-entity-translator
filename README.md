@@ -138,7 +138,7 @@ tox -e py2.7-unit-tests
 # Run Integration tests under Python 3.7
 tox -e py3.7-integration-tests
 
-# Run unit and integration tests and generate code coverage report
+# Run unit and integration tests and generate and display code coverage report
 tox -e coverage
 ```
 
