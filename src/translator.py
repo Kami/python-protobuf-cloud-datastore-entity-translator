@@ -39,7 +39,7 @@ __all__ = [
     'entity_pb_to_model_pb'
 ]
 
-# Type which represents a arbitrary ModelPb class which is a subclass of message.Message
+# Type which represents an arbitrary ModelPB class which is a subclass of message.Message
 T_model_pb = TypeVar('T_model_pb', bound=message.Message)
 
 
