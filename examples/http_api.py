@@ -19,7 +19,7 @@ Datastore.
 
 To run it:
 
-$ gunicorn examples/http_api.py:app
+$ PYTHONPATH=. gunicorn examples/http_api.py:app
 """
 
 import importlib
@@ -84,6 +84,7 @@ def get_db_object(key):
     as JSON.
     """
     model_name = request.args.get('model_name', '')
+    raw = request.args.get('raw', 'false').lower() in ['1', 'true', 'yes']
     _, model_class = get_module_and_class_for_model_name(model_name=model_name)
 
     class_name = model_class.DESCRIPTOR.name
@@ -97,7 +98,10 @@ def get_db_object(key):
     # 2. Translate it to custom Protobuf object
     entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
-    model_pb = entity_pb_to_model_pb(model_pb_class=model_class, entity_pb=entity_pb)
+    if not raw:
+        model_pb = entity_pb_to_model_pb(model_pb_class=model_class, entity_pb=entity_pb)
+    else:
+        model_pb = entity_pb
 
     # 3. Serialize it to JSON
     model_pb_json = json_format.MessageToJson(model_pb)
