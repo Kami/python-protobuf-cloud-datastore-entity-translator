@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package models;
+
+// Example model which is stored inside "models" package
+
+message ExampleWithPackageDBModel {
+    string string_key = 1;
+}

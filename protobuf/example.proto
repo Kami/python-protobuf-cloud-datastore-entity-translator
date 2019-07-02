@@ -4,6 +4,7 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 import "example2.proto";
+import "models/example3.proto";
 
 enum ExampleEnumModel {
     ENUM0 = 0;
@@ -71,4 +72,7 @@ message ExampleWithReferencedTypeDBModel {
 
     ExampleEnumModel referenced_enum = 2;
     ExampleReferencedType referenced_type_key = 3;
+
+    // Referenced type which is imported from models/example3.proto
+    models.ExampleWithPackageDBModel referenced_package_type_key = 4;
 }

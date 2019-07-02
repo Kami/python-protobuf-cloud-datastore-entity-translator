@@ -232,7 +232,7 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                             field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
 
                             # Dynamically import nested model from a corresponding file
-                            nested_model_name = field.message_type.full_name
+                            nested_model_name = field.message_type.name
                             nested_model_module = get_python_module_for_field(field=field)
                             nested_model_class = getattr(nested_model_module, nested_model_name)
 
@@ -259,7 +259,7 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                     field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
 
                     # Dynamically import nested model from a corresponding file
-                    nested_model_name = field.message_type.full_name
+                    nested_model_name = field.message_type.name
                     nested_model_module = get_python_module_for_field(field=field)
                     nested_model_class = getattr(nested_model_module, nested_model_name)
 
@@ -379,8 +379,6 @@ def get_python_module_for_field(field):
     NOTE: This function will also import the module if it's not already available in sys.path.
     """
     model_file = field.message_type.file.name
-
-    # TODO: Take field.message_type.file.package into account
     module_name = model_file.replace('.proto', '_pb2').replace('/', '.')
 
     if module_name not in sys.modules:

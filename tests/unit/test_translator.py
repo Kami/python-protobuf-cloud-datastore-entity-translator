@@ -22,6 +22,8 @@ from google.cloud.datastore_v1.proto import entity_pb2
 
 from tests.generated import example_pb2
 from tests.generated import example2_pb2
+from tests.generated.models import example3_pb2
+
 from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
@@ -315,10 +317,17 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['key_1'].string_value, 'value 1')
         self.assertEqual(entity_pb_translated.properties['key_2'].string_value, 'value 2')
 
+        example_with_package_referenced_type_pb = example3_pb2.ExampleWithPackageDBModel()
+        example_with_package_referenced_type_pb.string_key = 'value 4'
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_package_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 4')
+
         example_with_referenced_type_pb = example_pb2.ExampleWithReferencedTypeDBModel()
         example_with_referenced_type_pb.string_key = 'value 3'
         example_with_referenced_type_pb.referenced_enum = example2_pb2.ExampleReferencedEnum.KEY1
         example_with_referenced_type_pb.referenced_type_key.CopyFrom(example_referenced_type_pb)
+        example_with_referenced_type_pb.referenced_package_type_key.CopyFrom(example_with_package_referenced_type_pb)
 
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
@@ -329,6 +338,9 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['referenced_type_key'].entity_value.
                 properties['key_2'].string_value,
                 'value 2')
+        self.assertEqual(entity_pb_translated.properties['referenced_package_type_key'].
+                entity_value.properties['string_key'].string_value,
+                'value 4')
 
         # Perform the round trip, translate it back to the model and verity it matches the original
         # input
