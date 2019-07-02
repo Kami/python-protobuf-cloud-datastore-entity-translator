@@ -320,14 +320,16 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_with_package_referenced_type_pb = example3_pb2.ExampleWithPackageDBModel()
         example_with_package_referenced_type_pb.string_key = 'value 4'
 
-        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_package_referenced_type_pb)
+        entity_pb_translated = model_pb_to_entity_pb(
+            model_pb=example_with_package_referenced_type_pb)
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 4')
 
         example_with_referenced_type_pb = example_pb2.ExampleWithReferencedTypeDBModel()
         example_with_referenced_type_pb.string_key = 'value 3'
         example_with_referenced_type_pb.referenced_enum = example2_pb2.ExampleReferencedEnum.KEY1
         example_with_referenced_type_pb.referenced_type_key.CopyFrom(example_referenced_type_pb)
-        example_with_referenced_type_pb.referenced_package_type_key.CopyFrom(example_with_package_referenced_type_pb)
+        example_with_referenced_type_pb.referenced_package_type_key.CopyFrom(
+            example_with_package_referenced_type_pb)
 
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
