@@ -66,8 +66,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             sorted(entity_pb_translated.SerializePartialToString()))
 
         # Try converting it back to the original entity and verify it matches the input
-        example_pb_converted = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
-                                                     entity_pb_native)
+        example_pb_converted = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb_native)
         self.assertEqual(example_pb_converted, example_pb)
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
@@ -286,14 +285,14 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         # 1. Not using strict mode. Field which is available on the Entity object, but not model
         # object should be ignored
-        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb)
+        example_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
 
         self.assertEqual(example_pb.string_key, 'test value')
         self.assertEqual(example_pb.int32_key, 20)
         self.assertEqual(example_pb.int32_key, 20)
         self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
 
-        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb,
+        example_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb,
                                           strict=False)
 
         self.assertEqual(example_pb.string_key, 'test value')
@@ -303,7 +302,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # 2. Using strict mode, exception should be thrown
         expected_msg = ('Database object contains field "non_valid_key" which is not defined on '
                         'the database model class "ExampleDBModel"')
-        self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb, example_pb2,
+        self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb,
                                 example_pb2.ExampleDBModel, entity_pb, strict=True)
 
     def test_model_pb_to_entity_pb_referenced_type(self):
@@ -333,8 +332,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         # Perform the round trip, translate it back to the model and verity it matches the original
         # input
-        model_pb_round_trip = entity_pb_to_model_pb(example_pb2,
-                                                    example_pb2.ExampleWithReferencedTypeDBModel,
+        model_pb_round_trip = entity_pb_to_model_pb(example_pb2.ExampleWithReferencedTypeDBModel,
                                                     entity_pb_translated)
         self.assertEqual(model_pb_round_trip, example_with_referenced_type_pb)
 

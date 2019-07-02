@@ -193,8 +193,7 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
     return entity_pb
 
 
-def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
-                          model_pb_class,   # type: Type[T_model_pb]
+def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                           entity_pb,        # type: entity_pb2.Entity
                           strict=False      # type: bool
                           ):
@@ -202,8 +201,6 @@ def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
     """
     Translate Entity protobuf object to protobuf based database model object.
 
-    :param model_pb_module: Name of the module which contains Protobuf class definition for the
-                            DB model class.
     :param model_pb_class: Protobuf class to convert the Entity object to.
     :param entity_pb: Entity protobuf instance to convert to database model instance.
     :param strict: True to run in a strict mode and throw an exception if we encounter a field on

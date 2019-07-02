@@ -129,7 +129,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         entity_pb_translated.ClearField('key')
         self.assertEqual(entity_pb_translated, entity_pb_retrieved)
 
-        example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                      entity_pb_retrieved)
         self.assertEqual(example_pb_retrieved, example_pb)
 
@@ -175,7 +175,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         entity_pb_translated.ClearField('key')
         self.assertEqual(entity_pb_translated, entity_pb_retrieved)
 
-        example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                      entity_pb_retrieved)
         self.assertEqual(example_pb_retrieved, example_pb)
 
@@ -224,7 +224,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
 
         self.assertEqual(entity_pb_translated_empty, entity_pb_empty_retrieved)
 
-        example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                            entity_pb_empty_retrieved)
         self.assertEqual(example_pb_empty_retrieved, example_pb)
 
