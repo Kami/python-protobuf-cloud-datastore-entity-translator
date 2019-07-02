@@ -181,8 +181,12 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
     return entity_pb
 
 
-def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb, strict=False):
-    # type: (ModuleType, Type[GeneratedProtocolMessageType], entity_pb2.Entity, bool) -> message.Message
+def entity_pb_to_model_pb(model_pb_module,  # type: ModuleType
+                          model_pb_class,   # type: Type[GeneratedProtocolMessageType]
+                          entity_pb,        # type: entity_pb2.Entity
+                          strict=False      # type: bool
+                          ):
+    # type: (...) -> message.Message
     """
     Translate Entity protobuf object to protobuf based database model object.
 
@@ -205,7 +209,7 @@ def entity_pb_to_model_pb(model_pb_module, model_pb_class, entity_pb, strict=Fal
         if prop_name not in model_pb_field_names:
             if strict:
                 msg = ('Database object contains field "%s" which is not defined on the database '
-                        'model class "%s"' % (prop_name, model_pb.DESCRIPTOR.name))
+                       'model class "%s"' % (prop_name, model_pb.DESCRIPTOR.name))
                 raise ValueError(msg)
             else:
                 continue

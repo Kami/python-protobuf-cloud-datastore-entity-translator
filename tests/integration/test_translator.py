@@ -66,11 +66,10 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
             requests.get(os.environ['DATASTORE_HOST'], timeout=1)
         except requests.exceptions.ConnectionError as e:
             raise ValueError('Can\'t reach "%s". Make sure Google Cloud Datastore emulator is '
-                    'running and listening on "%s": %s.\n\nYou can start emulator'
-                    'using "%s" command.'%
-                             (os.environ['DATASTORE_HOST'],
-                                 os.environ['DATASTORE_EMULATOR_HOST'], str(e),
-                                 START_EMULATOR_STRING))
+                    'running and listening on "%s": %s.\n\nYou can start emulator using "%s" '
+                    'command.' % (os.environ['DATASTORE_HOST'],
+                                  os.environ['DATASTORE_EMULATOR_HOST'], str(e),
+                                  START_EMULATOR_STRING))
 
         # Instantiate client with mock credentials object
         self.client = datastore.Client(credentials=EmulatorCreds(),
