@@ -31,7 +31,7 @@ from google.protobuf import message
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
-from google.protobuf.internal.well_known_types import _GetStructValue
+from google.protobuf.internal.well_known_types import _GetStructValue  # type: ignore
 
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.pyext._message import MessageMapContainer
