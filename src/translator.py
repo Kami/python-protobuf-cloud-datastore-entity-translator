@@ -306,7 +306,8 @@ def get_pb_attr_type(value):
         name = 'string'
     elif isinstance(value, six.binary_type):
         name = 'blob'
-    elif isinstance(value, (dict, ScalarMapContainer, MessageMapContainer, struct_pb2.Struct, message.Message)):
+    elif isinstance(value, (dict, ScalarMapContainer, MessageMapContainer, struct_pb2.Struct,
+                            message.Message)):
         name = 'dict'
     elif isinstance(value, (list, RepeatedScalarContainer, RepeatedCompositeContainer)):
         name = 'array'
@@ -328,6 +329,9 @@ def get_entity_pb_for_value(value):
     attr_type = get_pb_attr_type(value)
 
     if attr_type == 'dict_value':
+        if six.PY2:
+            value = dict(value)
+
         for key, value in six.iteritems(value):
             value_pb = datastore.helpers._new_value_pb(entity_pb, key)
             value_pb = set_value_pb_item_value(value_pb=value_pb, value=value)

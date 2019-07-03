@@ -61,9 +61,9 @@ EXAMPLE_DICT_POPULATED = {
         'key3': [1, 2, 3],
         'key4': u'čđć',
         'key5': {
-            'dict_key_1': '1',
+            'dict_key_1': u'1',
             'dict_key_2': 30,
-            'dict_key_3': ['a', 'b', 'c', 3]
+            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}]
         }
     },
     'timestamp_key': dt,
@@ -121,9 +121,9 @@ EXAMPLE_PB_POPULATED.struct_key.update({
     'key3': [1, 2, 3],
     'key4': u'čđć',
     'key5': {
-        'dict_key_1': '1',
+        'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': ['a', 'b', 'c', 3]
+        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}]
     }
 })
 

@@ -357,11 +357,11 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'key3': [1, 2, 3],
             'key4': u'čđć',
             'key5': {
-                'dict_key_1': '1',
+                'dict_key_1': u'1',
                 'dict_key_2': 30,
-                'dict_key_3': ['a', 'b', 'c', 3,
-                               {'f': 'h', 'm': [20, 30, 40], 'g': {'foo': 'bar'}}],
-                'dict_key_4': {'1': 1.1, '2': 2.2, '3': 3.33}
+                'dict_key_3': [u'a', u'b', u'c', 3,
+                               {u'f': u'h', u'm': [20, 30, 40], u'g': {u'foo': u'bar'}}],
+                'dict_key_4': {u'1': 1.1, u'2': 2.2, u'3': 3.33}
 
             }
         }
