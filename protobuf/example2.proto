@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+// This file contains Protobuf enum and message definitions which are referenced inside
+// example.proto file
+
+enum ExampleReferencedEnum {
+    KEY0 = 0;
+    KEY1 = 1;
+    KEY2 = 2;
+}
+
+message ExampleReferencedType {
+    string key_1 = 1;
+    string key_2 = 2;
+}

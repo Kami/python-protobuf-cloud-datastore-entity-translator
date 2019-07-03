@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
+# Copyright 2019 Tomaz Muraus
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -21,6 +20,9 @@ from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
 
 from tests.generated import example_pb2
+from tests.generated import example2_pb2
+from tests.generated.models import example3_pb2
+
 from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
@@ -65,8 +67,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             sorted(entity_pb_translated.SerializePartialToString()))
 
         # Try converting it back to the original entity and verify it matches the input
-        example_pb_converted = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
-                                                     entity_pb_native)
+        example_pb_converted = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb_native)
         self.assertEqual(example_pb_converted, example_pb)
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
@@ -285,14 +286,14 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         # 1. Not using strict mode. Field which is available on the Entity object, but not model
         # object should be ignored
-        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb)
+        example_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
 
         self.assertEqual(example_pb.string_key, 'test value')
         self.assertEqual(example_pb.int32_key, 20)
         self.assertEqual(example_pb.int32_key, 20)
         self.assertRaises(AttributeError, getattr, example_pb, 'non_valid_key')
 
-        example_pb = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel, entity_pb,
+        example_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb,
                                           strict=False)
 
         self.assertEqual(example_pb.string_key, 'test value')
@@ -302,8 +303,51 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # 2. Using strict mode, exception should be thrown
         expected_msg = ('Database object contains field "non_valid_key" which is not defined on '
                         'the database model class "ExampleDBModel"')
-        self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb, example_pb2,
+        self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb,
                                 example_pb2.ExampleDBModel, entity_pb, strict=True)
+
+    def test_model_pb_to_entity_pb_referenced_type(self):
+        # Test a scenario where model pb references a type from another protobuf file
+        example_referenced_type_pb = example2_pb2.ExampleReferencedType()
+        example_referenced_type_pb.key_1 = 'value 1'
+        example_referenced_type_pb.key_2 = 'value 2'
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['key_1'].string_value, 'value 1')
+        self.assertEqual(entity_pb_translated.properties['key_2'].string_value, 'value 2')
+
+        example_with_package_referenced_type_pb = example3_pb2.ExampleWithPackageDBModel()
+        example_with_package_referenced_type_pb.string_key = 'value 4'
+
+        entity_pb_translated = model_pb_to_entity_pb(
+            model_pb=example_with_package_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 4')
+
+        example_with_referenced_type_pb = example_pb2.ExampleWithReferencedTypeDBModel()
+        example_with_referenced_type_pb.string_key = 'value 3'
+        example_with_referenced_type_pb.referenced_enum = example2_pb2.ExampleReferencedEnum.KEY1
+        example_with_referenced_type_pb.referenced_type_key.CopyFrom(example_referenced_type_pb)
+        example_with_referenced_type_pb.referenced_package_type_key.CopyFrom(
+            example_with_package_referenced_type_pb)
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
+        self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
+        self.assertEqual(entity_pb_translated.properties['referenced_enum'].integer_value, 1)
+        self.assertEqual(entity_pb_translated.properties['referenced_type_key'].entity_value.
+                properties['key_1'].string_value,
+                'value 1')
+        self.assertEqual(entity_pb_translated.properties['referenced_type_key'].entity_value.
+                properties['key_2'].string_value,
+                'value 2')
+        self.assertEqual(entity_pb_translated.properties['referenced_package_type_key'].
+                entity_value.properties['string_key'].string_value,
+                'value 4')
+
+        # Perform the round trip, translate it back to the model and verity it matches the original
+        # input
+        model_pb_round_trip = entity_pb_to_model_pb(example_pb2.ExampleWithReferencedTypeDBModel,
+                                                    entity_pb_translated)
+        self.assertEqual(model_pb_round_trip, example_with_referenced_type_pb)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None

@@ -16,6 +16,8 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
+import example2_pb2 as example2__pb2
+from models import example3_pb2 as models_dot_example3__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -23,9 +25,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rexample.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\";\n\x12\x45xampleNestedModel\x12\x12\n\nstring_key\x18\x01 \x01(\t\x12\x11\n\tint32_key\x18\x02 \x01(\x05\"K\n\x15\x45xampleDBModelWithKey\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x11\n\tint32_key\x18\x03 \x01(\x05\"\x9b\x05\n\x0e\x45xampleDBModel\x12\x11\n\tint32_key\x18\x01 \x01(\x05\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x10\n\x08\x62ool_key\x18\x03 \x01(\x08\x12\x11\n\tbytes_key\x18\x04 \x01(\x0c\x12\x12\n\ndouble_key\x18\x0e \x01(\x01\x12\x11\n\tfloat_key\x18\x0f \x01(\x02\x12\x11\n\tint64_key\x18\x10 \x01(\x03\x12?\n\x11map_string_string\x18\x05 \x03(\x0b\x32$.ExampleDBModel.MapStringStringEntry\x12=\n\x10map_string_int32\x18\x06 \x03(\x0b\x32#.ExampleDBModel.MapStringInt32Entry\x12\x18\n\x10string_array_key\x18\x07 \x03(\t\x12\x17\n\x0fint32_array_key\x18\x08 \x03(\x05\x12.\n\x11\x63omplex_array_key\x18\t \x03(\x0b\x32\x13.ExampleNestedModel\x12#\n\x08\x65num_key\x18\n \x01(\x0e\x32\x11.ExampleEnumModel\x12\x31\n\rtimestamp_key\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\nstruct_key\x18\x0c \x01(\x0b\x32\x17.google.protobuf.Struct\x12,\n\x08null_key\x18\r \x01(\x0e\x32\x1a.google.protobuf.NullValue\x1a\x36\n\x14MapStringStringEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x35\n\x13MapStringInt32Entry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01*3\n\x10\x45xampleEnumModel\x12\t\n\x05\x45NUM0\x10\x00\x12\t\n\x05\x45NUM1\x10\x01\x12\t\n\x05\x45NUM2\x10\x02\x62\x06proto3')
+  serialized_pb=_b('\n\rexample.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0e\x65xample2.proto\x1a\x15models/example3.proto\";\n\x12\x45xampleNestedModel\x12\x12\n\nstring_key\x18\x01 \x01(\t\x12\x11\n\tint32_key\x18\x02 \x01(\x05\"K\n\x15\x45xampleDBModelWithKey\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x11\n\tint32_key\x18\x03 \x01(\x05\"\x9b\x05\n\x0e\x45xampleDBModel\x12\x11\n\tint32_key\x18\x01 \x01(\x05\x12\x12\n\nstring_key\x18\x02 \x01(\t\x12\x10\n\x08\x62ool_key\x18\x03 \x01(\x08\x12\x11\n\tbytes_key\x18\x04 \x01(\x0c\x12\x12\n\ndouble_key\x18\x0e \x01(\x01\x12\x11\n\tfloat_key\x18\x0f \x01(\x02\x12\x11\n\tint64_key\x18\x10 \x01(\x03\x12?\n\x11map_string_string\x18\x05 \x03(\x0b\x32$.ExampleDBModel.MapStringStringEntry\x12=\n\x10map_string_int32\x18\x06 \x03(\x0b\x32#.ExampleDBModel.MapStringInt32Entry\x12\x18\n\x10string_array_key\x18\x07 \x03(\t\x12\x17\n\x0fint32_array_key\x18\x08 \x03(\x05\x12.\n\x11\x63omplex_array_key\x18\t \x03(\x0b\x32\x13.ExampleNestedModel\x12#\n\x08\x65num_key\x18\n \x01(\x0e\x32\x11.ExampleEnumModel\x12\x31\n\rtimestamp_key\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\nstruct_key\x18\x0c \x01(\x0b\x32\x17.google.protobuf.Struct\x12,\n\x08null_key\x18\r \x01(\x0e\x32\x1a.google.protobuf.NullValue\x1a\x36\n\x14MapStringStringEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x1a\x35\n\x13MapStringInt32Entry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"\xdf\x01\n ExampleWithReferencedTypeDBModel\x12\x12\n\nstring_key\x18\x01 \x01(\t\x12*\n\x0freferenced_enum\x18\x02 \x01(\x0e\x32\x11.ExampleEnumModel\x12\x33\n\x13referenced_type_key\x18\x03 \x01(\x0b\x32\x16.ExampleReferencedType\x12\x46\n\x1breferenced_package_type_key\x18\x04 \x01(\x0b\x32!.models.ExampleWithPackageDBModel*3\n\x10\x45xampleEnumModel\x12\t\n\x05\x45NUM0\x10\x00\x12\t\n\x05\x45NUM1\x10\x01\x12\t\n\x05\x45NUM2\x10\x02\x62\x06proto3')
   ,
-  dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,example2__pb2.DESCRIPTOR,models_dot_example3__pb2.DESCRIPTOR,])
 
 _EXAMPLEENUMMODEL = _descriptor.EnumDescriptor(
   name='ExampleEnumModel',
@@ -48,8 +50,8 @@ _EXAMPLEENUMMODEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=888,
-  serialized_end=939,
+  serialized_start=1153,
+  serialized_end=1204,
 )
 _sym_db.RegisterEnumDescriptor(_EXAMPLEENUMMODEL)
 
@@ -93,8 +95,8 @@ _EXAMPLENESTEDMODEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=80,
-  serialized_end=139,
+  serialized_start=119,
+  serialized_end=178,
 )
 
 
@@ -138,8 +140,8 @@ _EXAMPLEDBMODELWITHKEY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=141,
-  serialized_end=216,
+  serialized_start=180,
+  serialized_end=255,
 )
 
 
@@ -176,8 +178,8 @@ _EXAMPLEDBMODEL_MAPSTRINGSTRINGENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=777,
-  serialized_end=831,
+  serialized_start=816,
+  serialized_end=870,
 )
 
 _EXAMPLEDBMODEL_MAPSTRINGINT32ENTRY = _descriptor.Descriptor(
@@ -213,8 +215,8 @@ _EXAMPLEDBMODEL_MAPSTRINGINT32ENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=833,
-  serialized_end=886,
+  serialized_start=872,
+  serialized_end=925,
 )
 
 _EXAMPLEDBMODEL = _descriptor.Descriptor(
@@ -348,8 +350,60 @@ _EXAMPLEDBMODEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=219,
-  serialized_end=886,
+  serialized_start=258,
+  serialized_end=925,
+)
+
+
+_EXAMPLEWITHREFERENCEDTYPEDBMODEL = _descriptor.Descriptor(
+  name='ExampleWithReferencedTypeDBModel',
+  full_name='ExampleWithReferencedTypeDBModel',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='string_key', full_name='ExampleWithReferencedTypeDBModel.string_key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='referenced_enum', full_name='ExampleWithReferencedTypeDBModel.referenced_enum', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='referenced_type_key', full_name='ExampleWithReferencedTypeDBModel.referenced_type_key', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='referenced_package_type_key', full_name='ExampleWithReferencedTypeDBModel.referenced_package_type_key', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=928,
+  serialized_end=1151,
 )
 
 _EXAMPLEDBMODEL_MAPSTRINGSTRINGENTRY.containing_type = _EXAMPLEDBMODEL
@@ -361,9 +415,13 @@ _EXAMPLEDBMODEL.fields_by_name['enum_key'].enum_type = _EXAMPLEENUMMODEL
 _EXAMPLEDBMODEL.fields_by_name['timestamp_key'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _EXAMPLEDBMODEL.fields_by_name['struct_key'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
 _EXAMPLEDBMODEL.fields_by_name['null_key'].enum_type = google_dot_protobuf_dot_struct__pb2._NULLVALUE
+_EXAMPLEWITHREFERENCEDTYPEDBMODEL.fields_by_name['referenced_enum'].enum_type = _EXAMPLEENUMMODEL
+_EXAMPLEWITHREFERENCEDTYPEDBMODEL.fields_by_name['referenced_type_key'].message_type = example2__pb2._EXAMPLEREFERENCEDTYPE
+_EXAMPLEWITHREFERENCEDTYPEDBMODEL.fields_by_name['referenced_package_type_key'].message_type = models_dot_example3__pb2._EXAMPLEWITHPACKAGEDBMODEL
 DESCRIPTOR.message_types_by_name['ExampleNestedModel'] = _EXAMPLENESTEDMODEL
 DESCRIPTOR.message_types_by_name['ExampleDBModelWithKey'] = _EXAMPLEDBMODELWITHKEY
 DESCRIPTOR.message_types_by_name['ExampleDBModel'] = _EXAMPLEDBMODEL
+DESCRIPTOR.message_types_by_name['ExampleWithReferencedTypeDBModel'] = _EXAMPLEWITHREFERENCEDTYPEDBMODEL
 DESCRIPTOR.enum_types_by_name['ExampleEnumModel'] = _EXAMPLEENUMMODEL
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -403,6 +461,13 @@ ExampleDBModel = _reflection.GeneratedProtocolMessageType('ExampleDBModel', (_me
 _sym_db.RegisterMessage(ExampleDBModel)
 _sym_db.RegisterMessage(ExampleDBModel.MapStringStringEntry)
 _sym_db.RegisterMessage(ExampleDBModel.MapStringInt32Entry)
+
+ExampleWithReferencedTypeDBModel = _reflection.GeneratedProtocolMessageType('ExampleWithReferencedTypeDBModel', (_message.Message,), {
+  'DESCRIPTOR' : _EXAMPLEWITHREFERENCEDTYPEDBMODEL,
+  '__module__' : 'example_pb2'
+  # @@protoc_insertion_point(class_scope:ExampleWithReferencedTypeDBModel)
+  })
+_sym_db.RegisterMessage(ExampleWithReferencedTypeDBModel)
 
 
 _EXAMPLEDBMODEL_MAPSTRINGSTRINGENTRY._options = None

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
+# Copyright 2019 Tomaz Muraus
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -129,7 +128,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         entity_pb_translated.ClearField('key')
         self.assertEqual(entity_pb_translated, entity_pb_retrieved)
 
-        example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                      entity_pb_retrieved)
         self.assertEqual(example_pb_retrieved, example_pb)
 
@@ -175,7 +174,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         entity_pb_translated.ClearField('key')
         self.assertEqual(entity_pb_translated, entity_pb_retrieved)
 
-        example_pb_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                      entity_pb_retrieved)
         self.assertEqual(example_pb_retrieved, example_pb)
 
@@ -224,7 +223,7 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
 
         self.assertEqual(entity_pb_translated_empty, entity_pb_empty_retrieved)
 
-        example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2, example_pb2.ExampleDBModel,
+        example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                            entity_pb_empty_retrieved)
         self.assertEqual(example_pb_empty_retrieved, example_pb)
 
