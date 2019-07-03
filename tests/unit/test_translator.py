@@ -349,6 +349,36 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
                                                     entity_pb_translated)
         self.assertEqual(model_pb_round_trip, example_with_referenced_type_pb)
 
+    def test_model_pb_to_entity_pb_nested_struct(self):
+        # type: () -> None
+        example_data = {
+            'key1': u'val1',
+            'key2': 2,
+            'key3': [1, 2, 3],
+            'key4': u'čđć',
+            'key5': {
+                'dict_key_1': '1',
+                'dict_key_2': 30,
+                'dict_key_3': ['a', 'b', 'c', 3, {'f': 'h', 'm': [20, 30, 40]}]
+            }
+        }
+
+        example_pb = example_pb2.ExampleWithNestedStructDBModel()
+        example_pb.struct_key.update(example_data)
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+
+        entity = datastore.Entity()
+        entity.update({'struct_key': example_data})
+
+        # Verify that the both Protobuf objects are the same (translated one and the datastore
+        # native one)
+        entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
+
+        self.assertEqual(entity_pb_translated, entity_pb_native)
+        self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
+        self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
+            sorted(entity_pb_translated.SerializePartialToString()))
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
