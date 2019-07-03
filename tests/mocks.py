@@ -59,7 +59,12 @@ EXAMPLE_DICT_POPULATED = {
         'key1': u'val1',
         'key2': 2,
         'key3': [1, 2, 3],
-        'key4': u'čđć'
+        'key4': u'čđć',
+        'key5': {
+            'dict_key_1': '1',
+            'dict_key_2': 30,
+            'dict_key_3': ['a', 'b', 'c', 3]
+        }
     },
     'timestamp_key': dt,
     'null_key': None
@@ -114,7 +119,12 @@ EXAMPLE_PB_POPULATED.struct_key.update({
     'key1': u'val1',
     'key2': 2,
     'key3': [1, 2, 3],
-    'key4': u'čđć'
+    'key4': u'čđć',
+    'key5': {
+        'dict_key_1': '1',
+        'dict_key_2': 30,
+        'dict_key_3': ['a', 'b', 'c', 3]
+    }
 })
 
 # Ezample object which explicitly provides values for all the fields which are the same as
