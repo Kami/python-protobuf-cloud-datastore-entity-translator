@@ -31,8 +31,10 @@ from google.protobuf import message
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
+from google.protobuf.internal.well_known_types import _GetStructValue
 
 from google.protobuf.descriptor import FieldDescriptor
+from google.protobuf.pyext._message import MessageMapContainer
 from google.protobuf.pyext._message import ScalarMapContainer
 from google.protobuf.pyext._message import RepeatedScalarContainer
 from google.protobuf.pyext._message import RepeatedCompositeContainer
@@ -169,6 +171,11 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
 
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
                 value_pb.timestamp_value.CopyFrom(field_value)
+            elif isinstance(field_value, MessageMapContainer):
+                # Nested dictionary on a struct, set a value directory on a passed in pb object
+                # which is a parent Struct entity
+                entity_pb_item = get_entity_pb_for_value(value=field_value)
+                entity_pb.CopyFrom(entity_pb_item)
             elif isinstance(field_value, ScalarMapContainer):
                 # Custom user defined type, recurse into it
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
@@ -180,7 +187,7 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                     continue
 
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
-                entity_pb_item = get_entity_pb_for_value(value=dict(field_value))
+                entity_pb_item = get_entity_pb_for_value(value=field_value)
                 value_pb.entity_value.CopyFrom(entity_pb_item)
             else:
                 # Nested type, potentially referenced from another Protobuf definition file
@@ -299,7 +306,7 @@ def get_pb_attr_type(value):
         name = 'string'
     elif isinstance(value, six.binary_type):
         name = 'blob'
-    elif isinstance(value, (dict, ScalarMapContainer, struct_pb2.Struct, message.Message)):
+    elif isinstance(value, (dict, ScalarMapContainer, MessageMapContainer, struct_pb2.Struct, message.Message)):
         name = 'dict'
     elif isinstance(value, (list, RepeatedScalarContainer, RepeatedCompositeContainer)):
         name = 'array'
@@ -361,9 +368,12 @@ def set_value_pb_item_value(value_pb, value):
             value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
 
             value_pb.array_value.values.append(value_pb_item)
+    elif isinstance(value, struct_pb2.Value):
+        item_value = _GetStructValue(value)
+        set_value_pb_item_value(value_pb, item_value)
     elif hasattr(value, 'DESCRIPTOR'):
         # Custom user-defined type
-        entity_pb_item = model_pb_to_entity_pb(value)
+        entity_pb_item = model_pb_to_entity_pb(value, exclude_falsy_values=True)
         value_pb.entity_value.CopyFrom(entity_pb_item)
     else:
         raise ValueError('Unsupported type for value: %s' % (value))
