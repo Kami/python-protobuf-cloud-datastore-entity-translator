@@ -31,8 +31,8 @@ from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
 from tests.mocks import EXAMPLE_PB_DEFAULT_VALUES
 
-from src.translator import model_pb_to_entity_pb
-from src.translator import entity_pb_to_model_pb
+from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
+from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
 
 __all__ = [
     'GoogleDatastoreTranslatorIntegrationTestCase'
