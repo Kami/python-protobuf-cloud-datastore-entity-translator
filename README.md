@@ -44,6 +44,14 @@ Right now the library supports the following Protobuf field types and functional
 For more information on the actual types supported by Google Datastore, refer to
 https://cloud.google.com/datastore/docs/concepts/entities#properties_and_value_types.
 
+## Supported Python versions:
+
+* Python 2.7
+* Python 3.6
+* Python 3.7
+
+It may also work with Python 3.4 and 3.5, but we don't test against those versions.
+
 ## Gotchas
 
 In protobuf syntax version 3 a concept of field being set has been removed and combined with a
