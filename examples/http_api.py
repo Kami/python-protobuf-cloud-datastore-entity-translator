@@ -22,21 +22,18 @@ To run it:
 $ PYTHONPATH=. gunicorn examples/http_api.py:app
 """
 
-import importlib
-from typing import Type
 from typing import Tuple
 from typing import Dict
-from types import ModuleType
 
 from flask import Flask
 from flask import request
 
 from google.protobuf import json_format
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from google.cloud import datastore
 
 from src.translator import model_pb_to_entity_pb
 from src.translator import entity_pb_to_model_pb
+from src.utils import get_module_and_class_for_model_name
 
 app = Flask(__name__)
 
@@ -106,25 +103,3 @@ def get_db_object(key):
     model_pb_json = json_format.MessageToJson(model_pb)
 
     return model_pb_json, 200, {'Content-Type': 'application/json'}
-
-
-def get_module_and_class_for_model_name(model_name):
-    # type: (str) -> Tuple[ModuleType, Type[GeneratedProtocolMessageType]]
-    split = model_name.rsplit('.', 1)
-
-    if len(split) != 2:
-        raise ValueError('Invalid module name: %s' % (model_name))
-
-    module_path, class_name = split
-
-    try:
-        module = importlib.import_module(module_path)
-        model_class = getattr(module, class_name, None)
-    except Exception as e:
-        raise ValueError('Class "%s" not found: %s. Make sure "%s" is in PYTHONPATH' %
-                         (model_name, module_path, str(e)))
-
-    if not model_class:
-        raise ValueError('Class "%s" not found in module "%s"' % (model_name, module_path))
-
-    return module, model_class
