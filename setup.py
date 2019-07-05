@@ -24,7 +24,7 @@ from dist_utils import parse_version_string
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REQUIREMENTS_FILE = os.path.join(BASE_DIR, 'requirements.txt')
-INIT_FILE = os.path.join(BASE_DIR, 'src', '__init__.py')
+INIT_FILE = os.path.join(BASE_DIR, 'protobuf_cloud_datastore_translator', '__init__.py')
 
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)

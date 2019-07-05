@@ -12,4 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+
+__all__ = [
+    'model_pb_to_entity_pb',
+    'model_pb_with_key_to_entity_pb',
+    'entity_pb_to_model_pb'
+]
+
 __version__ = '0.1.0'
+
+from .translator import model_pb_to_entity_pb
+from .translator import model_pb_with_key_to_entity_pb
+from .translator import entity_pb_to_model_pb

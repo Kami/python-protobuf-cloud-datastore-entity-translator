@@ -31,9 +31,9 @@ from flask import request
 from google.protobuf import json_format
 from google.cloud import datastore
 
-from src.translator import model_pb_to_entity_pb
-from src.translator import entity_pb_to_model_pb
-from src.utils import get_module_and_class_for_model_name
+from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
+from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
+from protobuf_cloud_datastore_translator.utils import get_module_and_class_for_model_name
 
 app = Flask(__name__)
 
