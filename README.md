@@ -145,7 +145,7 @@ key = client.key('MyModelDB', 'some_primary_key')
 entity = client.get(key)
 entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
-my_model_pb = entity_pb_to_model_pb(my_model_pb2, my_model_pb2.MyModelPB, entity_pb)
+my_model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
 print(my_model_pb)
 ```
 

@@ -1,4 +1,4 @@
-# 0.1.0 - June 5th, 2019
+# v0.1.0 - June 5th, 2019
 
 - Initial release which exposes the following public functions:
 
