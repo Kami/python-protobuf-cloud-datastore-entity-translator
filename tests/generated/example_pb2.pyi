@@ -26,6 +26,10 @@ from google.protobuf.timestamp_pb2 import (
     Timestamp as google___protobuf___timestamp_pb2___Timestamp,
 )
 
+from google.type.latlng_pb2 import (
+    LatLng as google___type___latlng_pb2___LatLng,
+)
+
 from models.example3_pb2 import (
     ExampleWithPackageDBModel as models___example3_pb2___ExampleWithPackageDBModel,
 )
@@ -38,7 +42,6 @@ from typing import (
     Optional as typing___Optional,
     Text as typing___Text,
     Tuple as typing___Tuple,
-    cast as typing___cast,
 )
 
 from typing_extensions import (
@@ -58,15 +61,19 @@ class ExampleEnumModel(int):
     def values(cls) -> typing___List[ExampleEnumModel]: ...
     @classmethod
     def items(cls) -> typing___List[typing___Tuple[str, ExampleEnumModel]]: ...
-ENUM0 = typing___cast(ExampleEnumModel, 0)
-ENUM1 = typing___cast(ExampleEnumModel, 1)
-ENUM2 = typing___cast(ExampleEnumModel, 2)
+    ENUM0: typing_extensions___Literal[0]
+    ENUM1: typing_extensions___Literal[1]
+    ENUM2: typing_extensions___Literal[2]
+ENUM0: typing_extensions___Literal[0]
+ENUM1: typing_extensions___Literal[1]
+ENUM2: typing_extensions___Literal[2]
 
 class ExampleNestedModel(google___protobuf___message___Message):
     string_key = ... # type: typing___Text
     int32_key = ... # type: int
 
     def __init__(self,
+        *,
         string_key : typing___Optional[typing___Text] = None,
         int32_key : typing___Optional[int] = None,
         ) -> None: ...
@@ -77,7 +84,7 @@ class ExampleNestedModel(google___protobuf___message___Message):
     if sys.version_info >= (3,):
         def ClearField(self, field_name: typing_extensions___Literal[u"int32_key",u"string_key"]) -> None: ...
     else:
-        def ClearField(self, field_name: typing_extensions___Literal[b"int32_key",b"string_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"int32_key",b"int32_key",u"string_key",b"string_key"]) -> None: ...
 
 class ExampleDBModelWithKey(google___protobuf___message___Message):
     key = ... # type: typing___Text
@@ -85,6 +92,7 @@ class ExampleDBModelWithKey(google___protobuf___message___Message):
     int32_key = ... # type: int
 
     def __init__(self,
+        *,
         key : typing___Optional[typing___Text] = None,
         string_key : typing___Optional[typing___Text] = None,
         int32_key : typing___Optional[int] = None,
@@ -96,7 +104,7 @@ class ExampleDBModelWithKey(google___protobuf___message___Message):
     if sys.version_info >= (3,):
         def ClearField(self, field_name: typing_extensions___Literal[u"int32_key",u"key",u"string_key"]) -> None: ...
     else:
-        def ClearField(self, field_name: typing_extensions___Literal[b"int32_key",b"key",b"string_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"int32_key",b"int32_key",u"key",b"key",u"string_key",b"string_key"]) -> None: ...
 
 class ExampleDBModel(google___protobuf___message___Message):
     class MapStringStringEntry(google___protobuf___message___Message):
@@ -104,6 +112,7 @@ class ExampleDBModel(google___protobuf___message___Message):
         value = ... # type: typing___Text
 
         def __init__(self,
+            *,
             key : typing___Optional[typing___Text] = None,
             value : typing___Optional[typing___Text] = None,
             ) -> None: ...
@@ -114,13 +123,14 @@ class ExampleDBModel(google___protobuf___message___Message):
         if sys.version_info >= (3,):
             def ClearField(self, field_name: typing_extensions___Literal[u"key",u"value"]) -> None: ...
         else:
-            def ClearField(self, field_name: typing_extensions___Literal[b"key",b"value"]) -> None: ...
+            def ClearField(self, field_name: typing_extensions___Literal[u"key",b"key",u"value",b"value"]) -> None: ...
 
     class MapStringInt32Entry(google___protobuf___message___Message):
         key = ... # type: typing___Text
         value = ... # type: int
 
         def __init__(self,
+            *,
             key : typing___Optional[typing___Text] = None,
             value : typing___Optional[int] = None,
             ) -> None: ...
@@ -131,7 +141,7 @@ class ExampleDBModel(google___protobuf___message___Message):
         if sys.version_info >= (3,):
             def ClearField(self, field_name: typing_extensions___Literal[u"key",u"value"]) -> None: ...
         else:
-            def ClearField(self, field_name: typing_extensions___Literal[b"key",b"value"]) -> None: ...
+            def ClearField(self, field_name: typing_extensions___Literal[u"key",b"key",u"value",b"value"]) -> None: ...
 
     int32_key = ... # type: int
     string_key = ... # type: typing___Text
@@ -160,7 +170,11 @@ class ExampleDBModel(google___protobuf___message___Message):
     @property
     def struct_key(self) -> google___protobuf___struct_pb2___Struct: ...
 
+    @property
+    def geo_point_key(self) -> google___type___latlng_pb2___LatLng: ...
+
     def __init__(self,
+        *,
         int32_key : typing___Optional[int] = None,
         string_key : typing___Optional[typing___Text] = None,
         bool_key : typing___Optional[bool] = None,
@@ -177,17 +191,18 @@ class ExampleDBModel(google___protobuf___message___Message):
         timestamp_key : typing___Optional[google___protobuf___timestamp_pb2___Timestamp] = None,
         struct_key : typing___Optional[google___protobuf___struct_pb2___Struct] = None,
         null_key : typing___Optional[google___protobuf___struct_pb2___NullValue] = None,
+        geo_point_key : typing___Optional[google___type___latlng_pb2___LatLng] = None,
         ) -> None: ...
     @classmethod
     def FromString(cls, s: bytes) -> ExampleDBModel: ...
     def MergeFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
     def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
     if sys.version_info >= (3,):
-        def HasField(self, field_name: typing_extensions___Literal[u"struct_key",u"timestamp_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",u"bytes_key",u"complex_array_key",u"double_key",u"enum_key",u"float_key",u"int32_array_key",u"int32_key",u"int64_key",u"map_string_int32",u"map_string_string",u"null_key",u"string_array_key",u"string_key",u"struct_key",u"timestamp_key"]) -> None: ...
+        def HasField(self, field_name: typing_extensions___Literal[u"geo_point_key",u"struct_key",u"timestamp_key"]) -> bool: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",u"bytes_key",u"complex_array_key",u"double_key",u"enum_key",u"float_key",u"geo_point_key",u"int32_array_key",u"int32_key",u"int64_key",u"map_string_int32",u"map_string_string",u"null_key",u"string_array_key",u"string_key",u"struct_key",u"timestamp_key"]) -> None: ...
     else:
-        def HasField(self, field_name: typing_extensions___Literal[u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[b"bool_key",b"bytes_key",b"complex_array_key",b"double_key",b"enum_key",b"float_key",b"int32_array_key",b"int32_key",b"int64_key",b"map_string_int32",b"map_string_string",b"null_key",b"string_array_key",b"string_key",b"struct_key",b"timestamp_key"]) -> None: ...
+        def HasField(self, field_name: typing_extensions___Literal[u"geo_point_key",b"geo_point_key",u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> bool: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",b"bool_key",u"bytes_key",b"bytes_key",u"complex_array_key",b"complex_array_key",u"double_key",b"double_key",u"enum_key",b"enum_key",u"float_key",b"float_key",u"geo_point_key",b"geo_point_key",u"int32_array_key",b"int32_array_key",u"int32_key",b"int32_key",u"int64_key",b"int64_key",u"map_string_int32",b"map_string_int32",u"map_string_string",b"map_string_string",u"null_key",b"null_key",u"string_array_key",b"string_array_key",u"string_key",b"string_key",u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> None: ...
 
 class ExampleWithReferencedTypeDBModel(google___protobuf___message___Message):
     string_key = ... # type: typing___Text
@@ -200,6 +215,7 @@ class ExampleWithReferencedTypeDBModel(google___protobuf___message___Message):
     def referenced_package_type_key(self) -> models___example3_pb2___ExampleWithPackageDBModel: ...
 
     def __init__(self,
+        *,
         string_key : typing___Optional[typing___Text] = None,
         referenced_enum : typing___Optional[ExampleEnumModel] = None,
         referenced_type_key : typing___Optional[example2_pb2___ExampleReferencedType] = None,
@@ -214,7 +230,7 @@ class ExampleWithReferencedTypeDBModel(google___protobuf___message___Message):
         def ClearField(self, field_name: typing_extensions___Literal[u"referenced_enum",u"referenced_package_type_key",u"referenced_type_key",u"string_key"]) -> None: ...
     else:
         def HasField(self, field_name: typing_extensions___Literal[u"referenced_package_type_key",b"referenced_package_type_key",u"referenced_type_key",b"referenced_type_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[b"referenced_enum",b"referenced_package_type_key",b"referenced_type_key",b"string_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"referenced_enum",b"referenced_enum",u"referenced_package_type_key",b"referenced_package_type_key",u"referenced_type_key",b"referenced_type_key",u"string_key",b"string_key"]) -> None: ...
 
 class ExampleWithNestedStructDBModel(google___protobuf___message___Message):
 
@@ -222,6 +238,7 @@ class ExampleWithNestedStructDBModel(google___protobuf___message___Message):
     def struct_key(self) -> google___protobuf___struct_pb2___Struct: ...
 
     def __init__(self,
+        *,
         struct_key : typing___Optional[google___protobuf___struct_pb2___Struct] = None,
         ) -> None: ...
     @classmethod
@@ -233,4 +250,4 @@ class ExampleWithNestedStructDBModel(google___protobuf___message___Message):
         def ClearField(self, field_name: typing_extensions___Literal[u"struct_key"]) -> None: ...
     else:
         def HasField(self, field_name: typing_extensions___Literal[u"struct_key",b"struct_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[b"struct_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"struct_key",b"struct_key"]) -> None: ...

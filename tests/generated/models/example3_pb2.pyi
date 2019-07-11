@@ -18,6 +18,7 @@ class ExampleWithPackageDBModel(google___protobuf___message___Message):
     string_key = ... # type: typing___Text
 
     def __init__(self,
+        *,
         string_key : typing___Optional[typing___Text] = None,
         ) -> None: ...
     @classmethod
@@ -27,4 +28,4 @@ class ExampleWithPackageDBModel(google___protobuf___message___Message):
     if sys.version_info >= (3,):
         def ClearField(self, field_name: typing_extensions___Literal[u"string_key"]) -> None: ...
     else:
-        def ClearField(self, field_name: typing_extensions___Literal[b"string_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"string_key",b"string_key"]) -> None: ...

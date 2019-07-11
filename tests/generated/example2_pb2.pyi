@@ -13,7 +13,6 @@ from typing import (
     Optional as typing___Optional,
     Text as typing___Text,
     Tuple as typing___Tuple,
-    cast as typing___cast,
 )
 
 from typing_extensions import (
@@ -33,15 +32,19 @@ class ExampleReferencedEnum(int):
     def values(cls) -> typing___List[ExampleReferencedEnum]: ...
     @classmethod
     def items(cls) -> typing___List[typing___Tuple[str, ExampleReferencedEnum]]: ...
-KEY0 = typing___cast(ExampleReferencedEnum, 0)
-KEY1 = typing___cast(ExampleReferencedEnum, 1)
-KEY2 = typing___cast(ExampleReferencedEnum, 2)
+    KEY0: typing_extensions___Literal[0]
+    KEY1: typing_extensions___Literal[1]
+    KEY2: typing_extensions___Literal[2]
+KEY0: typing_extensions___Literal[0]
+KEY1: typing_extensions___Literal[1]
+KEY2: typing_extensions___Literal[2]
 
 class ExampleReferencedType(google___protobuf___message___Message):
     key_1 = ... # type: typing___Text
     key_2 = ... # type: typing___Text
 
     def __init__(self,
+        *,
         key_1 : typing___Optional[typing___Text] = None,
         key_2 : typing___Optional[typing___Text] = None,
         ) -> None: ...
@@ -52,4 +55,4 @@ class ExampleReferencedType(google___protobuf___message___Message):
     if sys.version_info >= (3,):
         def ClearField(self, field_name: typing_extensions___Literal[u"key_1",u"key_2"]) -> None: ...
     else:
-        def ClearField(self, field_name: typing_extensions___Literal[b"key_1",b"key_2"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"key_1",b"key_1",u"key_2",b"key_2"]) -> None: ...
