@@ -17,6 +17,8 @@ import datetime
 
 import google.auth
 import pytz
+from google.type import latlng_pb2
+from google.cloud.datastore.helpers import GeoPoint
 
 from tests.generated import example_pb2
 
@@ -67,8 +69,10 @@ EXAMPLE_DICT_POPULATED = {
         }
     },
     'timestamp_key': dt,
+    'geo_point_key': GeoPoint(-20.2, +160.5),
     'null_key': None
 }
+geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
 
 EXAMPLE_DICT_DEFAULT_VALUES = {
     'bool_key': False,
@@ -126,6 +130,9 @@ EXAMPLE_PB_POPULATED.struct_key.update({
         'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}]
     }
 })
+
+geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
+EXAMPLE_PB_POPULATED.geo_point_key.CopyFrom(geo_point_value)
 
 # Ezample object which explicitly provides values for all the fields which are the same as
 # the default values

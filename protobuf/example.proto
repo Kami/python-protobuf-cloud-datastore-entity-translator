@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "google/type/latlng.proto";
 
 import "example2.proto";
 import "models/example3.proto";
@@ -63,6 +64,7 @@ message ExampleDBModel {
 
     // Other special types
     google.protobuf.NullValue null_key = 13;
+    google.type.LatLng geo_point_key = 17;
 }
 
 // DB model which references types (Protobuf definitions) from another file.
