@@ -2,8 +2,12 @@
 
 [![Tests Build Status](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator.svg?branch=master)](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator) [![Codecov](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator/badge.svg?branch=master&service=github)](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator?branch=master)
 
-This repository contains a Python library which converts arbitrary protobuf message objects into
-Entity protobuf objects which can be used with Google Datastore.
+This library allows you to store arbitrary Protobuf message objects inside the Google Datastore.
+
+It exposes methods for translating arbitrary Protobuf message objects to Entity Protobuf objects
+which are used by Google Datastore and vice-versa.
+
+It supports all the native types except GeoPoint as supported by the Google Datastore.
 
 ## Why, Motivation
 
@@ -52,9 +56,110 @@ https://cloud.google.com/datastore/docs/concepts/entities#properties_and_value_t
 
 It may also work with Python 3.4 and 3.5, but we don't test against those versions.
 
+## Usage
+
+This library exposes three main public methods.
+
+### ``model_pb_to_entity_pb(model_pb, exclude_falsy_values=False)``
+
+This method converts arbitrary Protobuf message objects to the Entity Protobuf object which can
+be used with Google Datastore.
+
+For example:
+
+```python
+from google.cloud import datastore
+from google.protobuf.timestamp_pb2 import Timestamp
+
+from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
+
+from generated.protobuf.models import my_model_pb2
+
+# 1. Store your database model object which is represented using a custom Protobuf message class
+# instance inside Google Datastore
+
+# Create database model Protobuf instance
+model_pb = my_model_pb2.MyModelDB()
+# Other entity attributes
+model_pb.key1 = 'value1'
+model_pb.key2 = 200
+model_pb.parameters['foo'] = 'bar'
+model_pb.parameters['bar'] = 'baz'
+
+start_time_timestamp = Timestamp()
+start_time_timestamp.GetCurrentTime()
+
+model_pb.start_time = start_time_timestamp
+
+# Convert it to Entity Protobuf object which can be used with Google Datastore
+entity_pb = model_pb_to_entity_pb(model_pb)
+
+# Store it in the datastore
+client = Client(...)
+key = self.client.key('MyModelDB', 'some_primary_key')
+entity_pb_translated.key.CopyFrom(key.to_protobuf())
+entity = datastore.helpers.entity_from_protobuf(entity_pb)
+client.put(entity)
+```
+
+### ``model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False)``
+
+As a convenience, this library also exposes ``model_pb_to_entity_pb`` method. This method assumes
+there is a special ``key`` string field on your Protobuf message which will act as an Entity
+primary key.
+
+Underneath, this method infers ``project_id`` and ``namespace_id`` parts of the Entity composite
+primary key from the ``client`` object which is passed to this method. Entity ``kind`` is inferred
+from the Protobuf message model name. For example, if the Protobuf message model name is
+``UserInfoDB``, entity kind would be set to ``UserInfoDB``.
+
+For example:
+
+```python
+from google.cloud import datastore
+
+from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
+
+model_pb = my_model_pb2.MyModelDB()
+model_pb.key = 'key-1234'
+# set model fields
+# ...
+
+client = Client(project='my-project', namespace='my-namespace')
+
+entity_pb = model_pb_to_entity_pb(model_pb)
+
+# Store it in the datastore
+entity = datastore.helpers.entity_from_protobuf(entity_pb)
+client.put(entity)
+
+# In this scenario, actual key would look the same if you manually constructed it like this:
+key = client.key('MyModelDB', 'key-1234', project='my-project', namespace='my-namespace')
+```
+
+### ``entity_pb_to_model_pb(model_pb_class, entity_pb, strict=False)``
+
+This method converts raw Entity Protobuf object as returned by the Google Datastore to provided
+Protobuf message class.
+
+By default, fields which are found on the Datastore Entity Protobuf object, but not on the
+Protobuf message class are ignored. If you want an exception to be thrown in such scenario, you
+can pass ``strict=True`` argument to the method.
+
+For example:
+
+```python
+key = client.key('MyModelDB', 'some_primary_key')
+entity = client.get(key)
+entity_pb = datastore.helpers.entity_to_protobuf(entity)
+
+model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
+print(model_pb)
+```
+
 ## Gotchas
 
-In protobuf syntax version 3 a concept of field being set has been removed and combined with a
+In Protobuf syntax version 3 a concept of field being set has been removed and combined with a
 concept of a default value. This means that even when a field is not set, a default value which
 is specific to that field type will be returned.
 
@@ -83,9 +188,13 @@ print(entity_pb_translated)
 
 # No field values are provided, implicit default values are used during serialization
 example_pb = example_pb2.ExampleDBModel()
-entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+entity_pb_translated = model_pb_to_entity_pb(example_pb)
 print(entity_pb_translated)
 ```
+
+If you don't want default values to be set on the translated Entity Protobuf objects and stored
+inside the datastore, you can pass ``exclude_falsy_values=True`` argument to the
+``model_pb_to_entity_pb`` method.
 
 For details, see:
 
@@ -97,7 +206,7 @@ For details, see:
 
 ## Examples
 
-For example protobuf definitions, see ``protobuf/`` directory.
+For example Protobuf message definitions, see ``protobuf/`` directory.
 
 Example usage:
 
@@ -107,23 +216,18 @@ from google.cloud import datastore
 from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
 from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
 
-from generated import my_model_pb2
+from generated.protobuf.models import my_model_pb2
 
 # 1. Store your database model object which is represented using a custom Protobuf message class
 # instance inside Google Datastore
 
 # Create database model Protobuf instance
-my_model_pb = MyModelDB()
-# NOTE: "key" is a special attribute which is used as entity primary key
-my_model_pb.key = 'some_primary_key'
-# Other entity attributes
-my_model_pb.key1 = 'value1'
-my_model_pb.key2 = 200
-my_model_pb['foo'] = 'bar'
-my_model_pb['bar'] = 'baz'
+model_pb = my_model_pb2.MyModelDB()
+model_pb.key1 = 'value1'
+model_pb.key2 = 200
 
 # Convert it to Entity Protobuf object which can be used with Google Datastore
-entity_pb = model_pb_to_entity_pb(my_model_pb)
+entity_pb = model_pb_to_entity_pb(model_pb)
 
 # Store it in the datastore
 # To avoid conversion back and forth you can also use lower level client methods which
@@ -135,7 +239,6 @@ key = self.client.key('MyModelDB', 'some_primary_key')
 entity_pb_translated.key.CopyFrom(key.to_protobuf())
 
 entity = datastore.helpers.entity_from_protobuf(entity_pb)
-
 client.put(entity)
 
 # 2. Retrieve entity from the datastore and convert it to your Protobuf DB model instance class
@@ -145,9 +248,16 @@ key = client.key('MyModelDB', 'some_primary_key')
 entity = client.get(key)
 entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
-my_model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
-print(my_model_pb)
+model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
+print(model_pb)
 ```
+
+### Translator Libraries for Other Programming Languages
+
+This section contains a list of translator libraries for other programming languages which offer
+the same functionality.
+
+* Golang - [go-protobuf-cloud-datastore-entity-translator](Sheshagiri/go-protobuf-cloud-datastore-entity-translator)
 
 ### Tests
 
