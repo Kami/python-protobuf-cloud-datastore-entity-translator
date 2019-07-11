@@ -332,6 +332,15 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(model_pb.geo_point_key.latitude, -20.2)
         self.assertEqual(model_pb.geo_point_key.longitude, +160.5)
 
+        latlng_value = latlng_pb2.LatLng(latitude=0.0, longitude=0.0)
+
+        geo_point_value = entity_pb.properties.get_or_create('geo_point_key')
+        geo_point_value.geo_point_value.CopyFrom(latlng_value)
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb.geo_point_key.latitude, 0.0)
+        self.assertEqual(model_pb.geo_point_key.longitude, 0.0)
+
     def test_model_pb_to_entity_pb_referenced_type(self):
         # Test a scenario where model pb references a type from another protobuf file
         example_referenced_type_pb = example2_pb2.ExampleReferencedType()
