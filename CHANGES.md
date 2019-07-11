@@ -1,3 +1,11 @@
+# v0.1.1 - June 11th, 2019
+
+- Implement support for ``geo_point_value`` and ``google.type.LatLng`` field
+  type.
+
+  Now all the field types which are supported by Google Datastore are also
+  supported by this library.
+
 # v0.1.0 - June 5th, 2019
 
 - Initial release which exposes the following public functions:

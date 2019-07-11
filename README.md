@@ -7,7 +7,7 @@ This library allows you to store arbitrary Protobuf message objects inside the G
 It exposes methods for translating arbitrary Protobuf message objects to Entity Protobuf objects
 which are used by Google Datastore and vice-versa.
 
-It supports all the native types except GeoPoint as supported by the Google Datastore.
+It supports all the native which are supported by the Google Datastore.
 
 ## Why, Motivation
 
@@ -33,7 +33,7 @@ Right now the library supports the following Protobuf field types and functional
 * All the simple types (string, int32, int64, double, float, bytes, bool, enum)
 * Scalar / container types (map, repeated)
 * Complex types from Protobuf standard library (``google.protobuf.Timestamp``,
-  ``google.Protobuf.Struct``)
+  ``google.Protobuf.Struct``, ``google.types.LatLng``)
 * Using imports and referencing types from different Protobuf definition files. For example,
   you can have Protobuf message definition called ``Model1DB`` inside file ``model1.proto`` which
   has a field which references ``Model2DB`` from ``model2.proto`` file.
