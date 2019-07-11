@@ -183,7 +183,7 @@ example_pb.bool_key = False
 example_pb.bytes_key = b''
 example_pb.null_key = 1
 
-entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+entity_pb_translated = model_pb_to_entity_pb(example_pb)
 print(entity_pb_translated)
 
 # No field values are provided, implicit default values are used during serialization
@@ -257,7 +257,7 @@ print(model_pb)
 This section contains a list of translator libraries for other programming languages which offer
 the same functionality.
 
-* Golang - [go-protobuf-cloud-datastore-entity-translator](Sheshagiri/go-protobuf-cloud-datastore-entity-translator)
+* Golang - [go-protobuf-cloud-datastore-entity-translator](https://github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator)
 
 ### Tests
 
