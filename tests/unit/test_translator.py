@@ -18,6 +18,7 @@ import unittest
 import requests
 from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
+from google.type import latlng_pb2
 
 from tests.generated import example_pb2
 from tests.generated import example2_pb2
@@ -233,6 +234,19 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             .properties['key2'].string_value,
             'value2')
 
+        geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
+
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.geo_point_key.CopyFrom(geo_point_value)
+
+        entity_pb_serialized = model_pb_to_entity_pb(model_pb=example_pb, exclude_falsy_values=True)
+        self.assertEntityPbHasPopulatedField(entity_pb_serialized,
+                'geo_point_key')
+        self.assertEqual(entity_pb_serialized.properties['geo_point_key'].geo_point_value.latitude,
+            -20.2)
+        self.assertEqual(entity_pb_serialized.properties['geo_point_key'].geo_point_value.longitude,
+            +160.5)
+
     def test_model_pb_with_key_to_entity_pb(self):
         # type: () -> None
         client = datastore.Client(credentials=EmulatorCreds(), _http=requests.Session(),
@@ -305,6 +319,27 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
                         'the database model class "ExampleDBModel"')
         self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb,
                                 example_pb2.ExampleDBModel, entity_pb, strict=True)
+
+    def test_entity_pb_to_model_pb_geopoint_type(self):
+        entity_pb = entity_pb2.Entity()
+
+        latlng_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
+
+        geo_point_value = entity_pb.properties.get_or_create('geo_point_key')
+        geo_point_value.geo_point_value.CopyFrom(latlng_value)
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb.geo_point_key.latitude, -20.2)
+        self.assertEqual(model_pb.geo_point_key.longitude, +160.5)
+
+        latlng_value = latlng_pb2.LatLng(latitude=0.0, longitude=0.0)
+
+        geo_point_value = entity_pb.properties.get_or_create('geo_point_key')
+        geo_point_value.geo_point_value.CopyFrom(latlng_value)
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb.geo_point_key.latitude, 0.0)
+        self.assertEqual(model_pb.geo_point_key.longitude, 0.0)
 
     def test_model_pb_to_entity_pb_referenced_type(self):
         # Test a scenario where model pb references a type from another protobuf file

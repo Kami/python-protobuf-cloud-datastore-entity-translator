@@ -25,8 +25,10 @@ from datetime import datetime
 
 import six
 
+from google.type import latlng_pb2
 from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
+from google.cloud.datastore.helpers import GeoPoint
 from google.protobuf import message
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
@@ -171,6 +173,12 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
 
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
                 value_pb.timestamp_value.CopyFrom(field_value)
+            elif field_type.message_type.full_name == 'google.type.LatLng':
+                if str(field_value) == '':
+                    # Value not set
+                    continue
+                value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
+                value_pb.geo_point_value.CopyFrom(field_value)
             elif isinstance(field_value, MessageMapContainer):
                 # Nested dictionary on a struct, set a value directory on a passed in pb object
                 # which is a parent Struct entity
@@ -281,6 +289,9 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
             elif value is None:
                 # NULL type
                 setattr(model_pb, prop_name, 0)
+            elif isinstance(value, GeoPoint):
+                item_pb = latlng_pb2.LatLng(latitude=value.latitude, longitude=value.longitude)
+                getattr(model_pb, prop_name).CopyFrom(item_pb)
             else:
                 setattr(model_pb, prop_name, value)
 
