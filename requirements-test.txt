@@ -1,8 +1,9 @@
 pylint
 flake8
 st2flake8==0.1.0
-nose
-rednose
 coverage
 codecov
 requests
+pytest
+pytest-coverage
+pytest-benchmark
