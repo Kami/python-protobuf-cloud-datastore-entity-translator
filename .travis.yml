@@ -36,4 +36,5 @@ cache:
   apt: true
   directories:
     - $HOME/.cache/pip # pip cache
+    - .benchmarks/  # py.test-benchmark result cache
 #    - .tox
