@@ -6,3 +6,5 @@ rednose
 coverage
 codecov
 requests
+pytest
+pytest-benchmark
