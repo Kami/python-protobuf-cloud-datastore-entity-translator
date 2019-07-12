@@ -26,13 +26,13 @@ matrix:
       before_install: TOX_ENV=coverage-travis
     - env: ENV=py2.7-benchmarks
       python: 2.7
-      before_install: TOX_ENV=py2.7-benchmarks
+      before_install: TOX_ENV=py2.7-benchmarks-travis
     - env: ENV=py3.6-benchmarks
       python: 3.6
-      before_install: TOX_ENV=py3.6-benchmarks
+      before_install: TOX_ENV=py3.6-benchmarks-travis
     - env: ENV=py3.7-benchmarks
       python: 3.7
-      before_install: TOX_ENV=py3.7-benchmarks
+      before_install: TOX_ENV=py3.7-benchmarks-travis
 
 install:
   - pip install "tox==3.12.1"
