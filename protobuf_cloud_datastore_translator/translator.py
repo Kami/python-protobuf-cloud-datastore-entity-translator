@@ -119,10 +119,9 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
 
         if attr_type == 'array_value':
             if len(field_value) == 0:
-                # TODO: Should we include empty value?
-                # array_value = entity_pb2.ArrayValue(values=[])
-                # value_pb.array_value.CopyFrom(array_value)
-                continue
+                value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
+                array_value = entity_pb2.ArrayValue(values=[])
+                value_pb.array_value.CopyFrom(array_value)
             else:
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
 
@@ -169,6 +168,9 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
             if field_type.message_type.full_name == 'google.protobuf.Timestamp':
                 if str(field_value) == '':
                     # Value not set
+                    # TODO: Include default empty value?
+                    # value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
+                    # value_pb.timestamp_value.CopyFrom(field_value)
                     continue
 
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
