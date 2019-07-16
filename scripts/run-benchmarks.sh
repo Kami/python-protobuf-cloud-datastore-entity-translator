@@ -25,5 +25,5 @@ if [ ${EXIT_CODE} -ne 0 ]; then
     echo "Previous run doesn't exist, skipping compare..."
     exec py.test --benchmark-autosave tests/test_benchmarks.py
 else
-    exec py.test --benchmark-autosave --benchmark-compare --benchmark-compare-fail=min:10% tests/test_benchmarks.py
+    exec py.test --benchmark-autosave --benchmark-compare --benchmark-compare-fail=min:14% tests/test_benchmarks.py
 fi
