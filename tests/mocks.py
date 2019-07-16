@@ -86,7 +86,10 @@ EXAMPLE_DICT_DEFAULT_VALUES = {
     'bytes_key': b'',
     'null_key': None,
     'map_string_string': {},
-    'map_string_int32': {}
+    'map_string_int32': {},
+    'string_array_key': [],
+    'int32_array_key': [],
+    'complex_array_key': []
 }
 
 # pylint: disable=no-member
