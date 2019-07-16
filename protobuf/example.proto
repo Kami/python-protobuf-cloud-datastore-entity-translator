@@ -16,6 +16,7 @@ enum ExampleEnumModel {
 message ExampleNestedModel {
     string string_key = 1;
     int32 int32_key = 2;
+    ExampleEnumModel enum_key = 3;
 }
 
 message ExampleDBModelWithKey {
@@ -31,7 +32,7 @@ message ExampleDBModelWithKey {
     // setting the "key" string field on this object
     string key = 1;
 
-    string string_key= 2;
+    string string_key = 2;
     int32 int32_key = 3;
 }
 

@@ -126,8 +126,14 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
 
                 for value in field_value:
-                    value_pb_item = entity_pb2.Value()
-                    value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
+                    if field_type == descriptor.FieldDescriptor.TYPE_MESSAGE:
+                        # Nested message type
+                        entity_pb_item = model_pb_to_entity_pb(value)
+                        value_pb_item = entity_pb2.Value()
+                        value_pb_item.entity_value.CopyFrom(entity_pb_item)
+                    else:
+                        value_pb_item = entity_pb2.Value()
+                        value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
 
                     value_pb.array_value.values.append(value_pb_item)
         elif field_type == descriptor.FieldDescriptor.TYPE_STRING:

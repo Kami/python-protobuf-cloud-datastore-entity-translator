@@ -425,6 +425,42 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
 
+    def test_model_pb_to_entity_pb_repeated_referenced_type_with_enum_value(self):
+        # Test a scenario where a repeated field references a nested type which contains an ENUM
+        # and ensure default enum value (0) is correctly set either when it's explicitly provided
+        # or when it's not provided and a default value is used
+        example_pb = example_pb2.ExampleDBModel()
+
+        example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
+            int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)
+        # Enum with value 0 is explicitly provided
+        example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
+           int32_key=5000, enum_key=example_pb2.ExampleEnumModel.ENUM0)
+        # Enum value is not provided, default value 0 should be used
+        example_placeholder_pb3 = example_pb2.ExampleNestedModel(string_key=u'value 3',
+            int32_key=40)
+
+        example_pb.complex_array_key.append(example_placeholder_pb1)
+        example_pb.complex_array_key.append(example_placeholder_pb2)
+        example_pb.complex_array_key.append(example_placeholder_pb3)
+
+        self.assertEqual(example_pb.complex_array_key[0].enum_key, 2)
+        self.assertEqual(example_pb.complex_array_key[1].enum_key, 0)
+        self.assertEqual(example_pb.complex_array_key[2].enum_key, 0)
+
+        # Serialize it and ensure "0" enum values are included
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+        self.assertEqual(len(entity_pb.properties['complex_array_key'].array_value.values), 3)
+        self.assertEqual(entity_pb.properties['complex_array_key'].array_value.values[0]
+                .entity_value.properties['enum_key'].integer_value,
+            example_pb2.ExampleEnumModel.ENUM2)
+        self.assertEqual(entity_pb.properties['complex_array_key'].array_value.values[1]
+                .entity_value.properties['enum_key'].integer_value,
+            example_pb2.ExampleEnumModel.ENUM0)
+        self.assertEqual(entity_pb.properties['complex_array_key'].array_value.values[2]
+                .entity_value.properties['enum_key'].integer_value,
+            example_pb2.ExampleEnumModel.ENUM0)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
