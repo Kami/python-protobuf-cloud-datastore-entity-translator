@@ -1,3 +1,9 @@
+# in development
+
+- Update ``model_pb_to_entity_pb`` method so it always explicitly sets enum
+  values for repeated fields which reference another Protobuf message with
+  enum field.
+
 # v0.1.2 - June 16th, 2019
 
 - Update ``model_pb_to_entity_pb`` method so it also includes empty array
