@@ -54,8 +54,14 @@ EXAMPLE_DICT_POPULATED = {
     },
     'string_array_key': [u'item1', u'item2'],
     'int32_array_key': [100, 200, 300],
-    'complex_array_key': [{'string_key': u'value 1', 'int32_key': 12345},
-                          {'string_key': u'value 2', 'int32_key': 5000}],
+    'complex_array_key': [
+        {'string_key': u'value 1', 'int32_key': 12345,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM2},
+        {'string_key': u'value 2', 'int32_key': 5000,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM0},
+        {'string_key': u'value 3', 'int32_key': 40,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM0},
+    ],
     'enum_key': example_pb2.ExampleEnumModel.ENUM1,
     'struct_key': {
         'key1': u'val1',
@@ -114,12 +120,15 @@ EXAMPLE_PB_POPULATED.int32_array_key.append(200)
 EXAMPLE_PB_POPULATED.int32_array_key.append(300)
 
 example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
-    int32_key=12345)
+    int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)
 example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
-    int32_key=5000)
+    int32_key=5000, enum_key=example_pb2.ExampleEnumModel.ENUM0)
+example_placeholder_pb3 = example_pb2.ExampleNestedModel(string_key=u'value 3',
+    int32_key=40, enum_key=example_pb2.ExampleEnumModel.ENUM0)
 
 EXAMPLE_PB_POPULATED.complex_array_key.append(example_placeholder_pb1)
 EXAMPLE_PB_POPULATED.complex_array_key.append(example_placeholder_pb2)
+EXAMPLE_PB_POPULATED.complex_array_key.append(example_placeholder_pb3)
 
 EXAMPLE_PB_POPULATED.timestamp_key.FromDatetime(dt)
 EXAMPLE_PB_POPULATED.struct_key.update({
