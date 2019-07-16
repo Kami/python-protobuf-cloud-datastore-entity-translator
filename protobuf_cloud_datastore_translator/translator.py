@@ -130,8 +130,12 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                         # Nested message type
                         entity_pb_item = model_pb_to_entity_pb(value)
                         value_pb_item = entity_pb2.Value()
+
+                        # pylint: disable=no-member
                         value_pb_item.entity_value.CopyFrom(entity_pb_item)
+                        # pylint: enable=no-member
                     else:
+                        # Simple type
                         value_pb_item = entity_pb2.Value()
                         value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
 

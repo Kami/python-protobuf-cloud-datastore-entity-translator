@@ -425,10 +425,10 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
 
-    def test_model_pb_to_entity_pb_repeated_referenced_type_with_enum_value(self):
+    def test_model_pb_to_entity_pb_repeated_referenced_field_with_enum_field(self):
         # Test a scenario where a repeated field references a nested type which contains an ENUM
-        # and ensure default enum value (0) is correctly set either when it's explicitly provided
-        # or when it's not provided and a default value is used
+        # and ensure that default enum value (0) is correctly set either when it's explicitly
+        # provided or when it's not provided and a default value is used.
         example_pb = example_pb2.ExampleDBModel()
 
         example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',

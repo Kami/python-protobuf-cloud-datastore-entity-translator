@@ -55,11 +55,12 @@ EXAMPLE_DICT_POPULATED = {
     'string_array_key': [u'item1', u'item2'],
     'int32_array_key': [100, 200, 300],
     'complex_array_key': [
-        {'string_key': u'value 1', 'int32_key': 12345, 'enum_key': example_pb2.ExampleEnumModel.ENUM2},
-        # Enum 0 explicitly provided
-        {'string_key': u'value 2', 'int32_key': 5000, 'enum_key': example_pb2.ExampleEnumModel.ENUM0},
-        # Enum 0 not provided, should use ad default value
-        {'string_key': u'value 3', 'int32_key': 40, 'enum_key': example_pb2.ExampleEnumModel.ENUM0},
+        {'string_key': u'value 1', 'int32_key': 12345,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM2},
+        {'string_key': u'value 2', 'int32_key': 5000,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM0},
+        {'string_key': u'value 3', 'int32_key': 40,
+         'enum_key': example_pb2.ExampleEnumModel.ENUM0},
     ],
     'enum_key': example_pb2.ExampleEnumModel.ENUM1,
     'struct_key': {
