@@ -1,8 +1,8 @@
 # in development
 
-- Update ``model_pb_to_entity_pb`` method so it always explicitly sets enum
-  values for repeated fields which reference another Protobuf message with
-  enum field.
+- Update ``model_pb_to_entity_pb`` method so it always explicitly sets a
+  default value on the translated Entity Protobuf object for repeated fields
+  which reference another Protobuf message with enum field type. #12
 
 # v0.1.2 - June 16th, 2019
 
