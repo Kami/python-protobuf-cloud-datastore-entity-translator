@@ -63,8 +63,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
 
-        self.assertEqual(entity_pb_native, entity_pb_translated)
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
+        self.assertEqual(entity_pb_native, entity_pb_translated)
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
 
@@ -101,8 +101,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
 
-        self.assertEqual(entity_pb_native, entity_pb_translated)
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
+        self.assertEqual(entity_pb_native, entity_pb_translated)
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
 
@@ -413,8 +413,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # native one)
         entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
 
-        self.assertEqual(entity_pb_translated, entity_pb_native)
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
+        self.assertEqual(entity_pb_translated, entity_pb_native)
         self.assertEqual(sorted(entity_pb_native.SerializePartialToString()),
             sorted(entity_pb_translated.SerializePartialToString()))
 
