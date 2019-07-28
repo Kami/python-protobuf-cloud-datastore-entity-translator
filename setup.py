@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import codecs
+import sys
 import os.path
 
 from setuptools import setup
@@ -22,6 +23,8 @@ from setuptools import find_packages
 from dist_utils import fetch_requirements
 from dist_utils import parse_version_string
 
+PY2 = sys.version_info[0] == 2
+PY2_or_3_pre_34 = sys.version_info < (3, 4, 0)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REQUIREMENTS_FILE = os.path.join(BASE_DIR, 'requirements.txt')
@@ -29,6 +32,9 @@ INIT_FILE = os.path.join(BASE_DIR, 'protobuf_cloud_datastore_translator', '__ini
 
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
+
+if PY2_or_3_pre_34:
+    install_reqs.append('typing')
 
 with codecs.open(os.path.join(BASE_DIR, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
