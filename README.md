@@ -282,6 +282,13 @@ tox -e py3.7-integration-tests
 tox -e coverage
 ```
 
+NOTE 1: Integration tests depend on the Google Cloud Datastore Emulator to be running
+(``./scripts/run-datastore-emulator.sh``).
+
+NOTE 2: Integration tests also run cross programming language compatibility tests which
+verify that the Python and Go translator libraries produce exactly the same output. As such,
+those tests also require Golang >= 1.12 to be installed on the system.
+
 ## License
 
 Copyright 2019 Tomaz Muraus
