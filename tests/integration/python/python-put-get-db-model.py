@@ -111,7 +111,9 @@ def insert_db_model(fixture_path, model_name, primary_key):
     entity_pb.key.CopyFrom(key_pb)  # pylint: disable=no-member
 
     LOG.debug('Storing it in datastore under primary key "%s"', key)
-    client.put_entity_pb(entity_pb)
+
+    entity_pb = entity = datastore.helpers.entity_from_protobuf(entity_pb)
+    client.put(entity)
     return True
 
 
