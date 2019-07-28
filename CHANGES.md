@@ -1,4 +1,4 @@
-# in development
+# v0.1.3 - July 28th, 2019
 
 - Update ``model_pb_to_entity_pb`` method so it always explicitly sets a
   default value on the translated Entity Protobuf object for repeated fields
