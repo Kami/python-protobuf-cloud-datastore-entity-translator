@@ -39,7 +39,7 @@ __all__ = [
 ]
 
 START_EMULATOR_STRING = """
-gcloud beta emulators datastore start --host-port=127.0.0.1:8081 --no-store-on-disk
+gcloud beta emulators datastore start --host-port=127.0.0.1:8081 --no-store-on-disk --consistency=1
 """.strip()
 
 
