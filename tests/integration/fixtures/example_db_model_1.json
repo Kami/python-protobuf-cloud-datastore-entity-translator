@@ -1,0 +1,24 @@
+{
+    "int32_key": 10000,
+    "string_key": "foo bar baz",
+    "bool_key": true,
+    "bytes_key": "",
+    "double_key": 400.555,
+    "int64_key": "9999999999999999",
+    "map_string_string": {
+        "key1": "value 1",
+        "key2": "value 2"
+    },
+    "map_string_int32": {
+        "key_a": 1234,
+        "key_b": 5321
+    },
+    "string_array_key": ["a", "b", "c"],
+    "int32_array_key": [10, 20, 30, 40, 50],
+    "enum_key": "ENUM12",
+    "timestamp_key": "2019-01-12T10:00:00Z",
+    "struct_key": {
+        "foo": "bar",
+        "key": 100.1
+    }
+}

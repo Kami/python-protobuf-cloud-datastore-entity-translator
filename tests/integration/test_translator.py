@@ -17,19 +17,14 @@ __all__ = [
     'GoogleDatastoreTranslatorIntegrationTestCase'
 ]
 
-import os
-import time
-import unittest
-
-import requests
 from google.cloud import datastore
 
 from tests.generated import example_pb2
-from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
 from tests.mocks import EXAMPLE_PB_DEFAULT_VALUES
+from tests.integration.base import BaseDatastoreIntegrationTestCase
 
 from protobuf_cloud_datastore_translator import model_pb_to_entity_pb
 from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
@@ -38,48 +33,12 @@ __all__ = [
     'GoogleDatastoreTranslatorIntegrationTestCase'
 ]
 
-START_EMULATOR_STRING = """
-gcloud beta emulators datastore start --host-port=127.0.0.1:8081 --no-store-on-disk
-""".strip()
 
-
-class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
+class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestCase):
     """
     NOTE: Those tests rely on datastore emulator running (gcloud beta emulator datastore start
     --no-store-on-disk).
     """
-
-    def setUp(self):
-        # type: () -> None
-        super(GoogleDatastoreTranslatorIntegrationTestCase, self).setUp()
-
-        # Set environment variables which are needed for emulator to work
-        os.environ['DATASTORE_DATASET'] = 'translator-tests'
-        os.environ['DATASTORE_PROJECT_ID'] = 'translator-tests'
-        os.environ['DATASTORE_EMULATOR_HOST'] = 'localhost:8081'
-        os.environ['DATASTORE_EMULATOR_HOST_PATH'] = 'localhost:8081/datastore'
-        os.environ['DATASTORE_HOST'] = 'http://localhost:8081'
-
-        # 1. Verify datastore emulator is running
-        try:
-            requests.get(os.environ['DATASTORE_HOST'], timeout=1)
-        except requests.exceptions.ConnectionError as e:
-            raise ValueError('Can\'t reach "%s". Make sure Google Cloud Datastore emulator is '
-                    'running and listening on "%s": %s.\n\nYou can start emulator using "%s" '
-                    'command.' % (os.environ['DATASTORE_HOST'],
-                                  os.environ['DATASTORE_EMULATOR_HOST'], str(e),
-                                  START_EMULATOR_STRING))
-
-        # Instantiate client with mock credentials object
-        self.client = datastore.Client(credentials=EmulatorCreds(),
-                _http=requests.Session())
-        self._clear_datastore()
-
-    def tearDown(self):
-        # type: () -> None
-        super(GoogleDatastoreTranslatorIntegrationTestCase, self).tearDown()
-
-        self._clear_datastore()
 
     def test_store_and_retrieve_populated_translated_object_from_datastore(self):
         # type: () -> None
@@ -226,22 +185,3 @@ class GoogleDatastoreTranslatorIntegrationTestCase(unittest.TestCase):
         example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                            entity_pb_empty_retrieved)
         self.assertEqual(example_pb_empty_retrieved, example_pb)
-
-    def _clear_datastore(self):
-        # type: () -> None
-        # Clear datastore, ensure it's empty
-        query = self.client.query(kind='ExampleModel')
-        query.keys_only()
-        entity_keys = [entity.key for entity in query.fetch()]
-
-        # NOTE: We do that to ensure consistent delete because datastore is eventually consistent
-        self.client.delete_multi(entity_keys)
-        self.client.delete_multi(entity_keys)
-        self.client.delete_multi(entity_keys)
-        time.sleep(0.2)
-
-        query = self.client.query(kind='ExampleModel')
-        query.keys_only()
-        result = list(query.fetch())
-
-        self.assertEqual(len(result), 0)

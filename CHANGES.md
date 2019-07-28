@@ -3,6 +3,10 @@
 - Update ``model_pb_to_entity_pb`` method so it always explicitly sets a
   default value on the translated Entity Protobuf object for repeated fields
   which reference another Protobuf message with enum field type. #12
+- Fix ``setup.py``, make sure installation works correctly under Python 2.7
+  and Python >= 3.6. #13
+- Add cross programming language compatibility tests which verify that the
+  output of Python and Go translator library is exactly the same. #13
 
 # v0.1.2 - June 16th, 2019
 

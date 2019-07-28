@@ -9,6 +9,7 @@ virtualenv/
 */virtualenv/
 .mypy_cache/
 .benchmarks/
+go-put-get-db-model
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

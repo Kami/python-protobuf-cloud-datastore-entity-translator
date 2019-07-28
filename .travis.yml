@@ -18,7 +18,10 @@ matrix:
     - env: ENV=py3.7-unit-tests
       python: 3.7
       before_install: TOX_ENV=py3.7-unit-tests
-    - env: ENV=integration-tests
+    - env: ENV=py2.7-integration-tests
+      python: 2.7
+      before_install: TOX_ENV=py2.7-integration-tests
+    - env: ENV=py3.7-integration-tests
       python: 3.7
       before_install: TOX_ENV=py3.7-integration-tests
     - env: ENV=coverage
@@ -36,7 +39,11 @@ matrix:
 
 install:
   - pip install "tox==3.12.1"
-  - if [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/run-datastore-emulator.sh; fi
+  # Install Go
+  - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=1.12 bash)"; fi
+  # NOTE: This binary is required for cross programming language compatibility tests
+  - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/build-go-binary.sh; fi
+  - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/run-datastore-emulator.sh; fi
 
 script:
   - tox -e $TOX_ENV
