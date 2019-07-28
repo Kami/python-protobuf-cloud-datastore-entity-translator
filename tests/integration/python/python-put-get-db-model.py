@@ -60,10 +60,12 @@ def get_db_model(model_name, primary_key):
 
     # 2. Convert it into our model pb and JSON serialize it
     LOG.debug('Retrieving model with primary key "%s" from database' % (key))
-    entity_pb = client.get_entity_pb(key)
+    entity = client.get(key)
 
-    if not entity_pb:
+    if not entity:
         raise ValueError('Entity with key "%s" not found' % (key))
+
+    entity_pb = datastore.helpers.entity_to_protobuf(entity)
 
     LOG.debug('Converting it from Entity PB to DB model PB')
 

@@ -65,7 +65,7 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
             with open(fixture_obj['path'], 'r') as fp:
                 fixture_obj['content'] = json.loads(fp.read())
 
-    def test_put_and_get_self(self):
+    def test_put_and_get(self):
         # type: () -> None
         for fixture_obj in self.FIXTURES:
             self._test_fixture_obj(fixture_obj=fixture_obj)
@@ -83,19 +83,19 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         key_python = self.client.key(fixture_obj['entity_kind'], 'python_' + fixture_obj['key'])
         key_go = self.client.key(fixture_obj['entity_kind'], 'go_' + fixture_obj['key'])
 
-        entity_python_pb = self.client.get_entity_pb(key_python)
-        entity_go_pb = self.client.get_entity_pb(key_go)
+        entity_python_pb = self.client.get(key_python)
+        entity_go_pb = self.client.get(key_go)
 
         self.assertTrue(entity_python_pb, 'Entity with key "%s" not found' % (key_python))
         self.assertTrue(entity_go_pb, 'Entity with key "%s" not found' % (key_go))
 
         # Reset keys since they will always be different
-        entity_python_pb.ClearField('key')
-        entity_go_pb.ClearField('key')
+        entity_python_pb.key = None
+        entity_go_pb.key = None
 
         # Compare the raw entity result
         msg = 'Translated Entity PB objects for Python and Go don\'t match'
-        self.assertEqual(repr(entity_python_pb), repr(entity_go_pb), msg)
+        self.assertEqual(entity_python_pb, entity_go_pb, msg)
 
         # Compare translated models
 
