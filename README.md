@@ -1,6 +1,6 @@
 # Protobuf Message to Google Datastore Entity Protobuf Message Translator
 
-[![Tests Build Status](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator.svg?branch=master)](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator) [![Codecov](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator/badge.svg?branch=master&service=github)](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator?branch=master)
+[![Tests Build Status](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator.svg?branch=master)](https://travis-ci.org/Kami/python-protobuf-cloud-datastore-entity-translator) [![Codecov](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator/badge.svg?branch=master&service=github)](https://codecov.io/github/Kami/python-protobuf-cloud-datastore-entity-translator?branch=master) [![](https://img.shields.io/pypi/v/protobuf-cloud-datastore-translator.svg)](https://pypi.org/project/protobuf-cloud-datastore-translator/)  [![](https://img.shields.io/pypi/pyversions/protobuf-cloud-datastore-translator.svg)](https://pypi.org/project/protobuf-cloud-datastore-translator/) [![](https://img.shields.io/github/license/Kami/python-protobuf-cloud-datastore-entity-translator.svg)](https://github.com/Kami/python-protobuf-cloud-datastore-entity-translator/blob/master/LICENSE)
 
 This library allows you to store arbitrary Protobuf message objects inside the Google Datastore.
 
