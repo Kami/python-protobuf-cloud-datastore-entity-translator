@@ -144,7 +144,10 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
             '--fixture-path=%s' % (fixture_obj['path']),
             '--primary-key=python_%s' % (fixture_obj['key']),
         ]
-        process = subprocess.run(args, shell=False, capture_output=True)
+
+        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.stdout, process.stderr = process.communicate(timeout=5)
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
@@ -157,7 +160,9 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
             '-fixture-path=%s' % (fixture_obj['path']),
             '-primary-key=go_%s' % (fixture_obj['key']),
         ]
-        process = subprocess.run(args, shell=False, capture_output=True)
+        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.stdout, process.stderr = process.communicate(timeout=5)
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
@@ -170,7 +175,9 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
             '--operation=get',
             '--primary-key=python_%s' % (fixture_obj['key']),
         ]
-        process = subprocess.run(args, shell=False, capture_output=True)
+        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.stdout, process.stderr = process.communicate(timeout=5)
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
@@ -186,7 +193,9 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
             '-operation=get',
             '-primary-key=go_%s' % (fixture_obj['key']),
         ]
-        process = subprocess.run(args, shell=False, capture_output=True)
+        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.stdout, process.stderr = process.communicate(timeout=5)
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
