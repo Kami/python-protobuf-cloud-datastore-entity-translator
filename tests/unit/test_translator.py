@@ -321,6 +321,21 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertRaisesRegexp(ValueError, expected_msg, entity_pb_to_model_pb,
                                 example_pb2.ExampleDBModel, entity_pb, strict=True)
 
+    def test_entity_pb_to_model_pb_null_type(self):
+        entity_pb = entity_pb2.Entity()
+        null_value = entity_pb.properties.get_or_create('null_key')
+        null_value.null_value = 0
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb.null_key, 0)
+
+        entity_pb = entity_pb2.Entity()
+        null_value = entity_pb.properties.get_or_create('null_key')
+        null_value.null_value = 1
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb.null_key, 0)
+
     def test_entity_pb_to_model_pb_geopoint_type(self):
         entity_pb = entity_pb2.Entity()
 

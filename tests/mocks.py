@@ -54,6 +54,7 @@ EXAMPLE_DICT_POPULATED = {
     },
     'string_array_key': [u'item1', u'item2'],
     'int32_array_key': [100, 200, 300],
+    'bytes_array_key': [b'a', b'b', b'c'],
     'complex_array_key': [
         {'string_key': u'value 1', 'int32_key': 12345,
          'enum_key': example_pb2.ExampleEnumModel.ENUM2},
@@ -95,6 +96,7 @@ EXAMPLE_DICT_DEFAULT_VALUES = {
     'map_string_int32': {},
     'string_array_key': [],
     'int32_array_key': [],
+    'bytes_array_key': [],
     'complex_array_key': []
 }
 
@@ -118,6 +120,9 @@ EXAMPLE_PB_POPULATED.enum_key = example_pb2.ExampleEnumModel.ENUM1
 EXAMPLE_PB_POPULATED.int32_array_key.append(100)
 EXAMPLE_PB_POPULATED.int32_array_key.append(200)
 EXAMPLE_PB_POPULATED.int32_array_key.append(300)
+EXAMPLE_PB_POPULATED.bytes_array_key.append(b'a')
+EXAMPLE_PB_POPULATED.bytes_array_key.append(b'b')
+EXAMPLE_PB_POPULATED.bytes_array_key.append(b'c')
 
 example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
     int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)

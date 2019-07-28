@@ -32,6 +32,10 @@ class UtilsTestCase(unittest.TestCase):
         self.assertRaisesRegexp(ValueError, expected_msg, get_module_and_class_for_model_name,
                                 'some.not.found.Foo')
 
+        expected_msg = 'Invalid module name:'
+        self.assertRaisesRegexp(ValueError, expected_msg, get_module_and_class_for_model_name,
+                                'invalid')
+
     def test_get_module_and_class_for_model_name_invalid_class_name(self):
         model_name = 'tests.generated.example_pb2.Foo'
         expected_msg = 'Class "tests.generated.example_pb2.Foo" not found'

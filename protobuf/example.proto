@@ -52,6 +52,7 @@ message ExampleDBModel {
     map<string, int32> map_string_int32 = 6;
     repeated string string_array_key = 7;
     repeated int32 int32_array_key = 8;
+    repeated bytes bytes_array_key = 18;
 
     // Container types with complex values
     repeated ExampleNestedModel complex_array_key = 9;
