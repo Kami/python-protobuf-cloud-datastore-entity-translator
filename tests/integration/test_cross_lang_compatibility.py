@@ -153,8 +153,8 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         # type: (Dict[str, str]) -> None
         args = [
             GO_INSERT_GET_SCRIPT_PATH,
-            '-type=put',
-            '-json-file=%s' % (fixture_obj['path']),
+            '-operation=put',
+            '-fixture-path=%s' % (fixture_obj['path']),
             '-primary-key=go_%s' % (fixture_obj['key']),
         ]
         process = subprocess.run(args, shell=False, capture_output=True)
@@ -183,7 +183,7 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         # type: (Dict[str, str]) -> Dict
         args = [
             GO_INSERT_GET_SCRIPT_PATH,
-            '-type=get',
+            '-operation=get',
             '-primary-key=go_%s' % (fixture_obj['key']),
         ]
         process = subprocess.run(args, shell=False, capture_output=True)

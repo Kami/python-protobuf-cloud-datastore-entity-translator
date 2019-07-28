@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	typ := flag.String("type", "put/get", "put or get from from datastore")
+	typ := flag.String("operation", "put/get", "put or get from from datastore")
 	primaryKey := flag.String("primary-key", "", "primary key, this will be used as Name in Datastore Key, ex: key-1")
-	jsonFile := flag.String("json-file", "", "path to json file containing protobuf")
+	jsonFile := flag.String("fixture-path", "", "path to json file containing protobuf")
 
 	flag.Parse()
 
