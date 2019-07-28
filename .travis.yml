@@ -39,6 +39,8 @@ matrix:
 
 install:
   - pip install "tox==3.12.1"
+  # Install Go
+  - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=1.12 bash)"; fi
   # NOTE: This binary is required for cross programming language compatibility tests
   - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/build-go-binary.sh; fi
   - if [ ${TOX_ENV} = "py2.7-integration-tests" ] || [ ${TOX_ENV} = "py3.7-integration-tests" ] || [ ${TOX_ENV} = "coverage-travis" ]; then ./scripts/run-datastore-emulator.sh; fi
