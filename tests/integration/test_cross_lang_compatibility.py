@@ -33,6 +33,11 @@ FIXTURES_PATH = os.path.join(BASE_DIR, 'fixtures/')
 PYTHON_INSERT_GET_SCRIPT_PATH = os.path.join(BASE_DIR, 'python/python-put-get-db-model.py')
 GO_INSERT_GET_SCRIPT_PATH = os.path.join(BASE_DIR, 'go', 'go-put-get-db-model')
 
+GO_BINARY_DOESNT_EXIST_ERROR = """
+go-put-get-db-model binary doesn't exist. You can build it by running
+./scripts/build-go-binary.sh script.
+""".strip()
+
 
 class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase):
     """
@@ -53,6 +58,10 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
     def setUp(self):
         # type: () -> None
         super(CrossLangCompatibilityIntegrationTestCase, self).setUp()
+
+        # Verify go binary exists
+        if not os.path.isfile(GO_INSERT_GET_SCRIPT_PATH):
+            raise ValueError(GO_BINARY_DOESNT_EXIST_ERROR)
 
         # Load fixture content into memory
         for fixture_obj in self.FIXTURES:
