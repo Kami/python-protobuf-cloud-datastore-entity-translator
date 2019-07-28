@@ -18,13 +18,9 @@ from typing import Dict
 import os
 import json
 import uuid
-import unittest
 import subprocess
 
-import requests
-from google.cloud import datastore
-
-from tests.mocks import EmulatorCreds
+from tests.integration.base import BaseDatastoreIntegrationTestCase
 
 __all__ = [
     'CrossLangCompatibilityIntegrationTestCase'
@@ -37,7 +33,7 @@ PYTHON_INSERT_GET_SCRIPT_PATH = os.path.join(BASE_DIR, 'python/python-put-get-db
 GO_INSERT_GET_SCRIPT_PATH = os.path.join(BASE_DIR, 'go', 'go-put-get-db-model')
 
 
-class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
+class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase):
     """
     Integration test which verifies that the output by Python and Go translator
     library is exactly the same.
@@ -56,9 +52,6 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
     def setUp(self):
         # type: () -> None
         super(CrossLangCompatibilityIntegrationTestCase, self).setUp()
-
-        self.client = datastore.Client(credentials=EmulatorCreds(),
-                        _http=requests.Session())
 
         # Load fixture content into memory
         for fixture_obj in self.FIXTURES:
@@ -147,7 +140,7 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
 
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate(timeout=5)
+        process.stdout, process.stderr = process.communicate()
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
@@ -162,7 +155,7 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate(timeout=5)
+        process.stdout, process.stderr = process.communicate()
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
@@ -177,12 +170,12 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate(timeout=5)
+        process.stdout, process.stderr = process.communicate()
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
 
-        json_parsed = json.loads(process.stdout)
+        json_parsed = json.loads(process.stdout)  # type: ignore
 
         return json_parsed
 
@@ -195,11 +188,11 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate(timeout=5)
+        process.stdout, process.stderr = process.communicate()
 
         if process.returncode != 0:
             self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
 
-        json_parsed = json.loads(process.stdout)
+        json_parsed = json.loads(process.stdout)  # type: ignore
 
         return json_parsed
