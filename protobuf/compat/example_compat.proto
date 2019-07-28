@@ -3,20 +3,20 @@ syntax = "proto3";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-enum ExampleEnumModel {
-    ENUM0 = 0;
-    ENUM1 = 1;
-    ENUM2 = 2;
+enum ExampleCompatEnumModel {
+    ENUM10 = 0;
+    ENUM11 = 1;
+    ENUM12 = 2;
 }
 
-message ExampleNestedModel {
+message ExampleCompatNestedModel {
     string string_key = 1;
     int32 int32_key = 2;
-    ExampleEnumModel enum_key = 3;
+    ExampleCompatEnumModel enum_key = 3;
 }
 
-// Example DB model definition which contains most of the common field types (simple and scalar)
-message ExampleDBModel {
+// ExampleCompat DB model definition which contains most of the common field types (simple and scalar)
+message ExampleCompatDBModel {
     // Simple types
     int32 int32_key = 1;
     string string_key = 2;
@@ -33,10 +33,10 @@ message ExampleDBModel {
     repeated int32 int32_array_key = 8;
 
     // Container types with complex values
-    repeated ExampleNestedModel complex_array_key = 9;
+    repeated ExampleCompatNestedModel complex_array_key = 9;
 
     // Enum types
-    ExampleEnumModel enum_key = 10;
+    ExampleCompatEnumModel enum_key = 10;
 
     // Complex types from protobuf stdlib
     google.protobuf.Timestamp timestamp_key = 11;
