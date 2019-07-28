@@ -16,6 +16,7 @@
 from typing import Dict
 
 import os
+import sys
 import json
 import uuid
 import subprocess
@@ -131,7 +132,7 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
     def _python_insert_fixture(self, fixture_obj):
         # type: (Dict[str, str]) -> None
         args = [
-            'python',
+            sys.executable,
             PYTHON_INSERT_GET_SCRIPT_PATH,
             '--operation=put',
             '--fixture-path=%s' % (fixture_obj['path']),
@@ -163,7 +164,7 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
     def _python_get_fixture(self, fixture_obj):
         # type: (Dict[str, str]) -> Dict
         args = [
-            'python',
+            sys.executable,
             PYTHON_INSERT_GET_SCRIPT_PATH,
             '--operation=get',
             '--primary-key=python_%s' % (fixture_obj['key']),
