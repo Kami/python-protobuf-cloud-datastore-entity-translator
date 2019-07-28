@@ -101,7 +101,8 @@ class CrossLangCompatibilityIntegrationTestCase(unittest.TestCase):
 
         # First perform a sanity test and make sure it matches the original fixture input
         model_pb_json_python = self._python_get_fixture(fixture_obj=fixture_obj)
-        self.assertDictsEqualIgnoreMissingDefaultValues(model_pb_json_python, fixture_obj['content'])
+        self.assertDictsEqualIgnoreMissingDefaultValues(model_pb_json_python,
+                                                        fixture_obj['content'])
 
         model_pb_json_go = self._go_get_fixture(fixture_obj=fixture_obj)
         self.assertDictsEqualIgnoreMissingDefaultValues(model_pb_json_go, fixture_obj['content'])

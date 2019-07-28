@@ -28,7 +28,6 @@ from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
 from protobuf_cloud_datastore_translator.utils import get_module_and_class_for_model_name
 
 from tests.mocks import EmulatorCreds  # type: ignore
-from tests.generated.compat.example_compat_pb2 import ExampleCompatDBModel
 
 __all__ = [
     'get_db_model',
@@ -80,8 +79,6 @@ def get_db_model(model_name, primary_key):
     return True
 
 
-
-
 def insert_db_model(fixture_path, model_name, primary_key):
     # type: (str, str, str) -> bool
     LOG.debug('Loading fixture from "%s"', fixture_path)
@@ -117,7 +114,8 @@ def insert_db_model(fixture_path, model_name, primary_key):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Get / Insert model DB fixture from / to a datastore')
+    parser = argparse.ArgumentParser(description='Get / Insert model DB fixture from / to a '
+                                                 'datastore')
     parser.add_argument(
         '--fixture-path', action='store', required=False, help=('Path to the JSON fixture file.')
     )
