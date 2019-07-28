@@ -23,7 +23,7 @@ message ExampleCompatDBModel {
     bool bool_key = 3;
     bytes bytes_key = 4;
     double double_key = 14;
-    float float_key = 15;
+    //float float_key = 15;
     int64 int64_key = 16;
 
     // Container types with simple values
@@ -33,7 +33,7 @@ message ExampleCompatDBModel {
     repeated int32 int32_array_key = 8;
 
     // Container types with complex values
-    repeated ExampleCompatNestedModel complex_array_key = 9;
+    //repeated ExampleCompatNestedModel complex_array_key = 9;
 
     // Enum types
     ExampleCompatEnumModel enum_key = 10;
@@ -43,5 +43,5 @@ message ExampleCompatDBModel {
     google.protobuf.Struct struct_key = 12;
 
     // Other special types
-    google.protobuf.NullValue null_key = 13;
+    //google.protobuf.NullValue null_key = 13;
 }

@@ -5,7 +5,6 @@ from google.protobuf.descriptor import (
 )
 
 from google.protobuf.internal.containers import (
-    RepeatedCompositeFieldContainer as google___protobuf___internal___containers___RepeatedCompositeFieldContainer,
     RepeatedScalarFieldContainer as google___protobuf___internal___containers___RepeatedScalarFieldContainer,
 )
 
@@ -14,7 +13,6 @@ from google.protobuf.message import (
 )
 
 from google.protobuf.struct_pb2 import (
-    NullValue as google___protobuf___struct_pb2___NullValue,
     Struct as google___protobuf___struct_pb2___Struct,
 )
 
@@ -118,21 +116,16 @@ class ExampleCompatDBModel(google___protobuf___message___Message):
     bool_key = ... # type: bool
     bytes_key = ... # type: bytes
     double_key = ... # type: float
-    float_key = ... # type: float
     int64_key = ... # type: int
     string_array_key = ... # type: google___protobuf___internal___containers___RepeatedScalarFieldContainer[typing___Text]
     int32_array_key = ... # type: google___protobuf___internal___containers___RepeatedScalarFieldContainer[int]
     enum_key = ... # type: ExampleCompatEnumModel
-    null_key = ... # type: google___protobuf___struct_pb2___NullValue
 
     @property
     def map_string_string(self) -> typing___MutableMapping[typing___Text, typing___Text]: ...
 
     @property
     def map_string_int32(self) -> typing___MutableMapping[typing___Text, int]: ...
-
-    @property
-    def complex_array_key(self) -> google___protobuf___internal___containers___RepeatedCompositeFieldContainer[ExampleCompatNestedModel]: ...
 
     @property
     def timestamp_key(self) -> google___protobuf___timestamp_pb2___Timestamp: ...
@@ -147,17 +140,14 @@ class ExampleCompatDBModel(google___protobuf___message___Message):
         bool_key : typing___Optional[bool] = None,
         bytes_key : typing___Optional[bytes] = None,
         double_key : typing___Optional[float] = None,
-        float_key : typing___Optional[float] = None,
         int64_key : typing___Optional[int] = None,
         map_string_string : typing___Optional[typing___Mapping[typing___Text, typing___Text]] = None,
         map_string_int32 : typing___Optional[typing___Mapping[typing___Text, int]] = None,
         string_array_key : typing___Optional[typing___Iterable[typing___Text]] = None,
         int32_array_key : typing___Optional[typing___Iterable[int]] = None,
-        complex_array_key : typing___Optional[typing___Iterable[ExampleCompatNestedModel]] = None,
         enum_key : typing___Optional[ExampleCompatEnumModel] = None,
         timestamp_key : typing___Optional[google___protobuf___timestamp_pb2___Timestamp] = None,
         struct_key : typing___Optional[google___protobuf___struct_pb2___Struct] = None,
-        null_key : typing___Optional[google___protobuf___struct_pb2___NullValue] = None,
         ) -> None: ...
     @classmethod
     def FromString(cls, s: bytes) -> ExampleCompatDBModel: ...
@@ -165,7 +155,7 @@ class ExampleCompatDBModel(google___protobuf___message___Message):
     def CopyFrom(self, other_msg: google___protobuf___message___Message) -> None: ...
     if sys.version_info >= (3,):
         def HasField(self, field_name: typing_extensions___Literal[u"struct_key",u"timestamp_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",u"bytes_key",u"complex_array_key",u"double_key",u"enum_key",u"float_key",u"int32_array_key",u"int32_key",u"int64_key",u"map_string_int32",u"map_string_string",u"null_key",u"string_array_key",u"string_key",u"struct_key",u"timestamp_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",u"bytes_key",u"double_key",u"enum_key",u"int32_array_key",u"int32_key",u"int64_key",u"map_string_int32",u"map_string_string",u"string_array_key",u"string_key",u"struct_key",u"timestamp_key"]) -> None: ...
     else:
         def HasField(self, field_name: typing_extensions___Literal[u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> bool: ...
-        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",b"bool_key",u"bytes_key",b"bytes_key",u"complex_array_key",b"complex_array_key",u"double_key",b"double_key",u"enum_key",b"enum_key",u"float_key",b"float_key",u"int32_array_key",b"int32_array_key",u"int32_key",b"int32_key",u"int64_key",b"int64_key",u"map_string_int32",b"map_string_int32",u"map_string_string",b"map_string_string",u"null_key",b"null_key",u"string_array_key",b"string_array_key",u"string_key",b"string_key",u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> None: ...
+        def ClearField(self, field_name: typing_extensions___Literal[u"bool_key",b"bool_key",u"bytes_key",b"bytes_key",u"double_key",b"double_key",u"enum_key",b"enum_key",u"int32_array_key",b"int32_array_key",u"int32_key",b"int32_key",u"int64_key",b"int64_key",u"map_string_int32",b"map_string_int32",u"map_string_string",b"map_string_string",u"string_array_key",b"string_array_key",u"string_key",b"string_key",u"struct_key",b"struct_key",u"timestamp_key",b"timestamp_key"]) -> None: ...

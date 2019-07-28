@@ -6,6 +6,8 @@ cloud.google.com/go v0.43.0/go.mod h1:BOSR3VbTLkk6FDC/TcffxP4NF/FFBGA5ku+jvKOP7p
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Kami/python-protobuf-cloud-datastore-entity-translator v0.1.1 h1:Hu/9SSbGzM6Lk9mbyB3w87s1SmdwHGzLG008bzYOPBE=
+github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator v0.0.0-20190716120802-c2a422e5787b h1:u00MV1KgI6DwWDlnNCE753UuYlwlKFZgjTDZPkPpJvI=
+github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator v0.0.0-20190716120802-c2a422e5787b/go.mod h1:YJyiVVqGKpuqUlk3g4KhjOTlp512QhibYLx83TYEVg0=
 github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator v0.0.0-20190717044751-d1375259e3e5 h1:T8CG1Auw6xJjOfGlwc0Ms7VUKYkwOxgE+TOh7aCfJRc=
 github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator v0.0.0-20190717044751-d1375259e3e5/go.mod h1:YJyiVVqGKpuqUlk3g4KhjOTlp512QhibYLx83TYEVg0=
 github.com/Sheshagiri/google-cloud-go v0.41.1-0.20190711043959-301311007500 h1:FMI6ZR35r/e+e//fObXm9MTdu6mx7cTH567sjm9WymQ=
