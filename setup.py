@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import codecs
 import os.path
 
 from setuptools import setup
@@ -29,7 +30,7 @@ INIT_FILE = os.path.join(BASE_DIR, 'protobuf_cloud_datastore_translator', '__ini
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
 
-with open(os.path.join(BASE_DIR, 'README.md'), encoding='utf-8') as f:
+with codecs.open(os.path.join(BASE_DIR, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
 setup(
