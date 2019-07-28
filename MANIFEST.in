@@ -1,2 +1,5 @@
 include README.md
 include LICENSE
+include dist_utils.py
+prune dist/
+prune build/
