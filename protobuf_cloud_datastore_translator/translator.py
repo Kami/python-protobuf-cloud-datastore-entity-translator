@@ -276,29 +276,29 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                 # We assume it's a referenced protobuf type if it doesn't contain "update()" method
                 # google.protobuf.Struct and Map types contain "update()" methods so we can treat
                 # them as simple dictionaries
-                if not is_nested:
+                if is_nested:
+                    for key, value in six.iteritems(value):
+                        set_model_pb_value(model_pb, key, value)
+                else:
                     field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
                     is_nested_model_type = (bool(field.message_type) and
                                             not hasattr(getattr(model_pb, prop_name, {}), 'update'))
 
-                if is_nested:
-                    for key, value in six.iteritems(value):
-                        set_model_pb_value(model_pb, key, value)
-                elif is_nested_model_type:
-                    # Custom type definition potentially defined in different file
-                    field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+                    if is_nested_model_type:
+                        # Custom type definition potentially defined in different file
+                        field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
 
-                    # Dynamically import nested model from a corresponding file
-                    nested_model_name = field.message_type.name
-                    nested_model_module = get_python_module_for_field(field=field)
-                    nested_model_class = getattr(nested_model_module, nested_model_name)
+                        # Dynamically import nested model from a corresponding file
+                        nested_model_name = field.message_type.name
+                        nested_model_module = get_python_module_for_field(field=field)
+                        nested_model_class = getattr(nested_model_module, nested_model_name)
 
-                    item_pb = nested_model_class()
-                    set_model_pb_value(item_pb, prop_name, value, is_nested=True)
+                        item_pb = nested_model_class()
+                        set_model_pb_value(item_pb, prop_name, value, is_nested=True)
 
-                    getattr(model_pb, prop_name).CopyFrom(item_pb)
-                else:
-                    getattr(model_pb, prop_name).update(dict(value))
+                        getattr(model_pb, prop_name).CopyFrom(item_pb)
+                    else:
+                        getattr(model_pb, prop_name).update(dict(value))
             elif isinstance(value, datetime):
                 getattr(model_pb, prop_name).FromDatetime(value)
             elif value is None:
