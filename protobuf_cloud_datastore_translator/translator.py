@@ -251,6 +251,8 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                 continue
 
         def set_model_pb_value(model_pb, prop_name, value, is_nested=False):
+            model_pb_class = model_pb.__class__
+
             if isinstance(value, list):
                 for item in value:
                     if isinstance(item, dict):
@@ -274,9 +276,10 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                 # We assume it's a referenced protobuf type if it doesn't contain "update()" method
                 # google.protobuf.Struct and Map types contain "update()" methods so we can treat
                 # them as simple dictionaries
-                field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
-                is_nested_model_type = (bool(field.message_type) and
-                                        not hasattr(getattr(model_pb, prop_name, {}), 'update'))
+                if not is_nested:
+                    field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
+                    is_nested_model_type = (bool(field.message_type) and
+                                            not hasattr(getattr(model_pb, prop_name, {}), 'update'))
 
                 if is_nested:
                     for key, value in six.iteritems(value):
