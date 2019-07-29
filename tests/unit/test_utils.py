@@ -16,7 +16,6 @@
 
 import sys
 import unittest
-import importlib
 
 import mock
 
