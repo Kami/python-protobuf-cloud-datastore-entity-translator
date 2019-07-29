@@ -92,7 +92,7 @@ class UtilsTestCase(unittest.TestCase):
         field = mock.Mock()
         field.message_type.file.name = 'invalid.module'
 
-        expected_msg = 'No module named \'invalid\''
+        expected_msg = 'No module named'
         self.assertRaisesRegexp(ImportError, expected_msg,
                                 get_python_module_for_field, field)
 
