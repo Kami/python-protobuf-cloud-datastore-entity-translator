@@ -418,8 +418,21 @@ def get_python_module_for_field(field):
     model_file = field.message_type.file.name
     module_name = model_file.replace('.proto', '_pb2').replace('/', '.')
 
-    if module_name not in sys.modules:
+    module = None
+
+    # Check if module is already loaded
+    if module_name in sys.modules:
+        # Module already in sys.modules under the same import name
+        module = sys.modules[module_name]
+    else:
+        # Check if module is in sys.modules under a different import name aka alias
+        for name in sys.modules:
+            if name.endswith(module_name):
+                module = sys.modules[name]
+                break
+
+    if not module:
+        # Module not in sys.modules, import it
         module = importlib.import_module(module_name)
 
-    module = sys.modules[module_name]
     return module
