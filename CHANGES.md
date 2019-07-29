@@ -1,4 +1,4 @@
-# v0.1.4 - TBA
+# v0.1.4 - July 29th, 2019
 
 - Fix dynamic module import handling for referenced messages inside
   ``entity_pb_to_model_pb`` and make sure we don't try to import a
