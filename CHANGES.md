@@ -3,7 +3,7 @@
 - Fix dynamic module import handling for referenced messages inside
   ``entity_pb_to_model_pb`` and make sure we don't try to import a
   module again if it's already imported under a different name (aka alias). #14
-* Fix ``entity_pb_to_model_pb`` so it correctly handles messages with a custom
+- Fix ``entity_pb_to_model_pb`` so it correctly handles messages with a custom
   referenced type which contains a struct field. #14
 
 # v0.1.3 - July 28th, 2019
