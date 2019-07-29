@@ -384,7 +384,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_with_nested_struct_db_model_pb = example_pb2.ExampleWithNestedStructDBModel()
         example_with_nested_struct_db_model_pb.struct_key.update({'foo': 'bar', 'bar': 'baz'})
 
-        example_with_referenced_type_pb.referenced_struct_key.CopyFrom(example_with_nested_struct_db_model_pb)
+        example_with_referenced_type_pb.referenced_struct_key.CopyFrom(
+            example_with_nested_struct_db_model_pb)
 
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
