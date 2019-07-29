@@ -79,6 +79,8 @@ message ExampleWithReferencedTypeDBModel {
 
     // Referenced type which is imported from models/example3.proto
     models.ExampleWithPackageDBModel referenced_package_type_key = 4;
+
+    ExampleWithNestedStructDBModel referenced_struct_key = 5;
 }
 
 message ExampleWithNestedStructDBModel {

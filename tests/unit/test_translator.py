@@ -381,6 +381,11 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_with_referenced_type_pb.referenced_package_type_key.CopyFrom(
             example_with_package_referenced_type_pb)
 
+        example_with_nested_struct_db_model_pb = example_pb2.ExampleWithNestedStructDBModel()
+        example_with_nested_struct_db_model_pb.struct_key.update({'foo': 'bar', 'bar': 'baz'})
+
+        example_with_referenced_type_pb.referenced_struct_key.CopyFrom(example_with_nested_struct_db_model_pb)
+
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_with_referenced_type_pb)
         self.assertEqual(entity_pb_translated.properties['string_key'].string_value, 'value 3')
         self.assertEqual(entity_pb_translated.properties['referenced_enum'].integer_value, 1)
@@ -393,6 +398,12 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['referenced_package_type_key'].
                 entity_value.properties['string_key'].string_value,
                 'value 4')
+        self.assertEqual(entity_pb_translated.properties['referenced_struct_key'].entity_value
+                         .properties['struct_key'].entity_value.properties['foo'].string_value,
+                         'bar')
+        self.assertEqual(entity_pb_translated.properties['referenced_struct_key'].entity_value
+                         .properties['struct_key'].entity_value.properties['bar'].string_value,
+                         'baz')
 
         # Perform the round trip, translate it back to the model and verity it matches the original
         # input
