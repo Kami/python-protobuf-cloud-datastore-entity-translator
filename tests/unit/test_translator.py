@@ -453,23 +453,26 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             sorted(example_pb.SerializePartialToString()))
 
     def test_model_pb_to_entity_pb_repeated_referenced_field_with_enum_field(self):
+        # type: () -> None
         # Test a scenario where a repeated field references a nested type which contains an ENUM
         # and ensure that default enum value (0) is correctly set either when it's explicitly
         # provided or when it's not provided and a default value is used.
         example_pb = example_pb2.ExampleDBModel()
 
         example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
-            int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)
+            int32_key=12345)
+        example_placeholder_pb1.enum_key = example_pb2.ExampleEnumModel.ENUM2  # type: ignore
         # Enum with value 0 is explicitly provided
         example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
-           int32_key=5000, enum_key=example_pb2.ExampleEnumModel.ENUM0)
+           int32_key=5000)
+        example_placeholder_pb2.enum_key = example_pb2.ExampleEnumModel.ENUM2  # type: ignore
         # Enum value is not provided, default value 0 should be used
         example_placeholder_pb3 = example_pb2.ExampleNestedModel(string_key=u'value 3',
             int32_key=40)
 
-        example_pb.complex_array_key.append(example_placeholder_pb1)
-        example_pb.complex_array_key.append(example_placeholder_pb2)
-        example_pb.complex_array_key.append(example_placeholder_pb3)
+        example_pb.complex_array_key.append(example_placeholder_pb1)  # type: ignore
+        example_pb.complex_array_key.append(example_placeholder_pb2)  # type: ignore
+        example_pb.complex_array_key.append(example_placeholder_pb3)  # type: ignore
 
         self.assertEqual(example_pb.complex_array_key[0].enum_key, 2)
         self.assertEqual(example_pb.complex_array_key[1].enum_key, 0)
