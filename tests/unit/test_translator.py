@@ -465,7 +465,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # Enum with value 0 is explicitly provided
         example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
            int32_key=5000)
-        example_placeholder_pb2.enum_key = example_pb2.ExampleEnumModel.ENUM2  # type: ignore
+        example_placeholder_pb2.enum_key = example_pb2.ExampleEnumModel.ENUM0  # type: ignore
         # Enum value is not provided, default value 0 should be used
         example_placeholder_pb3 = example_pb2.ExampleNestedModel(string_key=u'value 3',
             int32_key=40)
