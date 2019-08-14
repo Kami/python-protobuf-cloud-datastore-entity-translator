@@ -185,3 +185,37 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
         example_pb_empty_retrieved = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
                                                            entity_pb_empty_retrieved)
         self.assertEqual(example_pb_empty_retrieved, example_pb)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_fields(self):
+        # type: () -> None
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.int32_key = 100
+        example_pb.string_key = 'string bar'
+        example_pb.bytes_key = b'foobarbytes'
+        example_pb.enum_key = 1  # type: ignore
+
+        # No exclude from index provided
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        entity_translated = datastore.helpers.entity_from_protobuf(entity_pb)
+        self.assertEqual(entity_translated.exclude_from_indexes, set([]))
+
+        entity_translated.key = self.client.key('ExampleModel', 'exclude_from_indexes_1')
+        self.client.put(entity_translated)
+
+        entity_translated_retrieved = self.client.get(entity_translated.key)
+        self.assertEqual(entity_translated, entity_translated_retrieved)
+
+        # Exclude from index provided for some fields
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb,
+                                          exclude_from_index=['int32_key', 'bytes_key'])
+
+        entity_translated = datastore.helpers.entity_from_protobuf(entity_pb)
+        self.assertEqual(entity_translated.exclude_from_indexes, set(['int32_key', 'bytes_key']))
+
+
+        entity_translated.key = self.client.key('ExampleModel', 'exclude_from_indexes_2')
+        self.client.put(entity_translated)
+
+        entity_translated_retrieved = self.client.get(entity_translated.key)
+        self.assertEqual(entity_translated, entity_translated_retrieved)

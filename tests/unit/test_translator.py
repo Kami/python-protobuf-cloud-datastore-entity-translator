@@ -488,6 +488,30 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
                 .entity_value.properties['enum_key'].integer_value,
             example_pb2.ExampleEnumModel.ENUM0)
 
+    def test_model_pb_to_entity_pb_exclude_from_index_fields(self):
+        # type: () -> None
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.int32_key = 100
+        example_pb.string_key = 'string bar'
+        example_pb.bytes_key = b'foobarbytes'
+        example_pb.enum_key = 1  # type: ignore
+
+        # No exclude from index provided
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        for field_name in ['int32_key', 'string_key', 'bytes_key', 'enum_key']:
+            self.assertFalse(entity_pb.properties[field_name].exclude_from_indexes)
+
+        # Exclude from index provided for some fields
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb,
+                                          exclude_from_index=['int32_key', 'bytes_key'])
+
+        for field_name in ['int32_key', 'bytes_key']:
+            self.assertTrue(entity_pb.properties[field_name].exclude_from_indexes)
+
+        for field_name in ['string_key', 'enum_key']:
+            self.assertFalse(entity_pb.properties[field_name].exclude_from_indexes)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
