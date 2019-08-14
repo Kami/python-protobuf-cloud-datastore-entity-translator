@@ -213,7 +213,6 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
         entity_translated = datastore.helpers.entity_from_protobuf(entity_pb)
         self.assertEqual(entity_translated.exclude_from_indexes, set(['int32_key', 'bytes_key']))
 
-
         entity_translated.key = self.client.key('ExampleModel', 'exclude_from_indexes_2')
         self.client.put(entity_translated)
 
