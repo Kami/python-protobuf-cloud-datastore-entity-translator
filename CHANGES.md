@@ -1,3 +1,10 @@
+# v0.1.5 - TBA
+
+- Add support for new ``exclude_from_index`` argument to the
+  ``model_pb_to_entity_pb`` and ``model_pb_with_key_to_entity_pb`` method.
+  With this argument, user can specify a list of model / entity fields which
+  won't be indexed. #15
+
 # v0.1.4 - July 29th, 2019
 
 - Fix dynamic module import handling for referenced messages inside
