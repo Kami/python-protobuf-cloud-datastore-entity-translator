@@ -1,4 +1,4 @@
-# v0.1.5 - TBA
+# v0.1.5 - August 16th, 2019
 
 - Add support for new ``exclude_from_index`` argument to the
   ``model_pb_to_entity_pb`` and ``model_pb_with_key_to_entity_pb`` method.
