@@ -19,6 +19,8 @@ import importlib
 from typing import Any
 from typing import Type
 from typing import cast
+from typing import Optional
+from typing import List
 from typing import TypeVar
 from types import ModuleType
 from datetime import datetime
@@ -51,8 +53,9 @@ __all__ = [
 T_model_pb = TypeVar('T_model_pb', bound=message.Message)
 
 
-def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False):
-    # type: (datastore.Client, message.Message, bool) -> entity_pb2.Entity
+def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False,
+                                   exclude_from_index=None):
+    # type: (datastore.Client, message.Message, bool, Optional[List[str]]) -> entity_pb2.Entity
     """
     Same as "model_pb_to_entity_pb", but it assumes model_pb which is passed to this function also
     contains "key" string field which is used to construct a primary key for the Entity PB object.
@@ -61,7 +64,8 @@ def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False)
     namespace and project can be inferred from it (namespace_id and project_id are used as part of
     a composite primary key).
     """
-    entity_pb = model_pb_to_entity_pb(model_pb=model_pb, exclude_falsy_values=exclude_falsy_values)
+    entity_pb = model_pb_to_entity_pb(model_pb=model_pb, exclude_falsy_values=exclude_falsy_values,
+                                      exclude_from_index=exclude_from_index)
 
     if getattr(model_pb, 'key', None) is not None:
         # Special handling for top level key attribute which we assume will service as a primary
@@ -77,8 +81,8 @@ def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False)
     return entity_pb
 
 
-def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
-    # type: (message.Message, bool) -> entity_pb2.Entity
+def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_index=None):
+    # type: (message.Message, bool, Optional[List[str]]) -> entity_pb2.Entity
     """
     Translate Protobuf based database model object to Entity object which can be used with Google
     Datastore client library.
@@ -92,7 +96,12 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                                  distinguish between a user explicitly providing a value which is
                                  the same as a default value (e.g. 0 for an integer field) and
                                  user not providing a value and default value being used instead.
+
+    :param exclude_from_index: Optional list of field names which should not be indexed. By
+                               default, all the fields are indexed.
     """
+    exclude_from_index = exclude_from_index or []
+
     if not isinstance(model_pb, message.Message):
         raise ValueError('model_pb argument is not a valid Protobuf class instance')
 
@@ -117,6 +126,7 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
 
         attr_type = get_pb_attr_type(field_value)
 
+        value_pb = None
         if attr_type == 'array_value':
             if len(field_value) == 0:
                 value_pb = datastore.helpers._new_value_pb(entity_pb, field_name)
@@ -216,6 +226,10 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False):
                 value_pb.entity_value.CopyFrom(entity_pb_item)
         else:
             raise ValueError('Unsupported field type for field "%s"' % (field_name))
+
+        if value_pb and field_name in exclude_from_index:
+            # Field should be excluded from the index, mark that on the Entity Value
+            value_pb.exclude_from_indexes = True
 
     return entity_pb
 

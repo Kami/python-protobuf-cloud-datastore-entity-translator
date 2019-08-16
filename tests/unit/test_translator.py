@@ -453,23 +453,26 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             sorted(example_pb.SerializePartialToString()))
 
     def test_model_pb_to_entity_pb_repeated_referenced_field_with_enum_field(self):
+        # type: () -> None
         # Test a scenario where a repeated field references a nested type which contains an ENUM
         # and ensure that default enum value (0) is correctly set either when it's explicitly
         # provided or when it's not provided and a default value is used.
         example_pb = example_pb2.ExampleDBModel()
 
         example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
-            int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)
+            int32_key=12345)
+        example_placeholder_pb1.enum_key = example_pb2.ExampleEnumModel.ENUM2  # type: ignore
         # Enum with value 0 is explicitly provided
         example_placeholder_pb2 = example_pb2.ExampleNestedModel(string_key=u'value 2',
-           int32_key=5000, enum_key=example_pb2.ExampleEnumModel.ENUM0)
+           int32_key=5000)
+        example_placeholder_pb2.enum_key = example_pb2.ExampleEnumModel.ENUM0  # type: ignore
         # Enum value is not provided, default value 0 should be used
         example_placeholder_pb3 = example_pb2.ExampleNestedModel(string_key=u'value 3',
             int32_key=40)
 
-        example_pb.complex_array_key.append(example_placeholder_pb1)
-        example_pb.complex_array_key.append(example_placeholder_pb2)
-        example_pb.complex_array_key.append(example_placeholder_pb3)
+        example_pb.complex_array_key.append(example_placeholder_pb1)  # type: ignore
+        example_pb.complex_array_key.append(example_placeholder_pb2)  # type: ignore
+        example_pb.complex_array_key.append(example_placeholder_pb3)  # type: ignore
 
         self.assertEqual(example_pb.complex_array_key[0].enum_key, 2)
         self.assertEqual(example_pb.complex_array_key[1].enum_key, 0)
@@ -487,6 +490,30 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb.properties['complex_array_key'].array_value.values[2]
                 .entity_value.properties['enum_key'].integer_value,
             example_pb2.ExampleEnumModel.ENUM0)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_fields(self):
+        # type: () -> None
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.int32_key = 100
+        example_pb.string_key = 'string bar'
+        example_pb.bytes_key = b'foobarbytes'
+        example_pb.enum_key = 1  # type: ignore
+
+        # No exclude from index provided
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        for field_name in ['int32_key', 'string_key', 'bytes_key', 'enum_key']:
+            self.assertFalse(entity_pb.properties[field_name].exclude_from_indexes)
+
+        # Exclude from index provided for some fields
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb,
+                                          exclude_from_index=['int32_key', 'bytes_key'])
+
+        for field_name in ['int32_key', 'bytes_key']:
+            self.assertTrue(entity_pb.properties[field_name].exclude_from_indexes)
+
+        for field_name in ['string_key', 'enum_key']:
+            self.assertFalse(entity_pb.properties[field_name].exclude_from_indexes)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None

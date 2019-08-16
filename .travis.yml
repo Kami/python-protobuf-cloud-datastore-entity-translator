@@ -53,4 +53,6 @@ cache:
   directories:
     - $HOME/.cache/pip # pip cache
     - .benchmarks/  # py.test-benchmark result cache
-#    - .tox
+    # Go modules
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod

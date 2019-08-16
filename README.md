@@ -60,7 +60,7 @@ It may also work with Python 3.4 and 3.5, but we don't test against those versio
 
 This library exposes three main public methods.
 
-### ``model_pb_to_entity_pb(model_pb, exclude_falsy_values=False)``
+### ``model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_index=None)``
 
 This method converts arbitrary Protobuf message objects to the Entity Protobuf object which can
 be used with Google Datastore.
@@ -102,7 +102,7 @@ entity = datastore.helpers.entity_from_protobuf(entity_pb)
 client.put(entity)
 ```
 
-### ``model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False)``
+### ``model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False, exclude_from_index=None)``
 
 As a convenience, this library also exposes ``model_pb_to_entity_pb`` method. This method assumes
 there is a special ``key`` string field on your Protobuf message which will act as an Entity

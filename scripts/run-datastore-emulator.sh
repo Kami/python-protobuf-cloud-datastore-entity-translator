@@ -28,11 +28,11 @@ EMULATOR_PID=$!
 sleep 5
 
 if ps -p ${EMULATOR_PID} > /dev/null; then
-    echo "MongoDB successfully started"
+    echo "Datastore emulator successfully started"
     tail -30 /tmp/emulator.log
     exit 0
 else
-    echo "Failed to start MongoDB"
+    echo "Failed to start Datastore emulator"
     tail -30 /tmp/emulator.log
     exit 1
 fi
