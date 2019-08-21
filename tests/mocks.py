@@ -67,13 +67,15 @@ EXAMPLE_DICT_POPULATED = {
     'struct_key': {
         'key1': u'val1',
         'key2': 2,
-        'key3': [1, 2, 3],
+        'key3': [1, 2, 3, None],
         'key4': u'čđć',
         'key5': {
             'dict_key_1': u'1',
             'dict_key_2': 30,
-            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}]
-        }
+            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}, None],
+            'dict_key_4': None,
+        },
+        'key6': None
     },
     'timestamp_key': dt,
     'geo_point_key': GeoPoint(-20.2, +160.5),
@@ -139,13 +141,15 @@ EXAMPLE_PB_POPULATED.timestamp_key.FromDatetime(dt)
 EXAMPLE_PB_POPULATED.struct_key.update({
     'key1': u'val1',
     'key2': 2,
-    'key3': [1, 2, 3],
+    'key3': [1, 2, 3, None],
     'key4': u'čđć',
     'key5': {
         'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}]
-    }
+        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}, None],
+        'dict_key_4': None
+    },
+    'key6': None
 })
 
 geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)

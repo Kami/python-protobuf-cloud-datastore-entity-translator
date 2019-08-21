@@ -19,6 +19,7 @@ import unittest
 import requests
 from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
+from google.protobuf import struct_pb2
 from google.type import latlng_pb2
 
 from tests.generated import example_pb2
@@ -514,6 +515,27 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         for field_name in ['string_key', 'enum_key']:
             self.assertFalse(entity_pb.properties[field_name].exclude_from_indexes)
+
+    def test_model_pb_to_entity_pb_struct_field_null_value(self):
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.struct_key.update({
+            'key1': None,
+            'key2': [None, None],
+            'key3': {'a': None}
+        })
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        self.assertEqual(entity_pb.properties['struct_key'].entity_value
+                         .properties['key1'].null_value, struct_pb2.NULL_VALUE)
+        self.assertEqual(entity_pb.properties['struct_key'].entity_value.
+                         properties['key2'].array_value.values[0].null_value,
+                         struct_pb2.NULL_VALUE)
+        self.assertEqual(entity_pb.properties['struct_key'].entity_value.
+                         properties['key2'].array_value.values[1].null_value,
+                         struct_pb2.NULL_VALUE)
+        self.assertEqual(entity_pb.properties['struct_key'].entity_value.
+                         properties['key3'].entity_value.properties['a'].null_value,
+                         struct_pb2.NULL_VALUE)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
