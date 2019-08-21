@@ -1,3 +1,8 @@
+# v0.1.6 - August 21th, 2019
+
+- Fix a bug with ``model_pb_to_entity_pb`` method not correctly handling
+  ``null`` values for nested ``google.protobuf.Struct`` fields. #16
+
 # v0.1.5 - August 16th, 2019
 
 - Add support for new ``exclude_from_index`` argument to the
