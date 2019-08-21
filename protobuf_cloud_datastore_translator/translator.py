@@ -419,6 +419,8 @@ def set_value_pb_item_value(value_pb, value):
         # Custom user-defined type
         entity_pb_item = model_pb_to_entity_pb(value, exclude_falsy_values=True)
         value_pb.entity_value.CopyFrom(entity_pb_item)
+    elif value is None:
+        value_pb.null_value = struct_pb2.NULL_VALUE
     else:
         raise ValueError('Unsupported type for value: %s' % (value))
 
