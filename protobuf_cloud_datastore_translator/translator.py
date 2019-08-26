@@ -52,6 +52,10 @@ __all__ = [
 # Type which represents an arbitrary ModelPB class which is a subclass of message.Message
 T_model_pb = TypeVar('T_model_pb', bound=message.Message)
 
+# String name for exclude from index extension which signals this library which model
+# fields should be excluded from index
+EXCLUDE_FROM_INDEX_EXT_NAME = 'exclude_from_index'
+
 
 def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False,
                                    exclude_from_index=None):
@@ -98,7 +102,10 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
                                  user not providing a value and default value being used instead.
 
     :param exclude_from_index: Optional list of field names which should not be indexed. By
-                               default, all the fields are indexed.
+                               default, all the simple fields are indexed.
+
+                               NOTE: If provided, this value has high precedence over
+                               "exclude_from_index" message option defined on the model.
     """
     exclude_from_index = exclude_from_index or []
 
@@ -109,6 +116,21 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
     fields = [field for field in fields if field not in ['key']]
 
     entity_pb = entity_pb2.Entity()
+
+    # If Protobuf message options contains a special "exclude_from_indexes" repeated string option,
+    # use that option value to determine which fields should be excluded from
+    # index
+    # NOTE: "exclude_from_indexes" has precedence over values provided on the Protobuf model
+    # message.
+    model_extensions = model_pb.DESCRIPTOR.GetOptions().Extensions
+
+    try:
+        exclude_from_index_ext = model_extensions._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
+    except KeyError:
+        exclude_from_indexes_ext = None
+
+    if exclude_from_index_ext and not exclude_from_index:
+        exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
 
     for field_descriptor in fields:
         field_type = field_descriptor.type
