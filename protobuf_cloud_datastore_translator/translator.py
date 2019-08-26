@@ -127,10 +127,13 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
     try:
         exclude_from_index_ext = model_extensions._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
     except KeyError:
-        exclude_from_indexes_ext = None
+        exclude_from_index_ext = None
 
     if exclude_from_index_ext and not exclude_from_index:
-        exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
+        try:
+            exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
+        except KeyError:
+            exclude_from_index = []
 
     for field_descriptor in fields:
         field_type = field_descriptor.type
