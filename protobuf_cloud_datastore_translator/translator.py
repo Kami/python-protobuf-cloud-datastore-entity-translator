@@ -135,6 +135,8 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
         except KeyError:
             exclude_from_index = []
 
+    exclude_from_index = cast(list, exclude_from_index)
+
     for field_descriptor in fields:
         field_type = field_descriptor.type
         field_name = field_descriptor.name
