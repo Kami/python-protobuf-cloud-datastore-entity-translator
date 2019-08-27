@@ -157,6 +157,51 @@ model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
 print(model_pb)
 ```
 
+## Excluding Protobuf Model Fields from Indexes
+
+By default, Google Cloud Datstore automatically indexes each entity (model) property.
+
+Indexing each field (entity property) is usually not desired nor needed. It also has some
+limitations (for example, size of a simple field which is to be indexed is limited to ``1500``
+bytes, etc.). In addition to that, uncessary indexing causes increased storage space consumption.
+
+This library allows you to define which model fields to exclude from index on the field basis
+utilizing Protobuf field options extension.
+
+For example:
+
+```protobuf
+syntax = "proto3";
+
+import "google/protobuf/descriptor.proto";
+
+// Custom Protobuf option which specifies which model fields should be excluded
+// from index
+// NOTE: Keep in mind that it's important not to change the option name
+// ("exclude_from_index") since this library uses that special option name to
+// determine if a field should be excluded from index.
+extend google.protobuf.FieldOptions {
+    bool exclude_from_index = 50000;
+}
+
+message ExampleDBModelWithOptions1 {
+    string string_key_one = 1 [(exclude_from_index) = true];
+    string string_key_two = 2;
+    string string_key_three = 3 [(exclude_from_index) = true];
+    string string_key_four = 4;
+    int32 int32_field_one = 5;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
+}
+```
+
+In this example, fields ``string_key_one``, ``string_key_three`` and ``int32_field_two`` won't be
+indexed (https://cloud.google.com/datastore/docs/concepts/indexes#unindexed_properties).
+
+In this example, field option extension is defined in the same file where model is defined, but in
+reality you will likely define that extension inside a custom protobuf file (e.g
+``field_options.proto``) and include that file inside other files which contain your database model
+definitions.
+
 ## Gotchas
 
 In Protobuf syntax version 3 a concept of field being set has been removed and combined with a

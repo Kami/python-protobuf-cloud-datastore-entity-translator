@@ -1,3 +1,11 @@
+# v0.1.7 - August 27th, 2019
+
+- Add support for declaring which model fields are to be excluded from the
+  index by specifying a custom ``exclude_from_index`` field option directly
+  on the Protobuf message model field.
+
+  For more information and example usage, please refer to the README. #17
+
 # v0.1.6 - August 21th, 2019
 
 - Fix a bug with ``model_pb_to_entity_pb`` method not correctly handling

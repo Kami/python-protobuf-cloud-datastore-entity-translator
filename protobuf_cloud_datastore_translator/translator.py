@@ -31,6 +31,7 @@ from google.type import latlng_pb2
 from google.cloud import datastore
 from google.cloud.datastore_v1.proto import entity_pb2
 from google.cloud.datastore.helpers import GeoPoint
+from google.cloud.datastore_v1.types import Value
 from google.protobuf import message
 from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
@@ -51,6 +52,10 @@ __all__ = [
 
 # Type which represents an arbitrary ModelPB class which is a subclass of message.Message
 T_model_pb = TypeVar('T_model_pb', bound=message.Message)
+
+# String name for exclude from index extension which signals this library which model
+# fields should be excluded from index
+EXCLUDE_FROM_INDEX_EXT_NAME = 'exclude_from_index'
 
 
 def model_pb_with_key_to_entity_pb(client, model_pb, exclude_falsy_values=False,
@@ -98,7 +103,10 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
                                  user not providing a value and default value being used instead.
 
     :param exclude_from_index: Optional list of field names which should not be indexed. By
-                               default, all the fields are indexed.
+                               default, all the simple fields are indexed.
+
+                               NOTE: If provided, this value has high precedence over
+                               "exclude_from_index" message option defined on the model.
     """
     exclude_from_index = exclude_from_index or []
 
@@ -109,6 +117,26 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
     fields = [field for field in fields if field not in ['key']]
 
     entity_pb = entity_pb2.Entity()
+
+    # If Protobuf message options contains a special "exclude_from_indexes" repeated string option,
+    # use that option value to determine which fields should be excluded from
+    # index
+    # NOTE: "exclude_from_indexes" has precedence over values provided on the Protobuf model
+    # message.
+    model_extensions = model_pb.DESCRIPTOR.GetOptions().Extensions
+
+    try:
+        exclude_from_index_ext = model_extensions._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
+    except KeyError:
+        exclude_from_index_ext = None
+
+    if exclude_from_index_ext and not exclude_from_index:
+        try:
+            exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
+        except KeyError:
+            exclude_from_index = []
+
+    exclude_from_index = cast(list, exclude_from_index)
 
     for field_descriptor in fields:
         field_type = field_descriptor.type
@@ -227,7 +255,15 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
         else:
             raise ValueError('Unsupported field type for field "%s"' % (field_name))
 
-        if value_pb and field_name in exclude_from_index:
+        if value_pb:
+            value_pb = cast(Value, value_pb)
+
+        # Determine if field should be excluded from index
+        exclude_field_from_indexes = exclude_field_from_index(value_pb=value_pb,
+                field_descriptor=field_descriptor,
+                exclude_from_index=exclude_from_index)
+
+        if value_pb and exclude_field_from_indexes:
             # Field should be excluded from the index, mark that on the Entity Value
             value_pb.exclude_from_indexes = True
 
@@ -425,6 +461,48 @@ def set_value_pb_item_value(value_pb, value):
         raise ValueError('Unsupported type for value: %s' % (value))
 
     return value_pb
+
+
+def exclude_field_from_index(value_pb, field_descriptor, exclude_from_index=None):
+    # type (Value, FieldDescriptor, Optional[List[str]]) -> bool
+    """
+    Return True if a particular field should be excluded from index, False
+    otherwise.
+    """
+    if not value_pb:
+        return False
+
+    # Determine if field should be excluded from index based on the "exclude_from_index"
+    # function argument value
+    # NOTE: This value has precedence over field level option
+    if exclude_from_index:
+        if field_descriptor.name in exclude_from_index:
+            return True
+        else:
+            return False
+
+    # Determine if field should be excluded from index based on the custom
+    # "exclude_from_index" field level option
+    field_exts = field_descriptor.GetOptions().Extensions
+
+    # Bail early to avoid unncessary extension processing if there are no extensions defined
+    if len(field_exts) == 0:
+        return False
+
+    try:
+        exclude_from_index_ext = field_exts._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
+    except KeyError:
+        return False
+
+    try:
+        exclude_from_index_ext_value = field_exts[exclude_from_index_ext]
+    except KeyError:
+        return False
+
+    if exclude_from_index_ext_value is True:
+        return True
+
+    return False
 
 
 def get_python_module_for_field(field):
