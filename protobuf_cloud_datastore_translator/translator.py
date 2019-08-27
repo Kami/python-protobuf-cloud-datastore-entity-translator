@@ -118,24 +118,6 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
 
     entity_pb = entity_pb2.Entity()
 
-    # If Protobuf message options contains a special "exclude_from_indexes" repeated string option,
-    # use that option value to determine which fields should be excluded from
-    # index
-    # NOTE: "exclude_from_indexes" has precedence over values provided on the Protobuf model
-    # message.
-    model_extensions = model_pb.DESCRIPTOR.GetOptions().Extensions
-
-    try:
-        exclude_from_index_ext = model_extensions._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
-    except KeyError:
-        exclude_from_index_ext = None
-
-    if exclude_from_index_ext and not exclude_from_index:
-        try:
-            exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
-        except KeyError:
-            exclude_from_index = []
-
     exclude_from_index = cast(list, exclude_from_index)
 
     for field_descriptor in fields:
