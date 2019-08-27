@@ -20,6 +20,9 @@ __all__ = [
 from google.cloud import datastore
 
 from tests.generated import example_pb2
+from tests.generated import example_with_options_pb2
+from tests.generated.models import example_with_options_pb2 as \
+    example_with_options_and_package_pb2
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
@@ -214,6 +217,50 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
         self.assertEqual(entity_translated.exclude_from_indexes, set(['int32_key', 'bytes_key']))
 
         entity_translated.key = self.client.key('ExampleModel', 'exclude_from_indexes_2')
+        self.client.put(entity_translated)
+
+        entity_translated_retrieved = self.client.get(entity_translated.key)
+        self.assertEqual(entity_translated, entity_translated_retrieved)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_without_package(self):
+        # type: () -> None
+        model_pb = example_with_options_pb2.ExampleDBModelWithOptions1()
+        model_pb.string_key_one = 'one'
+        model_pb.string_key_two = 'two'
+        model_pb.string_key_three = 'three'
+        model_pb.string_key_four = 'four'
+        model_pb.int32_field_one = 111
+        model_pb.int32_field_two = 222
+
+        entity_pb = model_pb_to_entity_pb(model_pb=model_pb)
+
+        entity_translated = datastore.helpers.entity_from_protobuf(entity_pb)
+        self.assertEqual(entity_translated.exclude_from_indexes,
+                         set(['string_key_one', 'int32_field_two', 'string_key_three']))
+
+        entity_translated.key = self.client.key('ExampleModelWithOptions', 'exclude_from_index_1')
+        self.client.put(entity_translated)
+
+        entity_translated_retrieved = self.client.get(entity_translated.key)
+        self.assertEqual(entity_translated, entity_translated_retrieved)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_with_package(self):
+        # type: () -> None
+        model_pb = example_with_options_and_package_pb2.ExampleDBModelWithOptions1()
+        model_pb.string_key_one = 'one'
+        model_pb.string_key_two = 'two'
+        model_pb.string_key_three = 'three'
+        model_pb.string_key_four = 'four'
+        model_pb.int32_field_one = 111
+        model_pb.int32_field_two = 222
+
+        entity_pb = model_pb_to_entity_pb(model_pb=model_pb)
+
+        entity_translated = datastore.helpers.entity_from_protobuf(entity_pb)
+        self.assertEqual(entity_translated.exclude_from_indexes,
+                         set(['string_key_one', 'int32_field_two', 'string_key_three']))
+
+        entity_translated.key = self.client.key('ExampleModelWithOptions', 'exclude_from_index_1')
         self.client.put(entity_translated)
 
         entity_translated_retrieved = self.client.get(entity_translated.key)
