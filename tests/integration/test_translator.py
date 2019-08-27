@@ -17,12 +17,11 @@ __all__ = [
     'GoogleDatastoreTranslatorIntegrationTestCase'
 ]
 
+import sys
+
 from google.cloud import datastore
 
 from tests.generated import example_pb2
-from tests.generated import example_with_options_pb2
-from tests.generated.models import example_with_options_pb2 as \
-    example_with_options_and_package_pb2
 from tests.mocks import EXAMPLE_DICT_POPULATED
 from tests.mocks import EXAMPLE_DICT_DEFAULT_VALUES
 from tests.mocks import EXAMPLE_PB_POPULATED
@@ -42,6 +41,20 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
     NOTE: Those tests rely on datastore emulator running (gcloud beta emulator datastore start
     --no-store-on-disk).
     """
+
+    def setUp(self):
+        super(GoogleDatastoreTranslatorIntegrationTestCase, self).setUp()
+
+        modules_to_remove = [
+            'tests.generated.options_pb2',
+            'tests.generated.models.options_pb2',
+            'tests.generated.example_with_options_pb2',
+            'tests.generated.models.example_with_options_pb2',
+        ]
+
+        for module_name in modules_to_remove:
+            if module_name in sys.modules:
+                del sys.modules[module_name]
 
     def test_store_and_retrieve_populated_translated_object_from_datastore(self):
         # type: () -> None
@@ -224,6 +237,8 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
 
     def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_without_package(self):
         # type: () -> None
+        from tests.generated import example_with_options_pb2
+
         model_pb = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb.string_key_one = 'one'
         model_pb.string_key_two = 'two'
@@ -246,7 +261,9 @@ class GoogleDatastoreTranslatorIntegrationTestCase(BaseDatastoreIntegrationTestC
 
     def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_with_package(self):
         # type: () -> None
-        model_pb = example_with_options_and_package_pb2.ExampleDBModelWithOptions1()
+        from tests.generated.models import example_with_options_pb2
+
+        model_pb = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb.string_key_one = 'one'
         model_pb.string_key_two = 'two'
         model_pb.string_key_three = 'three'

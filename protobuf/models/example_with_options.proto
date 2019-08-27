@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package models;
 
-import "options.proto";
+import "models/options.proto";
 
 message ExampleDBModelWithOptions1 {
     string string_key_one = 1 [(exclude_from_index) = true];

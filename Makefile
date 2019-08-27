@@ -15,6 +15,11 @@ protobuf-python:
 	protoc --proto_path=protobuf/ --mypy_out=tests/generated/ --python_out=tests/generated/ protobuf/*.proto
 	protoc --proto_path=protobuf/ --mypy_out=tests/generated/ --python_out=tests/generated/ protobuf/models/*.proto
 	protoc --proto_path=protobuf/ --mypy_out=tests/generated/ --python_out=tests/generated/ protobuf/compat/example_compat.proto
+	# Workaround for Protobuf compiler not using relative imports which breakes things
+	sed -i -E "s/^from models(.*) import/from ..models\1 import/" tests/generated/*/*.py
+	sed -i -E "s/^from models(.*) import/from ..models\1 import/" tests/generated/*/*.pyi
+	sed -i -E "s/^import options(.*)/from . import options\1/" tests/generated/*.py
+	sed -i -E "s/^import options(.*)/from . import options\1/" tests/generated/*.pyi
 
 .PHONY: protobuf-go
 protobuf-go:

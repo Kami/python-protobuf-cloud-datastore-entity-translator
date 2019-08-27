@@ -14,6 +14,7 @@
 # limitations under the License.
 # pylint: disable=all
 
+import sys
 import unittest
 
 import requests
@@ -24,10 +25,7 @@ from google.type import latlng_pb2
 
 from tests.generated import example_pb2
 from tests.generated import example2_pb2
-from tests.generated import example_with_options_pb2
 from tests.generated.models import example3_pb2
-from tests.generated.models import example_with_options_pb2 as \
-    example_with_options_and_package_pb2
 
 from tests.mocks import EmulatorCreds
 from tests.mocks import EXAMPLE_DICT_POPULATED
@@ -46,6 +44,20 @@ __all__ = [
 
 class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
     maxDiff = None
+
+    def setUp(self):
+        super(ModelPbToEntityPbTranslatorTestCase, self).setUp()
+
+        modules_to_remove = [
+            'tests.generated.options_pb2',
+            'tests.generated.models.options_pb2',
+            'tests.generated.example_with_options_pb2',
+            'tests.generated.models.example_with_options_pb2',
+        ]
+
+        for module_name in modules_to_remove:
+            if module_name in sys.modules:
+                del sys.modules[module_name]
 
     def test_translate_fully_populated_model_roundtrip(self):
         # type: () -> None
@@ -542,6 +554,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
     def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_without_package(self):
         # type: () -> None
+        from tests.generated import example_with_options_pb2
+
         # Multiple fields excluded from index
         model_pb1 = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb1.string_key_one = 'one'
@@ -646,9 +660,11 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
     def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_with_package(self):
         # type: () -> None
+        from tests.generated.models import example_with_options_pb2
+
         # Verify it also works correctly for model protobuf files which define "package" option
         # Multiple fields excluded from index
-        model_pb1 = example_with_options_and_package_pb2.ExampleDBModelWithOptions1()
+        model_pb1 = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb1.string_key_one = 'one'
         model_pb1.string_key_two = 'two'
         model_pb1.string_key_three = 'three'
@@ -673,7 +689,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb1.properties['int32_field_one'].exclude_from_indexes, False)
 
         # One field excluded from index, other doesn't exist (should be simply ignored)
-        model_pb2 = example_with_options_and_package_pb2.ExampleDBModelWithOptions2()
+        model_pb2 = example_with_options_pb2.ExampleDBModelWithOptions2()
         model_pb2.string_key_one = 'one'
         model_pb2.string_key_two = 'two'
         model_pb2.string_key_three = 'three'
@@ -698,7 +714,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb2.properties['int32_field_one'].exclude_from_indexes, False)
 
         # No fields excluded from index
-        model_pb3 = example_with_options_and_package_pb2.ExampleDBModelWithOptions3()
+        model_pb3 = example_with_options_pb2.ExampleDBModelWithOptions3()
         model_pb3.string_key_one = 'one'
         model_pb3.string_key_two = 'two'
         model_pb3.string_key_three = 'three'
@@ -724,7 +740,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         # exclude_from_index function argument provided, this has precedence over fields defined on
         # the model
         # Multiple fields excluded from index
-        model_pb4 = example_with_options_and_package_pb2.ExampleDBModelWithOptions1()
+        model_pb4 = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb4.string_key_one = 'one'
         model_pb4.string_key_two = 'two'
         model_pb4.string_key_three = 'three'
