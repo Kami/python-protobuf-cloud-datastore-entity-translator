@@ -472,17 +472,17 @@ def exclude_field_from_index(model_pb, value_pb, field_descriptor, exclude_from_
     if len(field_exts) == 0:
         return False
 
-    # NOTE: We need to take any package into account since name can be composed of
-    # [package name].<extension name>
-    ext_name = EXCLUDE_FROM_INDEX_EXT_NAME
+    exclude_from_index_ext = None
 
-    # 1. Try to find the extension directy
-    exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
-
-    # 2. Try to use a full name (taking model package into account, assuming extension is
-    # defined in the same package)
-    if not exclude_from_index_ext and model_pb.DESCRIPTOR.file.package:
+    # If model file is part of a package, try searching for extension inside the package first
+    if model_pb.DESCRIPTOR.file.package:
         ext_name = '%s.%s' % (model_pb.DESCRIPTOR.file.package, EXCLUDE_FROM_INDEX_EXT_NAME)
+        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+
+    # And if it's not found inside the package or the model is not part of a package, try to
+    # search for it in a top level namespace
+    if not exclude_from_index_ext:
+        ext_name = EXCLUDE_FROM_INDEX_EXT_NAME
         exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
 
     if not exclude_from_index_ext:
