@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package models;
+
+import "options.proto";
+
+message ExampleDBModelWithOptions1 {
+    string string_key_one = 1 [(exclude_from_index) = true];
+    string string_key_two = 2;
+    string string_key_three = 3 [(exclude_from_index) = true];
+    string string_key_four = 4;
+    int32 int32_field_one = 5;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
+}
+
+message ExampleDBModelWithOptions2 {
+    string string_key_one = 1;
+    string string_key_two = 2;
+    string string_key_three = 3;
+    string string_key_four = 4;
+    int32 int32_field_one = 5;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
+}
+
+message ExampleDBModelWithOptions3 {
+    string string_key_one = 1;
+    string string_key_two = 2;
+    string string_key_three = 3;
+    string string_key_four = 4;
+    int32 int32_field_one = 5;
+    int32 int32_field_two = 6;
+}
