@@ -4,6 +4,6 @@ import "google/protobuf/descriptor.proto";
 
 // Custom Protobuf option which specifies which model fields should be excluded
 // from index
-extend google.protobuf.MessageOptions {
-  repeated string exclude_from_index = 5000;
+extend google.protobuf.FieldOptions {
+    bool exclude_from_index = 5000;
 }

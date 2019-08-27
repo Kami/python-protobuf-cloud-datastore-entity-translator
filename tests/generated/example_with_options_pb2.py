@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1a\x65xample_with_options.proto\x1a\roptions.proto\"\xec\x01\n\x1a\x45xampleDBModelWithOptions1\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05:9\xc2\xb8\x02\x0estring_key_one\xc2\xb8\x02\x10string_key_three\xc2\xb8\x02\x0fint32_field_two\"\xdc\x01\n\x1a\x45xampleDBModelWithOptions2\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05:)\xc2\xb8\x02\x0fint32_field_two\xc2\xb8\x02\x12\x66ield_doesnt_exist\"\xb1\x01\n\x1a\x45xampleDBModelWithOptions3\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05\x62\x06proto3')
+  serialized_pb=_b('\n\x1a\x65xample_with_options.proto\x1a\roptions.proto\"\xc3\x01\n\x1a\x45xampleDBModelWithOptions1\x12\x1c\n\x0estring_key_one\x18\x01 \x01(\tB\x04\xc0\xb8\x02\x01\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x1e\n\x10string_key_three\x18\x03 \x01(\tB\x04\xc0\xb8\x02\x01\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\xc0\xb8\x02\x01\"\xb7\x01\n\x1a\x45xampleDBModelWithOptions2\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\xc0\xb8\x02\x01\"\xb1\x01\n\x1a\x45xampleDBModelWithOptions3\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05\x62\x06proto3')
   ,
   dependencies=[options__pb2.DESCRIPTOR,])
 
@@ -41,7 +41,7 @@ _EXAMPLEDBMODELWITHOPTIONS1 = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      serialized_options=_b('\300\270\002\001'), file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='string_key_two', full_name='ExampleDBModelWithOptions1.string_key_two', index=1,
       number=2, type=9, cpp_type=9, label=1,
@@ -55,7 +55,7 @@ _EXAMPLEDBMODELWITHOPTIONS1 = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      serialized_options=_b('\300\270\002\001'), file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='string_key_four', full_name='ExampleDBModelWithOptions1.string_key_four', index=3,
       number=4, type=9, cpp_type=9, label=1,
@@ -76,21 +76,21 @@ _EXAMPLEDBMODELWITHOPTIONS1 = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      serialized_options=_b('\300\270\002\001'), file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=_b('\302\270\002\016string_key_one\302\270\002\020string_key_three\302\270\002\017int32_field_two'),
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
   serialized_start=46,
-  serialized_end=282,
+  serialized_end=241,
 )
 
 
@@ -142,21 +142,21 @@ _EXAMPLEDBMODELWITHOPTIONS2 = _descriptor.Descriptor(
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      serialized_options=_b('\300\270\002\001'), file=DESCRIPTOR),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=_b('\302\270\002\017int32_field_two\302\270\002\022field_doesnt_exist'),
+  serialized_options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=285,
-  serialized_end=505,
+  serialized_start=244,
+  serialized_end=427,
 )
 
 
@@ -221,8 +221,8 @@ _EXAMPLEDBMODELWITHOPTIONS3 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=508,
-  serialized_end=685,
+  serialized_start=430,
+  serialized_end=607,
 )
 
 DESCRIPTOR.message_types_by_name['ExampleDBModelWithOptions1'] = _EXAMPLEDBMODELWITHOPTIONS1
@@ -252,6 +252,8 @@ ExampleDBModelWithOptions3 = _reflection.GeneratedProtocolMessageType('ExampleDB
 _sym_db.RegisterMessage(ExampleDBModelWithOptions3)
 
 
-_EXAMPLEDBMODELWITHOPTIONS1._options = None
-_EXAMPLEDBMODELWITHOPTIONS2._options = None
+_EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['string_key_one']._options = None
+_EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['string_key_three']._options = None
+_EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['int32_field_two']._options = None
+_EXAMPLEDBMODELWITHOPTIONS2.fields_by_name['int32_field_two']._options = None
 # @@protoc_insertion_point(module_scope)

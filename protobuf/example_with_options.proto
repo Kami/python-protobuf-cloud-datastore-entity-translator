@@ -3,29 +3,21 @@ syntax = "proto3";
 import "options.proto";
 
 message ExampleDBModelWithOptions1 {
-    option (exclude_from_index) = 'string_key_one';
-    option (exclude_from_index) = 'string_key_three';
-    option (exclude_from_index) = 'int32_field_two';
-
-    string string_key_one = 1;
+    string string_key_one = 1 [(exclude_from_index) = true];
     string string_key_two = 2;
-    string string_key_three = 3;
+    string string_key_three = 3 [(exclude_from_index) = true];
     string string_key_four = 4;
     int32 int32_field_one = 5;
-    int32 int32_field_two = 6;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
 }
 
 message ExampleDBModelWithOptions2 {
-    option (exclude_from_index) = 'int32_field_two';
-    // Field doesn't exist, it should be simply ignored
-    option (exclude_from_index) = 'field_doesnt_exist';
-
     string string_key_one = 1;
     string string_key_two = 2;
     string string_key_three = 3;
     string string_key_four = 4;
     int32 int32_field_one = 5;
-    int32 int32_field_two = 6;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
 }
 
 message ExampleDBModelWithOptions3 {

@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\roptions.proto\x1a google/protobuf/descriptor.proto:<\n\x12\x65xclude_from_index\x12\x1f.google.protobuf.MessageOptions\x18\x88\' \x03(\tb\x06proto3')
+  serialized_pb=_b('\n\roptions.proto\x1a google/protobuf/descriptor.proto::\n\x12\x65xclude_from_index\x12\x1d.google.protobuf.FieldOptions\x18\x88\' \x01(\x08\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
 
@@ -29,8 +29,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 EXCLUDE_FROM_INDEX_FIELD_NUMBER = 5000
 exclude_from_index = _descriptor.FieldDescriptor(
   name='exclude_from_index', full_name='exclude_from_index', index=0,
-  number=5000, type=9, cpp_type=9, label=3,
-  has_default_value=False, default_value=[],
+  number=5000, type=8, cpp_type=7, label=1,
+  has_default_value=False, default_value=False,
   message_type=None, enum_type=None, containing_type=None,
   is_extension=True, extension_scope=None,
   serialized_options=None, file=DESCRIPTOR)
@@ -38,6 +38,6 @@ exclude_from_index = _descriptor.FieldDescriptor(
 DESCRIPTOR.extensions_by_name['exclude_from_index'] = exclude_from_index
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-google_dot_protobuf_dot_descriptor__pb2.MessageOptions.RegisterExtension(exclude_from_index)
+google_dot_protobuf_dot_descriptor__pb2.FieldOptions.RegisterExtension(exclude_from_index)
 
 # @@protoc_insertion_point(module_scope)
