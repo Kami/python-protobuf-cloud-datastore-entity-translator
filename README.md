@@ -181,7 +181,7 @@ import "google/protobuf/descriptor.proto";
 // ("exclude_from_index") since this library uses that special option name to
 // determine if a field should be excluded from index.
 extend google.protobuf.FieldOptions {
-    bool exclude_from_index = 5000;
+    bool exclude_from_index = 50000;
 }
 
 message ExampleDBModelWithOptions1 {

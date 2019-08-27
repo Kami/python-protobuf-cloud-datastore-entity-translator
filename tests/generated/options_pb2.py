@@ -21,15 +21,15 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\roptions.proto\x1a google/protobuf/descriptor.proto::\n\x12\x65xclude_from_index\x12\x1d.google.protobuf.FieldOptions\x18\x88\' \x01(\x08\x62\x06proto3')
+  serialized_pb=_b('\n\roptions.proto\x1a google/protobuf/descriptor.proto:;\n\x12\x65xclude_from_index\x12\x1d.google.protobuf.FieldOptions\x18\xd0\x86\x03 \x01(\x08\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
 
 
-EXCLUDE_FROM_INDEX_FIELD_NUMBER = 5000
+EXCLUDE_FROM_INDEX_FIELD_NUMBER = 50000
 exclude_from_index = _descriptor.FieldDescriptor(
   name='exclude_from_index', full_name='exclude_from_index', index=0,
-  number=5000, type=8, cpp_type=7, label=1,
+  number=50000, type=8, cpp_type=7, label=1,
   has_default_value=False, default_value=False,
   message_type=None, enum_type=None, containing_type=None,
   is_extension=True, extension_scope=None,
