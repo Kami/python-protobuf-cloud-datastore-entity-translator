@@ -1,3 +1,12 @@
+# v0.1.8 - August 27th, 2019
+
+- Fix ``exclude_from_index`` Protobuf field option functionality so it works
+  correctly when field option extension is defined inside a Protobuf file which
+  is part of a package.
+
+  NOTE: In such scenario, definitions for other Protobuf datastore models need
+  to be part of the same package. #18
+
 # v0.1.7 - August 27th, 2019
 
 - Add support for declaring which model fields are to be excluded from the

@@ -13,7 +13,8 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-import options_pb2 as options__pb2
+from google.protobuf import descriptor_pb2 as google_dot_protobuf_dot_descriptor__pb2
+from . import options_pb2 as options__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,11 +22,19 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1a\x65xample_with_options.proto\x1a\roptions.proto\"\xc3\x01\n\x1a\x45xampleDBModelWithOptions1\x12\x1c\n\x0estring_key_one\x18\x01 \x01(\tB\x04\x80\xb5\x18\x01\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x1e\n\x10string_key_three\x18\x03 \x01(\tB\x04\x80\xb5\x18\x01\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\x80\xb5\x18\x01\"\xb7\x01\n\x1a\x45xampleDBModelWithOptions2\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\x80\xb5\x18\x01\"\xb1\x01\n\x1a\x45xampleDBModelWithOptions3\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05\x62\x06proto3')
+  serialized_pb=_b('\n\x1a\x65xample_with_options.proto\x1a google/protobuf/descriptor.proto\x1a\roptions.proto\"\xc3\x01\n\x1a\x45xampleDBModelWithOptions1\x12\x1c\n\x0estring_key_one\x18\x01 \x01(\tB\x04\x80\xb5\x18\x01\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x1e\n\x10string_key_three\x18\x03 \x01(\tB\x04\x80\xb5\x18\x01\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\x80\xb5\x18\x01\"\xb7\x01\n\x1a\x45xampleDBModelWithOptions2\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x1d\n\x0fint32_field_two\x18\x06 \x01(\x05\x42\x04\x80\xb5\x18\x01\"\xb1\x01\n\x1a\x45xampleDBModelWithOptions3\x12\x16\n\x0estring_key_one\x18\x01 \x01(\t\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x17\n\x0fint32_field_one\x18\x05 \x01(\x05\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05\"\xc8\x01\n!ExampleDBModelWithMultipleOptions\x12 \n\x0estring_key_one\x18\x01 \x01(\tB\x08\x80\xb5\x18\x01\x80\xa6\x1d\x01\x12\x16\n\x0estring_key_two\x18\x02 \x01(\t\x12\x18\n\x10string_key_three\x18\x03 \x01(\t\x12\x17\n\x0fstring_key_four\x18\x04 \x01(\t\x12\x1d\n\x0fint32_field_one\x18\x05 \x01(\x05\x42\x04\x80\xa6\x1d\x01\x12\x17\n\x0fint32_field_two\x18\x06 \x01(\x05:=\n\x14my_other_bool_option\x12\x1d.google.protobuf.FieldOptions\x18\xe0\xd4\x03 \x01(\x08\x62\x06proto3')
   ,
-  dependencies=[options__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,options__pb2.DESCRIPTOR,])
 
 
+MY_OTHER_BOOL_OPTION_FIELD_NUMBER = 60000
+my_other_bool_option = _descriptor.FieldDescriptor(
+  name='my_other_bool_option', full_name='my_other_bool_option', index=0,
+  number=60000, type=8, cpp_type=7, label=1,
+  has_default_value=False, default_value=False,
+  message_type=None, enum_type=None, containing_type=None,
+  is_extension=True, extension_scope=None,
+  serialized_options=None, file=DESCRIPTOR)
 
 
 _EXAMPLEDBMODELWITHOPTIONS1 = _descriptor.Descriptor(
@@ -89,8 +98,8 @@ _EXAMPLEDBMODELWITHOPTIONS1 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=46,
-  serialized_end=241,
+  serialized_start=80,
+  serialized_end=275,
 )
 
 
@@ -155,8 +164,8 @@ _EXAMPLEDBMODELWITHOPTIONS2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=244,
-  serialized_end=427,
+  serialized_start=278,
+  serialized_end=461,
 )
 
 
@@ -221,13 +230,81 @@ _EXAMPLEDBMODELWITHOPTIONS3 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=430,
-  serialized_end=607,
+  serialized_start=464,
+  serialized_end=641,
+)
+
+
+_EXAMPLEDBMODELWITHMULTIPLEOPTIONS = _descriptor.Descriptor(
+  name='ExampleDBModelWithMultipleOptions',
+  full_name='ExampleDBModelWithMultipleOptions',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='string_key_one', full_name='ExampleDBModelWithMultipleOptions.string_key_one', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=_b('\200\265\030\001\200\246\035\001'), file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='string_key_two', full_name='ExampleDBModelWithMultipleOptions.string_key_two', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='string_key_three', full_name='ExampleDBModelWithMultipleOptions.string_key_three', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='string_key_four', full_name='ExampleDBModelWithMultipleOptions.string_key_four', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='int32_field_one', full_name='ExampleDBModelWithMultipleOptions.int32_field_one', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=_b('\200\246\035\001'), file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='int32_field_two', full_name='ExampleDBModelWithMultipleOptions.int32_field_two', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=644,
+  serialized_end=844,
 )
 
 DESCRIPTOR.message_types_by_name['ExampleDBModelWithOptions1'] = _EXAMPLEDBMODELWITHOPTIONS1
 DESCRIPTOR.message_types_by_name['ExampleDBModelWithOptions2'] = _EXAMPLEDBMODELWITHOPTIONS2
 DESCRIPTOR.message_types_by_name['ExampleDBModelWithOptions3'] = _EXAMPLEDBMODELWITHOPTIONS3
+DESCRIPTOR.message_types_by_name['ExampleDBModelWithMultipleOptions'] = _EXAMPLEDBMODELWITHMULTIPLEOPTIONS
+DESCRIPTOR.extensions_by_name['my_other_bool_option'] = my_other_bool_option
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ExampleDBModelWithOptions1 = _reflection.GeneratedProtocolMessageType('ExampleDBModelWithOptions1', (_message.Message,), {
@@ -251,9 +328,19 @@ ExampleDBModelWithOptions3 = _reflection.GeneratedProtocolMessageType('ExampleDB
   })
 _sym_db.RegisterMessage(ExampleDBModelWithOptions3)
 
+ExampleDBModelWithMultipleOptions = _reflection.GeneratedProtocolMessageType('ExampleDBModelWithMultipleOptions', (_message.Message,), {
+  'DESCRIPTOR' : _EXAMPLEDBMODELWITHMULTIPLEOPTIONS,
+  '__module__' : 'example_with_options_pb2'
+  # @@protoc_insertion_point(class_scope:ExampleDBModelWithMultipleOptions)
+  })
+_sym_db.RegisterMessage(ExampleDBModelWithMultipleOptions)
+
+google_dot_protobuf_dot_descriptor__pb2.FieldOptions.RegisterExtension(my_other_bool_option)
 
 _EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['string_key_one']._options = None
 _EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['string_key_three']._options = None
 _EXAMPLEDBMODELWITHOPTIONS1.fields_by_name['int32_field_two']._options = None
 _EXAMPLEDBMODELWITHOPTIONS2.fields_by_name['int32_field_two']._options = None
+_EXAMPLEDBMODELWITHMULTIPLEOPTIONS.fields_by_name['string_key_one']._options = None
+_EXAMPLEDBMODELWITHMULTIPLEOPTIONS.fields_by_name['int32_field_one']._options = None
 # @@protoc_insertion_point(module_scope)

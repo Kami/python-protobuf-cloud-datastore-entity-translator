@@ -14,6 +14,7 @@
 # limitations under the License.
 # pylint: disable=all
 
+import sys
 import unittest
 
 import requests
@@ -24,7 +25,6 @@ from google.type import latlng_pb2
 
 from tests.generated import example_pb2
 from tests.generated import example2_pb2
-from tests.generated import example_with_options_pb2
 from tests.generated.models import example3_pb2
 
 from tests.mocks import EmulatorCreds
@@ -44,6 +44,20 @@ __all__ = [
 
 class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
     maxDiff = None
+
+    def setUp(self):
+        super(ModelPbToEntityPbTranslatorTestCase, self).setUp()
+
+        modules_to_remove = [
+            'tests.generated.options_pb2',
+            'tests.generated.models.options_pb2',
+            'tests.generated.example_with_options_pb2',
+            'tests.generated.models.example_with_options_pb2',
+        ]
+
+        for module_name in modules_to_remove:
+            if module_name in sys.modules:
+                del sys.modules[module_name]
 
     def test_translate_fully_populated_model_roundtrip(self):
         # type: () -> None
@@ -538,8 +552,10 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
                          properties['key3'].entity_value.properties['a'].null_value,
                          struct_pb2.NULL_VALUE)
 
-    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension(self):
+    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_without_package(self):
         # type: () -> None
+        from tests.generated import example_with_options_pb2
+
         # Multiple fields excluded from index
         model_pb1 = example_with_options_pb2.ExampleDBModelWithOptions1()
         model_pb1.string_key_one = 'one'
@@ -641,6 +657,145 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb4.properties['int32_field_one'].exclude_from_indexes, False)
         self.assertEqual(entity_pb4.properties['int32_field_two'].integer_value, 222)
         self.assertEqual(entity_pb4.properties['int32_field_two'].exclude_from_indexes, False)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_model_with_package(self):
+        # type: () -> None
+        from tests.generated.models import example_with_options_pb2
+
+        # Verify it also works correctly for model protobuf files which define "package" option
+        # Multiple fields excluded from index
+        model_pb1 = example_with_options_pb2.ExampleDBModelWithOptions1()
+        model_pb1.string_key_one = 'one'
+        model_pb1.string_key_two = 'two'
+        model_pb1.string_key_three = 'three'
+        model_pb1.string_key_four = 'four'
+        model_pb1.int32_field_one = 111
+        model_pb1.int32_field_two = 222
+
+        entity_pb1 = model_pb_to_entity_pb(model_pb=model_pb1)
+
+        self.assertEqual(entity_pb1.properties['string_key_one'].string_value, 'one')
+        self.assertEqual(entity_pb1.properties['string_key_one'].exclude_from_indexes, True)
+        self.assertEqual(entity_pb1.properties['string_key_three'].string_value, 'three')
+        self.assertEqual(entity_pb1.properties['string_key_three'].exclude_from_indexes, True)
+        self.assertEqual(entity_pb1.properties['int32_field_two'].integer_value, 222)
+        self.assertEqual(entity_pb1.properties['int32_field_two'].exclude_from_indexes, True)
+
+        self.assertEqual(entity_pb1.properties['string_key_two'].string_value, 'two')
+        self.assertEqual(entity_pb1.properties['string_key_two'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['string_key_four'].string_value, 'four')
+        self.assertEqual(entity_pb1.properties['string_key_four'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['int32_field_one'].integer_value, 111)
+        self.assertEqual(entity_pb1.properties['int32_field_one'].exclude_from_indexes, False)
+
+        # One field excluded from index, other doesn't exist (should be simply ignored)
+        model_pb2 = example_with_options_pb2.ExampleDBModelWithOptions2()
+        model_pb2.string_key_one = 'one'
+        model_pb2.string_key_two = 'two'
+        model_pb2.string_key_three = 'three'
+        model_pb2.string_key_four = 'four'
+        model_pb2.int32_field_one = 111
+        model_pb2.int32_field_two = 222
+
+        entity_pb2 = model_pb_to_entity_pb(model_pb=model_pb2)
+
+        self.assertEqual(entity_pb2.properties['int32_field_two'].integer_value, 222)
+        self.assertEqual(entity_pb2.properties['int32_field_two'].exclude_from_indexes, True)
+
+        self.assertEqual(entity_pb2.properties['string_key_one'].string_value, 'one')
+        self.assertEqual(entity_pb2.properties['string_key_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb2.properties['string_key_three'].string_value, 'three')
+        self.assertEqual(entity_pb2.properties['string_key_three'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb2.properties['string_key_two'].string_value, 'two')
+        self.assertEqual(entity_pb2.properties['string_key_two'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb2.properties['string_key_four'].string_value, 'four')
+        self.assertEqual(entity_pb2.properties['string_key_four'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb2.properties['int32_field_one'].integer_value, 111)
+        self.assertEqual(entity_pb2.properties['int32_field_one'].exclude_from_indexes, False)
+
+        # No fields excluded from index
+        model_pb3 = example_with_options_pb2.ExampleDBModelWithOptions3()
+        model_pb3.string_key_one = 'one'
+        model_pb3.string_key_two = 'two'
+        model_pb3.string_key_three = 'three'
+        model_pb3.string_key_four = 'four'
+        model_pb3.int32_field_one = 111
+        model_pb3.int32_field_two = 222
+
+        entity_pb3 = model_pb_to_entity_pb(model_pb=model_pb3)
+
+        self.assertEqual(entity_pb3.properties['string_key_one'].string_value, 'one')
+        self.assertEqual(entity_pb3.properties['string_key_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb3.properties['string_key_three'].string_value, 'three')
+        self.assertEqual(entity_pb3.properties['string_key_three'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb3.properties['string_key_two'].string_value, 'two')
+        self.assertEqual(entity_pb3.properties['string_key_two'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb3.properties['string_key_four'].string_value, 'four')
+        self.assertEqual(entity_pb3.properties['string_key_four'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb3.properties['int32_field_one'].integer_value, 111)
+        self.assertEqual(entity_pb3.properties['int32_field_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb3.properties['int32_field_two'].integer_value, 222)
+        self.assertEqual(entity_pb3.properties['int32_field_two'].exclude_from_indexes, False)
+
+        # exclude_from_index function argument provided, this has precedence over fields defined on
+        # the model
+        # Multiple fields excluded from index
+        model_pb4 = example_with_options_pb2.ExampleDBModelWithOptions1()
+        model_pb4.string_key_one = 'one'
+        model_pb4.string_key_two = 'two'
+        model_pb4.string_key_three = 'three'
+        model_pb4.string_key_four = 'four'
+        model_pb4.int32_field_one = 111
+        model_pb4.int32_field_two = 222
+
+        entity_pb4 = model_pb_to_entity_pb(model_pb=model_pb4,
+                                           exclude_from_index=['string_key_four'])
+
+        self.assertEqual(entity_pb4.properties['string_key_four'].string_value, 'four')
+        self.assertEqual(entity_pb4.properties['string_key_four'].exclude_from_indexes, True)
+
+        self.assertEqual(entity_pb4.properties['string_key_one'].string_value, 'one')
+        self.assertEqual(entity_pb4.properties['string_key_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb4.properties['string_key_three'].string_value, 'three')
+        self.assertEqual(entity_pb4.properties['string_key_three'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb4.properties['string_key_two'].string_value, 'two')
+        self.assertEqual(entity_pb4.properties['string_key_two'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb4.properties['int32_field_one'].integer_value, 111)
+        self.assertEqual(entity_pb4.properties['int32_field_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb4.properties['int32_field_two'].integer_value, 222)
+        self.assertEqual(entity_pb4.properties['int32_field_two'].exclude_from_indexes, False)
+
+    def test_model_pb_to_entity_pb_exclude_from_index_custom_extension_multiple_options(self):
+        # type: () -> None
+        # Test a scenario where field has another custom option defined, in addition to
+        # exclude_from_index (other option should be simply ignored and not affect the behavior
+        # in any way)
+        from tests.generated import example_with_options_pb2
+
+        # Multiple fields excluded from index
+        model_pb1 = example_with_options_pb2.ExampleDBModelWithMultipleOptions()
+        model_pb1.string_key_one = 'one'
+        model_pb1.string_key_two = 'two'
+        model_pb1.string_key_three = 'three'
+        model_pb1.string_key_four = 'four'
+        model_pb1.int32_field_one = 111
+        model_pb1.int32_field_two = 222
+
+        entity_pb1 = model_pb_to_entity_pb(model_pb=model_pb1)
+
+        self.assertEqual(entity_pb1.properties['string_key_one'].string_value, 'one')
+        self.assertEqual(entity_pb1.properties['string_key_one'].exclude_from_indexes, True)
+
+        self.assertEqual(entity_pb1.properties['string_key_two'].string_value, 'two')
+        self.assertEqual(entity_pb1.properties['string_key_two'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['string_key_three'].string_value, 'three')
+        self.assertEqual(entity_pb1.properties['string_key_three'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['string_key_four'].string_value, 'four')
+        self.assertEqual(entity_pb1.properties['string_key_four'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['int32_field_one'].integer_value, 111)
+        self.assertEqual(entity_pb1.properties['int32_field_one'].exclude_from_indexes, False)
+        self.assertEqual(entity_pb1.properties['int32_field_two'].integer_value, 222)
+        self.assertEqual(entity_pb1.properties['int32_field_two'].exclude_from_indexes, False)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None

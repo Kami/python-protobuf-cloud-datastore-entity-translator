@@ -202,6 +202,49 @@ reality you will likely define that extension inside a custom protobuf file (e.g
 ``field_options.proto``) and include that file inside other files which contain your database model
 definitions.
 
+Keep in mind that if you define option extension inside a package, that package needs to match the
+package under which the models are stored.
+
+For example:
+
+1. ``protobuf/models/field_options.proto``:
+
+```protobuf
+syntax = "proto3";
+
+package models;
+
+import "google/protobuf/descriptor.proto";
+
+// Custom Protobuf option which specifies which model fields should be excluded
+// from index
+// NOTE: Keep in mind that it's important not to change the option name
+// ("exclude_from_index") since this library uses that special option name to
+// determine if a field should be excluded from index.
+extend google.protobuf.FieldOptions {
+    bool exclude_from_index = 50000;
+}
+```
+
+2. ``protobuf/models/my_model.proto``:
+
+```protobuf
+syntax = "proto3";
+
+package models;
+
+import "models/field_options.proto";
+
+message ExampleDBModelWithOptions1 {
+    string string_key_one = 1 [(exclude_from_index) = true];
+    string string_key_two = 2;
+    string string_key_three = 3 [(exclude_from_index) = true];
+    string string_key_four = 4;
+    int32 int32_field_one = 5;
+    int32 int32_field_two = 6 [(exclude_from_index) = true];
+}
+```
+
 ## Gotchas
 
 In Protobuf syntax version 3 a concept of field being set has been removed and combined with a

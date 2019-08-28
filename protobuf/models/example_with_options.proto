@@ -1,11 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/descriptor.proto";
-import "options.proto";
+package models;
 
-extend google.protobuf.FieldOptions {
-    bool my_other_bool_option = 60000;
-}
+import "models/options.proto";
 
 message ExampleDBModelWithOptions1 {
     string string_key_one = 1 [(exclude_from_index) = true];
@@ -33,13 +30,3 @@ message ExampleDBModelWithOptions3 {
     int32 int32_field_one = 5;
     int32 int32_field_two = 6;
 }
-
-message ExampleDBModelWithMultipleOptions {
-    string string_key_one = 1 [(exclude_from_index) = true, (my_other_bool_option) = true];
-    string string_key_two = 2;
-    string string_key_three = 3;
-    string string_key_four = 4;
-    int32 int32_field_one = 5 [(my_other_bool_option) = true];
-    int32 int32_field_two = 6;
-}
-

@@ -118,24 +118,6 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
 
     entity_pb = entity_pb2.Entity()
 
-    # If Protobuf message options contains a special "exclude_from_indexes" repeated string option,
-    # use that option value to determine which fields should be excluded from
-    # index
-    # NOTE: "exclude_from_indexes" has precedence over values provided on the Protobuf model
-    # message.
-    model_extensions = model_pb.DESCRIPTOR.GetOptions().Extensions
-
-    try:
-        exclude_from_index_ext = model_extensions._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
-    except KeyError:
-        exclude_from_index_ext = None
-
-    if exclude_from_index_ext and not exclude_from_index:
-        try:
-            exclude_from_index = model_pb.DESCRIPTOR.GetOptions().Extensions[exclude_from_index_ext]
-        except KeyError:
-            exclude_from_index = []
-
     exclude_from_index = cast(list, exclude_from_index)
 
     for field_descriptor in fields:
@@ -259,7 +241,8 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
             value_pb = cast(Value, value_pb)
 
         # Determine if field should be excluded from index
-        exclude_field_from_indexes = exclude_field_from_index(value_pb=value_pb,
+        exclude_field_from_indexes = exclude_field_from_index(model_pb=model_pb,
+                value_pb=value_pb,
                 field_descriptor=field_descriptor,
                 exclude_from_index=exclude_from_index)
 
@@ -463,8 +446,8 @@ def set_value_pb_item_value(value_pb, value):
     return value_pb
 
 
-def exclude_field_from_index(value_pb, field_descriptor, exclude_from_index=None):
-    # type (Value, FieldDescriptor, Optional[List[str]]) -> bool
+def exclude_field_from_index(model_pb, value_pb, field_descriptor, exclude_from_index=None):
+    # type (message.Message, Value, FieldDescriptor, Optional[List[str]]) -> bool
     """
     Return True if a particular field should be excluded from index, False
     otherwise.
@@ -489,9 +472,26 @@ def exclude_field_from_index(value_pb, field_descriptor, exclude_from_index=None
     if len(field_exts) == 0:
         return False
 
-    try:
-        exclude_from_index_ext = field_exts._FindExtensionByName(EXCLUDE_FROM_INDEX_EXT_NAME)
-    except KeyError:
+    exclude_from_index_ext = None
+
+    # If model file is part of a package, try searching for extension inside the package first
+    if model_pb.DESCRIPTOR.file.package:
+        ext_name = '%s.%s' % (model_pb.DESCRIPTOR.file.package, EXCLUDE_FROM_INDEX_EXT_NAME)
+        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+
+    # And if it's not found inside the package or the model is not part of a package, try to
+    # search for it in a top level namespace
+    if not exclude_from_index_ext:
+        ext_name = EXCLUDE_FROM_INDEX_EXT_NAME
+        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+
+    if not exclude_from_index_ext:
+        # Exclude from index extension not found
+        return False
+
+    exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+
+    if not exclude_from_index_ext:
         return False
 
     try:
