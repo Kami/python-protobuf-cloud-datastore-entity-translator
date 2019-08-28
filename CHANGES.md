@@ -1,3 +1,8 @@
+# v0.1.9 - August 28th, 2019
+
+- Internal code optimizations and add new
+  ``utils.get_exclude_from_index_fields_for_model`` utility method. #19
+
 # v0.1.8 - August 28th, 2019
 
 - Fix ``exclude_from_index`` Protobuf field option functionality so it works
