@@ -1,4 +1,4 @@
-# v0.1.8 - August 27th, 2019
+# v0.1.8 - August 28th, 2019
 
 - Fix ``exclude_from_index`` Protobuf field option functionality so it works
   correctly when field option extension is defined inside a Protobuf file which
