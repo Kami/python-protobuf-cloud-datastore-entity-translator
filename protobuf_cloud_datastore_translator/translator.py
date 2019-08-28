@@ -20,6 +20,7 @@ from typing import Any
 from typing import Type
 from typing import cast
 from typing import Optional
+from typing import Union
 from typing import List
 from typing import TypeVar
 from types import ModuleType
@@ -37,6 +38,7 @@ from google.protobuf import timestamp_pb2
 from google.protobuf import struct_pb2
 from google.protobuf import descriptor
 from google.protobuf.internal.well_known_types import _GetStructValue  # type: ignore
+from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType  # NOQA
 
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.pyext._message import MessageMapContainer
@@ -52,6 +54,8 @@ __all__ = [
 
 # Type which represents an arbitrary ModelPB class which is a subclass of message.Message
 T_model_pb = TypeVar('T_model_pb', bound=message.Message)
+
+U_model_class_or_instance = Union[message.Message, Type[GeneratedProtocolMessageType]]
 
 # String name for exclude from index extension which signals this library which model
 # fields should be excluded from index
@@ -237,16 +241,17 @@ def model_pb_to_entity_pb(model_pb, exclude_falsy_values=False, exclude_from_ind
         else:
             raise ValueError('Unsupported field type for field "%s"' % (field_name))
 
-        if value_pb:
-            value_pb = cast(Value, value_pb)
+        if not value_pb:
+            continue
+
+        value_pb = cast(Value, value_pb)
 
         # Determine if field should be excluded from index
-        exclude_field_from_indexes = exclude_field_from_index(model_pb=model_pb,
-                value_pb=value_pb,
+        exclude_field_from_indexes = exclude_field_from_index(model=model_pb,
                 field_descriptor=field_descriptor,
                 exclude_from_index=exclude_from_index)
 
-        if value_pb and exclude_field_from_indexes:
+        if exclude_field_from_indexes:
             # Field should be excluded from the index, mark that on the Entity Value
             value_pb.exclude_from_indexes = True
 
@@ -446,15 +451,13 @@ def set_value_pb_item_value(value_pb, value):
     return value_pb
 
 
-def exclude_field_from_index(model_pb, value_pb, field_descriptor, exclude_from_index=None):
-    # type (message.Message, Value, FieldDescriptor, Optional[List[str]]) -> bool
+def exclude_field_from_index(model, field_descriptor, exclude_from_index=None):
+    # type: (U_model_class_or_instance, FieldDescriptor, Optional[List[str]]) -> bool
     """
-    Return True if a particular field should be excluded from index, False
-    otherwise.
-    """
-    if not value_pb:
-        return False
+    Return True if a particular field should be excluded from index, False otherwise.
 
+    :param model: Either a Protobuf model class type or actual Protobuf model class instance.
+    """
     # Determine if field should be excluded from index based on the "exclude_from_index"
     # function argument value
     # NOTE: This value has precedence over field level option
@@ -469,29 +472,24 @@ def exclude_field_from_index(model_pb, value_pb, field_descriptor, exclude_from_
     field_exts = field_descriptor.GetOptions().Extensions
 
     # Bail early to avoid unncessary extension processing if there are no extensions defined
-    if len(field_exts) == 0:
+    if len(field_exts) == 0:  # type: ignore
         return False
 
     exclude_from_index_ext = None
 
     # If model file is part of a package, try searching for extension inside the package first
-    if model_pb.DESCRIPTOR.file.package:
-        ext_name = '%s.%s' % (model_pb.DESCRIPTOR.file.package, EXCLUDE_FROM_INDEX_EXT_NAME)
-        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+    if model.DESCRIPTOR.file.package:
+        ext_name = '%s.%s' % (model.DESCRIPTOR.file.package, EXCLUDE_FROM_INDEX_EXT_NAME)
+        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)  # type: ignore
 
     # And if it's not found inside the package or the model is not part of a package, try to
     # search for it in a top level namespace
     if not exclude_from_index_ext:
         ext_name = EXCLUDE_FROM_INDEX_EXT_NAME
-        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
+        exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)  # type: ignore
 
     if not exclude_from_index_ext:
         # Exclude from index extension not found
-        return False
-
-    exclude_from_index_ext = field_exts._FindExtensionByName(ext_name)
-
-    if not exclude_from_index_ext:
         return False
 
     try:
