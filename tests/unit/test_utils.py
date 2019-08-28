@@ -21,6 +21,7 @@ import mock
 
 from protobuf_cloud_datastore_translator.translator import get_python_module_for_field
 from protobuf_cloud_datastore_translator.utils import get_module_and_class_for_model_name
+from protobuf_cloud_datastore_translator.utils import get_exclude_from_index_fields_for_model
 from tests.generated import example_pb2
 
 
@@ -95,6 +96,24 @@ class UtilsTestCase(unittest.TestCase):
         expected_msg = 'No module named'
         self.assertRaisesRegexp(ImportError, expected_msg,
                                 get_python_module_for_field, field)
+
+    def test_get_exclude_from_index_fields(self):
+        from tests.generated import example_with_options_pb2
+
+        model_class = example_with_options_pb2.ExampleDBModelWithOptions1
+        exclude_fields = get_exclude_from_index_fields_for_model(model_class=model_class)
+
+        self.assertEqual(exclude_fields, ['string_key_one', 'string_key_three', 'int32_field_two'])
+
+        model_class = example_with_options_pb2.ExampleDBModelWithOptions2
+        exclude_fields = get_exclude_from_index_fields_for_model(model_class=model_class)
+
+        self.assertEqual(exclude_fields, ['int32_field_two'])
+
+        model_class = example_with_options_pb2.ExampleDBModelWithOptions3
+        exclude_fields = get_exclude_from_index_fields_for_model(model_class=model_class)
+
+        self.assertEqual(exclude_fields, [])
 
     def _remove_module_from_sys_module(self, module_name):
         if module_name in sys.modules:

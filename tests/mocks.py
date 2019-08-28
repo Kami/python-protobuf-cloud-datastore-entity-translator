@@ -21,6 +21,7 @@ from google.type import latlng_pb2
 from google.cloud.datastore.helpers import GeoPoint
 
 from tests.generated import example_pb2
+from tests.generated import example_with_options_pb2
 
 __all__ = [
     'EXAMPLE_DICT_POPULATED',
@@ -28,6 +29,8 @@ __all__ = [
 
     'EXAMPLE_PB_POPULATED',
     'EXAMPLE_PB_DEFAULT_VALUES',
+
+    'EXAMPLE_PB_WITH_OPTIONS_1',
 
     'EmulatorCreds'
 ]
@@ -169,6 +172,14 @@ EXAMPLE_PB_DEFAULT_VALUES.bool_key = False
 EXAMPLE_PB_DEFAULT_VALUES.bytes_key = b''
 EXAMPLE_PB_DEFAULT_VALUES.null_key = 0
 # pylint: enable=no-member
+
+EXAMPLE_PB_WITH_OPTIONS_1 = example_with_options_pb2.ExampleDBModelWithOptions1()
+EXAMPLE_PB_WITH_OPTIONS_1.string_key_one = 'one'
+EXAMPLE_PB_WITH_OPTIONS_1.string_key_two = 'two'
+EXAMPLE_PB_WITH_OPTIONS_1.string_key_three = 'three'
+EXAMPLE_PB_WITH_OPTIONS_1.string_key_four = 'four'
+EXAMPLE_PB_WITH_OPTIONS_1.int32_field_one = 100000000
+EXAMPLE_PB_WITH_OPTIONS_1.int32_field_two = 200000000
 
 
 class EmulatorCreds(google.auth.credentials.Credentials):

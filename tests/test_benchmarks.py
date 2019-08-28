@@ -29,6 +29,7 @@ from protobuf_cloud_datastore_translator import entity_pb_to_model_pb
 from tests.generated import example_pb2
 from tests.mocks import EXAMPLE_PB_POPULATED
 from tests.mocks import EXAMPLE_PB_DEFAULT_VALUES
+from tests.mocks import EXAMPLE_PB_WITH_OPTIONS_1
 
 
 complex_example_pb = EXAMPLE_PB_POPULATED
@@ -54,6 +55,10 @@ def measure_entity_pb_to_model_pb_simple_model():
     return entity_pb_to_model_pb(example_pb2.ExampleDBModel, simple_entity_pb)
 
 
+def measure_model_pb_to_entity_pb_with_exclude_field_from_index_simple_model():
+    return model_pb_to_entity_pb(model_pb=EXAMPLE_PB_WITH_OPTIONS_1)
+
+
 @pytest.mark.benchmark(
     group='model_pb_to_entity_pb',
     disable_gc=True,
@@ -76,6 +81,21 @@ def test_model_pb_to_entity_pb_simple_model(benchmark):
     result = benchmark(measure_model_pb_to_entity_pb_simple_model)
     assert bool(result)
     assert result.properties['int32_key'].integer_value == 0
+
+
+@pytest.mark.benchmark(
+    group='model_pb_to_entity_pb',
+    disable_gc=True,
+    warmup=False
+)
+def test_model_pb_to_entity_pb_with_exclude_field_from_index_simple_model(benchmark):
+    # benchmark something
+    result = benchmark(measure_model_pb_to_entity_pb_with_exclude_field_from_index_simple_model)
+    assert bool(result)
+    assert result.properties['int32_field_one'].integer_value == 100000000
+    assert result.properties['int32_field_one'].exclude_from_indexes is False
+    assert result.properties['int32_field_two'].integer_value == 200000000
+    assert result.properties['int32_field_two'].exclude_from_indexes is True
 
 
 @pytest.mark.benchmark(
