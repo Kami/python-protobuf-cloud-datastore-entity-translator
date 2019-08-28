@@ -14,15 +14,20 @@
 # limitations under the License.
 
 import importlib
+
 from typing import Type
+from typing import List
 from typing import Tuple
 from types import ModuleType
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 
+from protobuf_cloud_datastore_translator.translator import exclude_field_from_index
+
 
 __all__ = [
-    'get_module_and_class_for_model_name'
+    'get_module_and_class_for_model_name',
+    'get_exclude_from_index_fields_for_model'
 ]
 
 
@@ -46,3 +51,22 @@ def get_module_and_class_for_model_name(model_name):
         raise ValueError('Class "%s" not found in module "%s"' % (model_name, module_path))
 
     return module, model_class
+
+
+def get_exclude_from_index_fields_for_model(model_class):
+    # type: (Type[GeneratedProtocolMessageType]) -> List[str]
+    """
+    Return a list of fields which are marked as to be excluded for the provided model class.
+    """
+
+    fields = list(iter(model_class.DESCRIPTOR.fields))
+
+    result = []
+    for field_descriptor in fields:
+        exclude_from_index = exclude_field_from_index(model=model_class,
+                                                      field_descriptor=field_descriptor)
+
+        if exclude_from_index:
+            result.append(field_descriptor.name)
+
+    return result
