@@ -1,4 +1,4 @@
-# v0.1.9 - August 28th, 2019
+# v0.1.9 - August 29th, 2019
 
 - Internal code optimizations and add new
   ``utils.get_exclude_from_index_fields_for_model`` utility method. #19
