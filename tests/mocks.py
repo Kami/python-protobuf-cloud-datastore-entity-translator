@@ -69,7 +69,7 @@ EXAMPLE_DICT_POPULATED = {
     ],
     'struct_array_key': [
         {
-            'key1': 'value 1',
+            'key1': u'value 1',
             'key2': [1, 2, 3],
             'key3': 3333,
             'key4': {
@@ -77,7 +77,7 @@ EXAMPLE_DICT_POPULATED = {
             }
         },
         {
-            'key11': 'value 10',
+            'key11': u'value 10',
             'key12': [10, 11, 12],
             'key13': 4444,
             'key14': {
@@ -128,7 +128,7 @@ EXAMPLE_DICT_DEFAULT_VALUES = {
 # pylint: disable=no-member
 struct1_pb = struct_pb2.Struct()
 struct1_pb.update({
-    'key1': 'value 1',
+    'key1': u'value 1',
     'key2': [1, 2, 3],
     'key3': 3333,
     'key4': {
@@ -138,7 +138,7 @@ struct1_pb.update({
 
 struct2_pb = struct_pb2.Struct()
 struct2_pb.update({
-    'key11': 'value 10',
+    'key11': u'value 10',
     'key12': [10, 11, 12],
     'key13': 4444,
     'key14': {
