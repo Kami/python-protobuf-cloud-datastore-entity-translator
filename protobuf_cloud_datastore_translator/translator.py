@@ -308,6 +308,13 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                             set_model_pb_value(item_pb, prop_name, item, is_nested=True)
 
                             getattr(model_pb, prop_name).append(item_pb)
+                    elif isinstance(model_pb, struct_pb2.Struct):
+                        try:
+                            model_pb[prop_name]
+                        except ValueError:
+                            model_pb.update({prop_name: []})
+
+                        model_pb[prop_name].append(item)
                     else:
                         getattr(model_pb, prop_name).append(item)
             elif isinstance(value, dict):
@@ -317,6 +324,8 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
                 if is_nested:
                     for key, value in six.iteritems(value):
                         set_model_pb_value(model_pb, key, value)
+                elif isinstance(model_pb, struct_pb2.Struct):
+                    model_pb.update({prop_name: value})
                 else:
                     field = model_pb_class.DESCRIPTOR.fields_by_name[prop_name]
                     is_nested_model_type = (bool(field.message_type) and
@@ -345,6 +354,8 @@ def entity_pb_to_model_pb(model_pb_class,   # type: Type[T_model_pb]
             elif isinstance(value, GeoPoint):
                 item_pb = latlng_pb2.LatLng(latitude=value.latitude, longitude=value.longitude)
                 getattr(model_pb, prop_name).CopyFrom(item_pb)
+            elif isinstance(model_pb, struct_pb2.Struct):
+                model_pb.update({prop_name: value})
             else:
                 setattr(model_pb, prop_name, value)
 
