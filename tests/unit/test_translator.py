@@ -834,6 +834,34 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             .entity_value.properties['key5'].integer_value,
             222)
 
+    def test_entity_pb_to_model_pb_repeated_struct_field_type(self):
+        struct1_pb = struct_pb2.Struct()
+        struct1_pb.update({
+            'key1': 'struct 1',
+            'key2': 111,
+            'key3': [1, 2, 3],
+            'key4': {
+                'a': 1
+            }
+        })
+        struct2_pb = struct_pb2.Struct()
+        struct2_pb.update({
+            'key5': 'struct 2',
+            'key6': 222,
+            'key7': [4, 5, 6],
+            'key8': {
+                'b': 2
+            }
+        })
+
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.struct_array_key.append(struct1_pb)
+        example_pb.struct_array_key.append(struct2_pb)
+
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
