@@ -1,3 +1,8 @@
+# v0.1.10 - September 4th, 2019
+
+* Fix ``entity_pb_to_model_pb`` to correctly handle repeated Struct field types
+  (aka array of Structs). #21 #20
+
 # v0.1.9 - August 29th, 2019
 
 - Internal code optimizations and add new
