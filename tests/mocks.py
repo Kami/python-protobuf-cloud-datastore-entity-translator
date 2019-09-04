@@ -18,6 +18,7 @@ import datetime
 import google.auth
 import pytz
 from google.type import latlng_pb2
+from google.protobuf import struct_pb2
 from google.cloud.datastore.helpers import GeoPoint
 
 from tests.generated import example_pb2
@@ -66,6 +67,24 @@ EXAMPLE_DICT_POPULATED = {
         {'string_key': u'value 3', 'int32_key': 40,
          'enum_key': example_pb2.ExampleEnumModel.ENUM0},
     ],
+    'struct_array_key': [
+        {
+            'key1': 'value 1',
+            'key2': [1, 2, 3],
+            'key3': 3333,
+            'key4': {
+                'a': 1
+            }
+        },
+        {
+            'key11': 'value 10',
+            'key12': [10, 11, 12],
+            'key13': 4444,
+            'key14': {
+                'a': 1
+            }
+        }
+    ],
     'enum_key': example_pb2.ExampleEnumModel.ENUM1,
     'struct_key': {
         'key1': u'val1',
@@ -102,10 +121,31 @@ EXAMPLE_DICT_DEFAULT_VALUES = {
     'string_array_key': [],
     'int32_array_key': [],
     'bytes_array_key': [],
-    'complex_array_key': []
+    'complex_array_key': [],
+    'struct_array_key': []
 }
 
 # pylint: disable=no-member
+struct1_pb = struct_pb2.Struct()
+struct1_pb.update({
+    'key1': 'value 1',
+    'key2': [1, 2, 3],
+    'key3': 3333,
+    'key4': {
+        'a': 1
+    }
+})
+
+struct2_pb = struct_pb2.Struct()
+struct2_pb.update({
+    'key11': 'value 10',
+    'key12': [10, 11, 12],
+    'key13': 4444,
+    'key14': {
+        'a': 1
+    }
+})
+
 EXAMPLE_PB_POPULATED = example_pb2.ExampleDBModel()
 EXAMPLE_PB_POPULATED.int32_key = 100
 EXAMPLE_PB_POPULATED.string_key = u'foo bar baz'
@@ -128,6 +168,8 @@ EXAMPLE_PB_POPULATED.int32_array_key.append(300)
 EXAMPLE_PB_POPULATED.bytes_array_key.append(b'a')
 EXAMPLE_PB_POPULATED.bytes_array_key.append(b'b')
 EXAMPLE_PB_POPULATED.bytes_array_key.append(b'c')
+EXAMPLE_PB_POPULATED.struct_array_key.append(struct1_pb)
+EXAMPLE_PB_POPULATED.struct_array_key.append(struct2_pb)
 
 example_placeholder_pb1 = example_pb2.ExampleNestedModel(string_key=u'value 1',
     int32_key=12345, enum_key=example_pb2.ExampleEnumModel.ENUM2)
