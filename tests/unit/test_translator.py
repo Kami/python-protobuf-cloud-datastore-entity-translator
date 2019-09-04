@@ -809,7 +809,6 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'key5': 222
         })
 
-
         example_pb = example_pb2.ExampleDBModel()
         example_pb.struct_array_key.append(struct1_pb)
         example_pb.struct_array_key.append(struct2_pb)
@@ -861,6 +860,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
 
         model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
+        self.assertEqual(model_pb, example_pb)
 
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
