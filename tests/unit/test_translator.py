@@ -797,6 +797,43 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb1.properties['int32_field_two'].integer_value, 222)
         self.assertEqual(entity_pb1.properties['int32_field_two'].exclude_from_indexes, False)
 
+    def test_model_pb_to_entity_pb_repeated_struct_type(self):
+        struct1_pb = struct_pb2.Struct()
+        struct1_pb.update({
+            'key1': 'struct 1',
+            'key2': 111
+        })
+        struct2_pb = struct_pb2.Struct()
+        struct2_pb.update({
+            'key4': 'struct 2',
+            'key5': 222
+        })
+
+
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.struct_array_key.append(struct1_pb)
+        example_pb.struct_array_key.append(struct2_pb)
+
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        self.assertEqual(len(entity_pb.properties['struct_array_key'].array_value.values), 2)
+        self.assertEqual(
+            entity_pb.properties['struct_array_key'].array_value.values[0]
+            .entity_value.properties['key1'].string_value,
+            'struct 1')
+        self.assertEqual(
+            entity_pb.properties['struct_array_key'].array_value.values[0]
+            .entity_value.properties['key2'].integer_value,
+            111)
+        self.assertEqual(
+            entity_pb.properties['struct_array_key'].array_value.values[1]
+            .entity_value.properties['key4'].string_value,
+            'struct 2')
+        self.assertEqual(
+            entity_pb.properties['struct_array_key'].array_value.values[1]
+            .entity_value.properties['key5'].integer_value,
+            222)
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """
