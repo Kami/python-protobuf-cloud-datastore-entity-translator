@@ -94,10 +94,18 @@ EXAMPLE_DICT_POPULATED = {
         'key5': {
             'dict_key_1': u'1',
             'dict_key_2': 30,
-            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}, None],
+            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': []}, None],
             'dict_key_4': None,
         },
-        'key6': None
+        'key6': None,
+        'key7': [],
+        'key8': {
+            'a': {
+                'b': {
+                    'c': []
+                }
+            }
+        }
     },
     'timestamp_key': dt,
     'geo_point_key': GeoPoint(-20.2, +160.5),
@@ -191,10 +199,18 @@ EXAMPLE_PB_POPULATED.struct_key.update({
     'key5': {
         'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2]}, None],
+        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': []}, None],
         'dict_key_4': None
     },
-    'key6': None
+    'key6': None,
+    'key7': [],
+    'key8': {
+        'a': {
+            'b': {
+                'c': []
+            }
+        }
+    }
 })
 
 geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
