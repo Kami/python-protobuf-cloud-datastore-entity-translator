@@ -862,6 +862,41 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         model_pb = entity_pb_to_model_pb(example_pb2.ExampleDBModel, entity_pb)
         self.assertEqual(model_pb, example_pb)
 
+    def test_model_pb_to_entity_pb_nested_struct_empty_array(self):
+        struct1_pb = struct_pb2.Struct()
+        struct1_pb.update({
+            'a': {
+                'a': [],
+                'b': {
+                    'c': []
+                }
+            },
+            'b': []
+        })
+
+        example_pb = example_pb2.ExampleDBModel()
+        example_pb.struct_key.CopyFrom(struct1_pb)
+
+        entity_pb = model_pb_to_entity_pb(model_pb=example_pb)
+
+        self.assertEqual(
+            entity_pb.properties['struct_key']
+            .entity_value.properties['a']
+            .entity_value.properties['b']
+            .entity_value.properties['c'].array_value,
+            entity_pb2.ArrayValue(values=[]))
+
+        self.assertEqual(
+            entity_pb.properties['struct_key']
+            .entity_value.properties['b'].array_value,
+            entity_pb2.ArrayValue(values=[]))
+
+        self.assertEqual(
+            entity_pb.properties['struct_key']
+            .entity_value.properties['a']
+            .entity_value.properties['a'].array_value,
+            entity_pb2.ArrayValue(values=[]))
+
     def assertEntityPbHasPopulatedField(self, entity_pb, field_name):
         # type: (entity_pb2.Entity, str) -> None
         """

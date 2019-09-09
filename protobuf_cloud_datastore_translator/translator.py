@@ -442,11 +442,15 @@ def set_value_pb_item_value(value_pb, value):
     elif isinstance(value, six.binary_type):
         value_pb.blob_value = value
     elif isinstance(value, list):
-        for value in value:
-            value_pb_item = entity_pb2.Value()
-            value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
+        if len(value) == 0:
+            array_value = entity_pb2.ArrayValue(values=[])
+            value_pb.array_value.CopyFrom(array_value)
+        else:
+            for value in value:
+                value_pb_item = entity_pb2.Value()
+                value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
 
-            value_pb.array_value.values.append(value_pb_item)
+                value_pb.array_value.values.append(value_pb_item)
     elif isinstance(value, struct_pb2.Value):
         item_value = _GetStructValue(value)
         set_value_pb_item_value(value_pb, item_value)
