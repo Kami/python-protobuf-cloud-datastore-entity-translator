@@ -1,3 +1,8 @@
+# v0.1.11 - September 9th, 2019
+
+* Fix ``model_pb_to_entity_pb`` to correctly handle deeply nested Struct types
+  with empty array values. #22
+
 # v0.1.10 - September 4th, 2019
 
 * Fix ``entity_pb_to_model_pb`` to correctly handle repeated Struct field types

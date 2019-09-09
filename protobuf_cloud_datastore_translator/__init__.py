@@ -20,7 +20,7 @@ __all__ = [
     'entity_pb_to_model_pb'
 ]
 
-__version__ = '0.1.11-dev'
+__version__ = '0.1.11'
 
 from .translator import model_pb_to_entity_pb
 from .translator import model_pb_with_key_to_entity_pb
