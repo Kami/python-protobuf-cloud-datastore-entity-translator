@@ -435,6 +435,8 @@ def set_value_pb_item_value(value_pb, value):
 
     if isinstance(value, six.text_type):
         value_pb.string_value = value
+    elif isinstance(value, bool):
+        value_pb.boolean_value = value
     elif isinstance(value, int):
         value_pb.integer_value = value
     elif isinstance(value, float):
