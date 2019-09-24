@@ -398,7 +398,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             example_with_package_referenced_type_pb)
 
         example_with_nested_struct_db_model_pb = example_pb2.ExampleWithNestedStructDBModel()
-        example_with_nested_struct_db_model_pb.struct_key.update({'foo': 'bar', 'bar': 'baz'})
+        example_with_nested_struct_db_model_pb.struct_key.update({'foo': 'bar', 'bar': 'baz',
+                                                                  'bool1': True, 'bool2': False})
 
         example_with_referenced_type_pb.referenced_struct_key.CopyFrom(
             example_with_nested_struct_db_model_pb)
@@ -421,6 +422,12 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(entity_pb_translated.properties['referenced_struct_key'].entity_value
                          .properties['struct_key'].entity_value.properties['bar'].string_value,
                          'baz')
+        self.assertEqual(entity_pb_translated.properties['referenced_struct_key'].entity_value
+                         .properties['struct_key'].entity_value.properties['bool1'].boolean_value,
+                         True)
+        self.assertEqual(entity_pb_translated.properties['referenced_struct_key'].entity_value
+                         .properties['struct_key'].entity_value.properties['bool2'].boolean_value,
+                         False)
 
         # Perform the round trip, translate it back to the model and verity it matches the original
         # input

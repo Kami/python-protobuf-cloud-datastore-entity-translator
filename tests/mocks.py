@@ -89,12 +89,13 @@ EXAMPLE_DICT_POPULATED = {
     'struct_key': {
         'key1': u'val1',
         'key2': 2,
-        'key3': [1, 2, 3, None],
+        'key3': [1, 2, 3, None, True, False],
         'key4': u'čđć',
         'key5': {
             'dict_key_1': u'1',
             'dict_key_2': 30,
-            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': []}, None],
+            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'l': True,
+                                                 u'm': False}, None],
             'dict_key_4': None,
         },
         'key6': None,
@@ -105,7 +106,9 @@ EXAMPLE_DICT_POPULATED = {
                     'c': []
                 }
             }
-        }
+        },
+        'key9': True,
+        'key10': False
     },
     'timestamp_key': dt,
     'geo_point_key': GeoPoint(-20.2, +160.5),
@@ -194,12 +197,13 @@ EXAMPLE_PB_POPULATED.timestamp_key.FromDatetime(dt)
 EXAMPLE_PB_POPULATED.struct_key.update({
     'key1': u'val1',
     'key2': 2,
-    'key3': [1, 2, 3, None],
+    'key3': [1, 2, 3, None, True, False],
     'key4': u'čđć',
     'key5': {
         'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': []}, None],
+        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'l': True,
+                                             u'm': False}, None],
         'dict_key_4': None
     },
     'key6': None,
@@ -210,7 +214,9 @@ EXAMPLE_PB_POPULATED.struct_key.update({
                 'c': []
             }
         }
-    }
+    },
+    'key9': True,
+    'key10': False
 })
 
 geo_point_value = latlng_pb2.LatLng(latitude=-20.2, longitude=+160.5)
@@ -229,6 +235,7 @@ EXAMPLE_PB_DEFAULT_VALUES.enum_key = example_pb2.ExampleEnumModel.ENUM0
 EXAMPLE_PB_DEFAULT_VALUES.bool_key = False
 EXAMPLE_PB_DEFAULT_VALUES.bytes_key = b''
 EXAMPLE_PB_DEFAULT_VALUES.null_key = 0
+EXAMPLE_PB_DEFAULT_VALUES.struct_key.update({})
 # pylint: enable=no-member
 
 EXAMPLE_PB_WITH_OPTIONS_1 = example_with_options_pb2.ExampleDBModelWithOptions1()

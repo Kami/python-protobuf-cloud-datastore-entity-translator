@@ -1,3 +1,11 @@
+# v0.1.12 - September 24th, 2019
+
+* Fix a bug with boolean values inside Struct fields not being handled and
+  serialized correctly (they were serialized as integer instead of boolean
+  value). #23
+
+  Reported by @Sheshagiri
+
 # v0.1.11 - September 9th, 2019
 
 * Fix ``model_pb_to_entity_pb`` to correctly handle deeply nested Struct types
