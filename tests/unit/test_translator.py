@@ -115,7 +115,6 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         entity = datastore.Entity()
         entity.update(EXAMPLE_DICT_DEFAULT_VALUES)
 
-
         entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
 
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))

@@ -94,7 +94,7 @@ EXAMPLE_DICT_POPULATED = {
         'key5': {
             'dict_key_1': u'1',
             'dict_key_2': 30,
-            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'h': True,
+            'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'l': True,
                                                  u'm': False}, None],
             'dict_key_4': None,
         },
@@ -202,8 +202,8 @@ EXAMPLE_PB_POPULATED.struct_key.update({
     'key5': {
         'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'h': True,
-                                                u'm': False}, None],
+        'dict_key_3': [u'a', u'b', u'c', 3, {u'h': u'bar', u'g': [1, 2], u'j': [], u'l': True,
+                                             u'm': False}, None],
         'dict_key_4': None
     },
     'key6': None,
