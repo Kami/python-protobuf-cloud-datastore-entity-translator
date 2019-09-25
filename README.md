@@ -33,7 +33,7 @@ Right now the library supports the following Protobuf field types and functional
 * All the simple types (string, int32, int64, double, float, bytes, bool, enum)
 * Scalar / container types (map, repeated)
 * Complex types from Protobuf standard library (``google.protobuf.Timestamp``,
-  ``google.Protobuf.Struct``, ``google.types.LatLng``)
+  ``google.protobuf.Struct``, ``google.types.LatLng``)
 * Using imports and referencing types from different Protobuf definition files. For example,
   you can have Protobuf message definition called ``Model1DB`` inside file ``model1.proto`` which
   has a field which references ``Model2DB`` from ``model2.proto`` file.
@@ -48,7 +48,7 @@ Right now the library supports the following Protobuf field types and functional
 For more information on the actual types supported by Google Datastore, refer to
 https://cloud.google.com/datastore/docs/concepts/entities#properties_and_value_types.
 
-## Supported Python versions:
+## Supported Python versions
 
 * Python 2.7
 * Python 3.6
@@ -247,6 +247,8 @@ message ExampleDBModelWithOptions1 {
 
 ## Gotchas
 
+### Default values
+
 In Protobuf syntax version 3 a concept of field being set has been removed and combined with a
 concept of a default value. This means that even when a field is not set, a default value which
 is specific to that field type will be returned.
@@ -291,6 +293,16 @@ For details, see:
 * https://github.com/googleapis/google-cloud-python/issues/1402
 * https://github.com/googleapis/google-cloud-python/pull/1450
 * https://github.com/googleapis/google-cloud-python/pull/1329
+
+### Struct Field type
+
+This library supports ``google.protobuf.Struct`` field type out of the box. Struct field values
+are serialized as an embedded entity.
+
+Keep in mind that ``google.protobuf.Struct`` field type mimics JSON type which only supports
+``number`` type for numeric values. This means all the numbers (including integers) are
+represented as double precision floating point values (internally on the Entity, that's stored as
+``value_pb.double_value``).
 
 ## Examples
 
@@ -340,14 +352,14 @@ model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
 print(model_pb)
 ```
 
-### Translator Libraries for Other Programming Languages
+## Translator Libraries for Other Programming Languages
 
 This section contains a list of translator libraries for other programming languages which offer
 the same functionality.
 
 * Golang - [go-protobuf-cloud-datastore-entity-translator](https://github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator)
 
-### Tests
+## Tests
 
 Unit and integration tests can be found inside ``tests/`` directory.
 
