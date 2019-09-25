@@ -422,6 +422,10 @@ def set_value_pb_item_value(value_pb, value, is_struct=False):
     Set a value attribute on the Value object based on the type of the provided value.
 
     NOTE: For complex nested types (e.g. dicts and structs this function uses recursion).
+
+    :param is_struct: True if the provided value is part of a struct. This is important because
+                      numbers inside struct field types are handled differently (only double number
+                      types are supported).
     """
     if isinstance(value, struct_pb2.ListValue):
         # Cast special ListValue type to a list
