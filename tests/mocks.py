@@ -204,8 +204,8 @@ EXAMPLE_PB_POPULATED.struct_key.update({
     'key5': {
         'dict_key_1': u'1',
         'dict_key_2': 30,
-        'dict_key_3': [u'a', u'b', u'c', 7, {u'h': u'bar', u'g': [1, 2, 33.33], u'j': [], u'l': True,
-                                             u'm': False}, None],
+        'dict_key_3': [u'a', u'b', u'c', 7, {u'h': u'bar', u'g': [1, 2, 33.33], u'j': [],
+                                             u'l': True, u'm': False}, None],
         'dict_key_4': None,
         'dict_key_5': 55.55
     },

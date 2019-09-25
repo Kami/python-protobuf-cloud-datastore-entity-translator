@@ -452,7 +452,8 @@ def set_value_pb_item_value(value_pb, value, is_struct=False):
         else:
             for value in value:
                 value_pb_item = entity_pb2.Value()
-                value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value, is_struct=is_struct)
+                value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value,
+                                                        is_struct=is_struct)
 
                 value_pb.array_value.values.append(value_pb_item)
     elif isinstance(value, struct_pb2.Value):
