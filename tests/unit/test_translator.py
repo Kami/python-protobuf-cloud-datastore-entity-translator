@@ -15,6 +15,7 @@
 # pylint: disable=all
 
 import sys
+import copy
 import unittest
 
 import requests
@@ -66,8 +67,15 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         # Create example Entity protobuf object via google-cloud-datastore library with the
         # matching values
+        # NOTE: We cast any number inside the dictionary to double to work around the bug in
+        # "entity_to_protobuf" not handling numbers inside structs correctly
+        example_data = copy.deepcopy(EXAMPLE_DICT_POPULATED)
+
+        example_data['struct_array_key'] = self._int_to_double(example_data['struct_array_key'])
+        example_data['struct_key'] = self._int_to_double(example_data['struct_key'])
+
         entity = datastore.Entity()
-        entity.update(EXAMPLE_DICT_POPULATED)
+        entity.update(example_data)
 
         # Verify that the both Protobuf objects are the same (translated one and the datastore
         # native one)
@@ -89,6 +97,79 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         self.assertEqual(example_pb_converted, example_pb)
         self.assertEqual(sorted(example_pb_converted.SerializePartialToString()),
             sorted(example_pb.SerializePartialToString()))
+
+    def test_struct_field_type_number_values(self):
+        # NOTE: Keep in mind that struct only supports double number types and not integers
+        example_pb = EXAMPLE_PB_POPULATED
+
+        entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
+
+        # Verify that all the number values either top level, or nested or inside a list are
+        # correctly serialized to a double value
+        # Top level attribute
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key2'].double_value, 2.0)
+
+        # Array attribute
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key3'].array_value.values[0].double_value,
+                         1.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key3'].array_value.values[1].double_value,
+                         2.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key3'].array_value.values[2].double_value,
+                         3.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key3'].array_value.values[3].double_value,
+                         4.44)
+
+        # Nested struct attribute
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_2'].double_value,
+                         30.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_3'].array_value
+                         .values[3].double_value,
+                         7.0)
+
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_3'].array_value
+                         .values[4].entity_value.properties['g'].array_value.values[0].double_value,
+                         1.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_3'].array_value
+                         .values[4].entity_value.properties['g'].array_value.values[1].double_value,
+                         2.0)
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_3'].array_value
+                         .values[4].entity_value.properties['g'].array_value.values[2].double_value,
+                         33.33)
+
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key5'].entity_value.properties['dict_key_5'].double_value,
+                         55.55)
+
+        # Top level attribute
+        self.assertEqual(entity_pb_translated.properties['struct_key'].entity_value
+                         .properties['key11'].double_value, 11.123)
+
+        # Test the round trip conversion
+        example_pb_converted = entity_pb_to_model_pb(example_pb2.ExampleDBModel,
+                                                     entity_pb_translated)
+
+        self.assertEqual(example_pb_converted.struct_key['key2'], 2.0)
+        self.assertEqual(example_pb_converted.struct_key['key3'][0], 1)
+        self.assertEqual(example_pb_converted.struct_key['key3'][1], 2)
+        self.assertEqual(example_pb_converted.struct_key['key3'][2], 3)
+        self.assertEqual(example_pb_converted.struct_key['key3'][3], 4.44)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_2'], 30)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_3'][3], 7)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_3'][4]['g'][0], 1)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_3'][4]['g'][1], 2)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_3'][4]['g'][2], 33.33)
+        self.assertEqual(example_pb_converted.struct_key['key5']['dict_key_5'], 55.55)
+        self.assertEqual(example_pb_converted.struct_key['key11'], 11.123)
 
     def test_translate_values_not_set_default_values_used(self):
         # type: () -> None
@@ -399,7 +480,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         example_with_nested_struct_db_model_pb = example_pb2.ExampleWithNestedStructDBModel()
         example_with_nested_struct_db_model_pb.struct_key.update({'foo': 'bar', 'bar': 'baz',
-                                                                  'bool1': True, 'bool2': False})
+                                                                  'bool1': True, 'bool2': False,
+                                                                  'number1': 100, 'number2': 22.33})
 
         example_with_referenced_type_pb.referenced_struct_key.CopyFrom(
             example_with_nested_struct_db_model_pb)
@@ -456,11 +538,15 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
         example_pb.struct_key.update(example_data)
         entity_pb_translated = model_pb_to_entity_pb(model_pb=example_pb)
 
+        # Verify that the both Protobuf objects are the same (translated one and the datastore
+        # native one)
+
+        # NOTE: We cast any number inside the dictionary to double to work around the bug in
+        # "entity_to_protobuf" not handling numbers inside structs correctly
+        example_data = self._int_to_double(example_data)
         entity = datastore.Entity()
         entity.update({'struct_key': example_data})
 
-        # Verify that the both Protobuf objects are the same (translated one and the datastore
-        # native one)
         entity_pb_native = datastore.helpers.entity_to_protobuf(entity)
 
         self.assertEqual(repr(entity_pb_native), repr(entity_pb_translated))
@@ -829,7 +915,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'struct 1')
         self.assertEqual(
             entity_pb.properties['struct_array_key'].array_value.values[0]
-            .entity_value.properties['key2'].integer_value,
+            .entity_value.properties['key2'].double_value,
             111)
         self.assertEqual(
             entity_pb.properties['struct_array_key'].array_value.values[1]
@@ -837,7 +923,7 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
             'struct 2')
         self.assertEqual(
             entity_pb.properties['struct_array_key'].array_value.values[1]
-            .entity_value.properties['key5'].integer_value,
+            .entity_value.properties['key5'].double_value,
             222)
 
     def test_entity_pb_to_model_pb_repeated_struct_field_type(self):
@@ -915,3 +1001,23 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
 
         self.assertEqual(len(entity.keys()), 1, 'Provided entity has more than 1 field populated')
         self.assertTrue(field_name in entity.keys(), '%s field is not populated' % (field_name))
+
+    def _int_to_double(self, value):
+        """
+        Function which converts any int value type to double to work around issue with
+        "entity_to_protobuf" function not correctly handling number types inside structs.
+        """
+        if isinstance(value, list):
+            value = [self._int_to_double(item) for item in value]
+        elif isinstance(value, dict):
+            result = {}
+            for dict_key, dict_value in value.items():
+                result[dict_key] = self._int_to_double(dict_value)
+
+            return result
+        elif isinstance(value, bool):
+            value = bool(value)
+        elif isinstance(value, int):
+            value = float(value)
+
+        return value
