@@ -33,7 +33,7 @@ Right now the library supports the following Protobuf field types and functional
 * All the simple types (string, int32, int64, double, float, bytes, bool, enum)
 * Scalar / container types (map, repeated)
 * Complex types from Protobuf standard library (``google.protobuf.Timestamp``,
-  ``google.Protobuf.Struct``, ``google.types.LatLng``)
+  ``google.protobuf.Struct``, ``google.types.LatLng``)
 * Using imports and referencing types from different Protobuf definition files. For example,
   you can have Protobuf message definition called ``Model1DB`` inside file ``model1.proto`` which
   has a field which references ``Model2DB`` from ``model2.proto`` file.
@@ -48,7 +48,7 @@ Right now the library supports the following Protobuf field types and functional
 For more information on the actual types supported by Google Datastore, refer to
 https://cloud.google.com/datastore/docs/concepts/entities#properties_and_value_types.
 
-## Supported Python versions:
+## Supported Python versions
 
 * Python 2.7
 * Python 3.6
@@ -245,53 +245,6 @@ message ExampleDBModelWithOptions1 {
 }
 ```
 
-## Gotchas
-
-In Protobuf syntax version 3 a concept of field being set has been removed and combined with a
-concept of a default value. This means that even when a field is not set, a default value which
-is specific to that field type will be returned.
-
-As far as this library is concerned, this means when you are converting / translating Protobuf
-object with no values set, translated object will still contain default values for fields which
-are not set.
-
-For example, the output / end result of both those two calls will be the same:
-
-```python
-# Field values are explicitly provided, but they match default values
-example_pb = example_pb2.ExampleDBModel()
-example_pb.bool_key = False
-example_pb.string_key = ''
-example_pb.int32_key = 0
-example_pb.int64_key = 0
-example_pb.double_key = 0.0
-example_pb.float_key = 0.0
-example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM0
-example_pb.bool_key = False
-example_pb.bytes_key = b''
-example_pb.null_key = 1
-
-entity_pb_translated = model_pb_to_entity_pb(example_pb)
-print(entity_pb_translated)
-
-# No field values are provided, implicit default values are used during serialization
-example_pb = example_pb2.ExampleDBModel()
-entity_pb_translated = model_pb_to_entity_pb(example_pb)
-print(entity_pb_translated)
-```
-
-If you don't want default values to be set on the translated Entity Protobuf objects and stored
-inside the datastore, you can pass ``exclude_falsy_values=True`` argument to the
-``model_pb_to_entity_pb`` method.
-
-For details, see:
-
-* https://developers.google.com/protocol-buffers/docs/reference/python-generated
-* https://github.com/protocolbuffers/protobuf/issues/1606
-* https://github.com/googleapis/google-cloud-python/issues/1402
-* https://github.com/googleapis/google-cloud-python/pull/1450
-* https://github.com/googleapis/google-cloud-python/pull/1329
-
 ## Examples
 
 For example Protobuf message definitions, see ``protobuf/`` directory.
@@ -340,14 +293,74 @@ model_pb = entity_pb_to_model_pb(my_model_pb2.MyModelPB, entity_pb)
 print(model_pb)
 ```
 
-### Translator Libraries for Other Programming Languages
+
+## Gotchas
+
+### Default values
+
+In Protobuf syntax version 3 a concept of field being set has been removed and combined with a
+concept of a default value. This means that even when a field is not set, a default value which
+is specific to that field type will be returned.
+
+As far as this library is concerned, this means when you are converting / translating Protobuf
+object with no values set, translated object will still contain default values for fields which
+are not set.
+
+For example, the output / end result of both those two calls will be the same:
+
+```python
+# Field values are explicitly provided, but they match default values
+example_pb = example_pb2.ExampleDBModel()
+example_pb.bool_key = False
+example_pb.string_key = ''
+example_pb.int32_key = 0
+example_pb.int64_key = 0
+example_pb.double_key = 0.0
+example_pb.float_key = 0.0
+example_pb.enum_key = example_pb2.ExampleEnumModel.ENUM0
+example_pb.bool_key = False
+example_pb.bytes_key = b''
+example_pb.null_key = 1
+
+entity_pb_translated = model_pb_to_entity_pb(example_pb)
+print(entity_pb_translated)
+
+# No field values are provided, implicit default values are used during serialization
+example_pb = example_pb2.ExampleDBModel()
+entity_pb_translated = model_pb_to_entity_pb(example_pb)
+print(entity_pb_translated)
+```
+
+If you don't want default values to be set on the translated Entity Protobuf objects and stored
+inside the datastore, you can pass ``exclude_falsy_values=True`` argument to the
+``model_pb_to_entity_pb`` method.
+
+For details, see:
+
+* https://developers.google.com/protocol-buffers/docs/reference/python-generated
+* https://github.com/protocolbuffers/protobuf/issues/1606
+* https://github.com/googleapis/google-cloud-python/issues/1402
+* https://github.com/googleapis/google-cloud-python/pull/1450
+* https://github.com/googleapis/google-cloud-python/pull/1329
+
+### Struct Field type
+
+This library supports ``google.protobuf.Struct`` field type out of the box. Struct field values
+are serialized as an embedded entity.
+
+Keep in mind that ``google.protobuf.Struct`` field type mimics JSON type which only supports
+``number`` type for numeric values (https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/struct.proto#L62).
+This means all the numbers (including integers) are represented as double precision floating
+point values (internally on the Entity, that's stored as ``value_pb.double_value``).
+
+## Translator Libraries for Other Programming Languages
 
 This section contains a list of translator libraries for other programming languages which offer
 the same functionality.
 
 * Golang - [go-protobuf-cloud-datastore-entity-translator](https://github.com/Sheshagiri/go-protobuf-cloud-datastore-entity-translator)
 
-### Tests
+## Tests
 
 Unit and integration tests can be found inside ``tests/`` directory.
 

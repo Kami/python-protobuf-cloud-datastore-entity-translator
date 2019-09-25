@@ -1,3 +1,12 @@
+# v0.1.13 - September 25th, 2019
+
+* Fix a bug so number values are correctly handled inside Struct fields.
+
+  Struct field value mimics JSON types which means that for numbers, it
+  only supports JSON "number" type which is a double. This means we need
+  to correctly handle all the numbers (integers and doubles) inside
+  Structs and cast them to double type. #24
+
 # v0.1.12 - September 24th, 2019
 
 * Fix a bug with boolean values inside Struct fields not being handled and

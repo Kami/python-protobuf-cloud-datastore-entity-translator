@@ -409,27 +409,33 @@ def get_entity_pb_for_value(value):
 
         for key, value in six.iteritems(value):
             value_pb = datastore.helpers._new_value_pb(entity_pb, key)
-            value_pb = set_value_pb_item_value(value_pb=value_pb, value=value)
+            value_pb = set_value_pb_item_value(value_pb=value_pb, value=value, is_struct=True)
     else:
         raise ValueError('Unsupported attribute type: %s' % (attr_type))
 
     return entity_pb
 
 
-def set_value_pb_item_value(value_pb, value):
-    # type: (entity_pb2.Value, Any) -> entity_pb2.Value
+def set_value_pb_item_value(value_pb, value, is_struct=False):
+    # type: (entity_pb2.Value, Any, bool) -> entity_pb2.Value
     """
     Set a value attribute on the Value object based on the type of the provided value.
 
     NOTE: For complex nested types (e.g. dicts and structs this function uses recursion).
+
+    :param is_struct: True if the provided value is part of a struct. This is important because
+                      numbers inside struct field types are handled differently (only double number
+                      types are supported).
     """
     if isinstance(value, struct_pb2.ListValue):
         # Cast special ListValue type to a list
         value = cast(Any, value)
         value = list(value)
 
-    if isinstance(value, float) and value.is_integer():
+    if isinstance(value, float) and value.is_integer() and not is_struct:
         # Special case because of how Protobuf handles ints in some scenarios (e.g. Struct)
+        # Regular Entity value supports integeres and double number types, but Struct mimics
+        # JSON so it only supports "number" type which is always a double
         value = cast(Any, value)
         value = int(value)
 
@@ -450,12 +456,13 @@ def set_value_pb_item_value(value_pb, value):
         else:
             for value in value:
                 value_pb_item = entity_pb2.Value()
-                value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value)
+                value_pb_item = set_value_pb_item_value(value_pb=value_pb_item, value=value,
+                                                        is_struct=is_struct)
 
                 value_pb.array_value.values.append(value_pb_item)
     elif isinstance(value, struct_pb2.Value):
         item_value = _GetStructValue(value)
-        set_value_pb_item_value(value_pb, item_value)
+        set_value_pb_item_value(value_pb, item_value, is_struct=is_struct)
     elif hasattr(value, 'DESCRIPTOR'):
         # Custom user-defined type
         entity_pb_item = model_pb_to_entity_pb(value, exclude_falsy_values=True)
