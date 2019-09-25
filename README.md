@@ -349,9 +349,9 @@ This library supports ``google.protobuf.Struct`` field type out of the box. Stru
 are serialized as an embedded entity.
 
 Keep in mind that ``google.protobuf.Struct`` field type mimics JSON type which only supports
-``number`` type for numeric values. This means all the numbers (including integers) are
-represented as double precision floating point values (internally on the Entity, that's stored as
-``value_pb.double_value``).
+``number`` type for numeric values (https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/struct.proto#L62).
+This means all the numbers (including integers) are represented as double precision floating
+point values (internally on the Entity, that's stored as ``value_pb.double_value``).
 
 ## Translator Libraries for Other Programming Languages
 
