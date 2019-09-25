@@ -1005,7 +1005,8 @@ class ModelPbToEntityPbTranslatorTestCase(unittest.TestCase):
     def _int_to_double(self, value):
         """
         Function which converts any int value type to double to work around issue with
-        "entity_to_protobuf" function not correctly handling number types inside structs.
+        "entity_to_protobuf" function which handles all the nested values as embedded entities and
+        not structs which only support double type.
         """
         if isinstance(value, list):
             value = [self._int_to_double(item) for item in value]
