@@ -151,10 +151,10 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
 
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate()
+        stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
+            self.assertFalse('Failed to run command "%s": %s' % (args, stderr))
 
     def _go_insert_fixture(self, fixture_obj):
         # type: (Dict[str, str]) -> None
@@ -166,10 +166,10 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate()
+        stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
+            self.assertFalse('Failed to run command "%s": %s' % (args, stderr))
 
     def _python_get_fixture(self, fixture_obj):
         # type: (Dict[str, str]) -> Dict
@@ -181,12 +181,12 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate()
+        stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
+            self.assertFalse('Failed to run command "%s": %s' % (args, stderr))
 
-        json_parsed = json.loads(process.stdout)  # type: ignore
+        json_parsed = json.loads(stdout)  # type: ignore
 
         return json_parsed
 
@@ -199,11 +199,11 @@ class CrossLangCompatibilityIntegrationTestCase(BaseDatastoreIntegrationTestCase
         ]
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        process.stdout, process.stderr = process.communicate()
+        stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            self.assertFalse('Failed to run command "%s": %s' % (args, process.stderr))
+            self.assertFalse('Failed to run command "%s": %s' % (args, stderr))
 
-        json_parsed = json.loads(process.stdout)  # type: ignore
+        json_parsed = json.loads(stdout)
 
         return json_parsed

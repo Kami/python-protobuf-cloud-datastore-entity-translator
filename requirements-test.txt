@@ -8,3 +8,5 @@ pytest
 pytest-coverage
 pytest-benchmark
 mock
+mypy==0.730
+mypy-protobuf
