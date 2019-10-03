@@ -393,6 +393,7 @@ those tests also require Golang >= 1.12 to be installed on the system.
 ## License
 
 Copyright 2019 Tomaz Muraus
+Copyright 2019 Extreme Networks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except
 in compliance with the License. You may obtain a copy of the License in the [LICENSE](LICENSE) file,
