@@ -1,10 +1,18 @@
 version = 1
 
-test_patterns = ["*/tests/**"]
+test_patterns = [
+  "tests/**"
+]
+
 
 [[analyzers]]
 name = "python"
 enabled = true
+dependency_file_paths = ["requirements.txt"]
 
   [analyzers.meta]
   runtime_version = "3.x.x"
+  type_checker = "mypy"
+  max_line_length = 100
+  skip_doc_coverage = ["module", "magic", "init"]
+  additional_builtins = ["_"]
